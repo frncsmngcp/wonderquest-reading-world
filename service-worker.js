@@ -1,4 +1,4 @@
-const CACHE_VERSION = "wonderquest-reading-world-pwa-v1.5.17-mobile-hotspots-68";
+const CACHE_VERSION = "wonderquest-reading-world-pwa-v1.5.18-bbb-portrait-contain-69";
 const CORE_CACHE = CACHE_VERSION + "-core";
 // This cache deliberately keeps the same name between releases. Reading World
 // uses content-hashed filenames under /assets/, so unchanged library files can
