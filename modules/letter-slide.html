@@ -2,6 +2,7 @@
 <!-- Teacher Francis Reading World PWA module: letter-slide -->
 <html lang="en">
 <head>
+<meta name="wq-stage-standard" content="1536x864-16:9-v52">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="color-scheme" content="only light">
@@ -14,11 +15,15 @@
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:radial-gradient(circle at top,#1782b7,#08304d 70%);font-family:"Comic Sans MS","Chalkboard SE","Trebuchet MS","Arial Rounded MT Bold","TF Portable Andika",system-ui,sans-serif}
 body{touch-action:manipulation}
 #app{position:fixed;inset:0;display:block;overflow:hidden;background:radial-gradient(circle at top,#1782b7,#08304d 70%)}
-#stage{position:absolute;left:50%;top:50%;width:1672px;height:1024px;transform-origin:50% 50%;}
+#wq16stage{position:absolute;left:50%;top:50%;width:1536px;height:864px;transform-origin:50% 50%;overflow:hidden;background:radial-gradient(circle at top,#1782b7,#08304d 70%);box-shadow:0 0 70px rgba(0,0,0,.22)}
+#stage{position:absolute;left:62.625px;top:0;width:1672px;height:1024px;transform-origin:0 0;transform:scale(.84375);}
 .screen{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .28s ease}
 .screen.active{opacity:1;pointer-events:auto}
-.home-inner{position:absolute;left:68px;top:0;width:1536px;height:1024px;background:url('../assets/5db173593080c179efda.png') center/cover no-repeat}
-.play-inner{position:absolute;left:0;top:42px;width:1672px;height:941px;transform-origin:0 0;will-change:transform;transition:transform .62s cubic-bezier(.22,.78,.18,1);background:url('../assets/0ee3e0f352e730e650f4.png') center/cover no-repeat}
+#homeScreen{left:-74.222222px;top:0;width:1820.444444px;height:1024px;right:auto;bottom:auto}
+.home-inner{position:absolute;left:0;top:0;width:1820.444444px;height:1024px;background:url('../assets/wq-letter-slide-home-v51.webp') center/cover no-repeat}
+#playScreen{left:-74.222222px;top:0;width:1820.444444px;height:1024px;right:auto;bottom:auto;overflow:hidden}
+.play-normalize{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;transform:scale(1.0887825622);overflow:visible}
+.play-inner{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform;transition:transform .62s cubic-bezier(.22,.78,.18,1);background:url('../assets/0ee3e0f352e730e650f4.png') center/cover no-repeat}
 .invis-btn{position:absolute;background:transparent;border:0;cursor:pointer;outline:none;overflow:hidden;isolation:isolate;transition:background .12s ease,box-shadow .12s ease,transform .12s ease,filter .12s ease}
 .invis-btn:focus-visible{box-shadow:0 0 0 4px rgba(255,255,255,.65),0 0 0 8px rgba(26,114,214,.4);border-radius:24px}
 .invis-btn::before{
@@ -90,7 +95,10 @@ body{touch-action:manipulation}
 #kid{position:absolute;width:138px;height:auto;transform:translate(-50%,-50%) rotate(0deg);transform-origin:50% 62%;transition:left .38s cubic-bezier(.22,.82,.25,1),top .38s cubic-bezier(.22,.82,.25,1),transform .38s cubic-bezier(.22,.82,.25,1);pointer-events:none;filter:drop-shadow(0 12px 16px rgba(0,0,0,.2));z-index:4}
 .word-card-hud{
   position:absolute;
-  inset:0;
+  left:0;
+  top:0;
+  width:1672px;
+  height:941px;
   z-index:600;
   display:grid;
   place-items:center;
@@ -578,6 +586,7 @@ button,input,select,textarea,option{color-scheme:light!important}
 </head>
 <body>
 <div id="app">
+  <div id="wq16stage">
   <div id="stage">
     <section id="homeScreen" class="screen active">
       <div class="home-inner">
@@ -593,6 +602,7 @@ button,input,select,textarea,option{color-scheme:light!important}
     </section>
 
     <section id="playScreen" class="screen">
+      <div class="play-normalize">
       <div class="play-inner">
         <button id="playEasy" class="invis-btn" aria-label="Easy"></button>
         <button id="playMedium" class="invis-btn" aria-label="Medium"></button>
@@ -616,7 +626,9 @@ button,input,select,textarea,option{color-scheme:light!important}
       <div id="wordCardHud" class="word-card-hud">
         <div id="badgeWord" class="badge hidden">cat</div>
       </div>
+      </div>
     </section>
+  </div>
   </div>
 </div>
 
@@ -686,7 +698,7 @@ button,input,select,textarea,option{color-scheme:light!important}
 <script>
 const STORAGE='letter_slide_teacher_francis_v2';
 const WORDS={"easy": ["cat", "dog", "sun", "hat", "pen", "cup", "bus", "box", "red", "map", "jam", "pig", "hen", "fan", "web", "kid", "bed", "fox", "run", "top", "car", "egg", "leg", "yak", "bat", "lip", "bug", "net", "pot", "cow", "mop", "van", "ant", "hot", "mud", "zip", "rat", "fin", "tap", "nut", "ship", "frog", "tree", "milk", "book", "fish", "hand", "rain", "star", "home"], "medium": ["funny", "rabbit", "planet", "sister", "rocket", "yellow", "window", "basket", "garden", "button", "puppy", "kitten", "flower", "winter", "summer", "school", "dragon", "farmer", "market", "napkin", "pencil", "jungle", "bright", "bridge", "friend", "guitar", "little", "orange", "silver", "circle", "banana", "castle", "soccer", "thirst", "wallet", "monkey", "pirate", "doctor", "finger", "gloves", "vacuum", "spring", "apple", "beach", "cloud", "smiley", "kitten", "people", "orange", "button"], "hard": ["school", "puzzle", "bright", "castle", "bridge", "silver", "orange", "window", "planet", "jungle", "yellow", "friend", "little", "banana", "monkey", "market", "dragon", "pirate", "farmer", "gloves", "crayon", "goblet", "rabbit", "button", "bucket", "forest", "rocket", "pocket", "spring", "kitten", "doctor", "napkin", "pencil", "flower", "basket", "circle", "finger", "secret", "vacuum", "sunset", "parrot", "apple", "beach", "cloud", "dance", "earth", "garden", "happy", "island", "jacket"]};
-const STAGE_W=1672, STAGE_H=1024;
+const STAGE_W=1536, STAGE_H=864;
 const PLAY={left:0,top:42,w:1672,h:941};
 const HOME={left:68,top:0,w:1536,h:1024};
 
@@ -723,8 +735,11 @@ function scaleStage(){
   const vh=Math.max(1,fsEl?.clientHeight || app?.clientHeight || vp.height || STAGE_H);
   const margin=fsEl ? 8 : 4;
   const s=Math.min(Math.max(1,vw-margin*2)/STAGE_W, Math.max(1,vh-margin*2)/STAGE_H);
-  const stage=$('stage');
-  stage.style.left='50%';stage.style.top='50%';stage.style.transform=`translate(-50%,-50%) scale(${s})`;
+  const shell=$('wq16stage');
+  if(shell){
+    shell.style.left='50%';shell.style.top='50%';
+    shell.style.transform=`translate(-50%,-50%) scale(${s})`;
+  }
 }
 function refreshStageLayout(){
   requestAnimationFrame(()=>{ scaleStage(); requestAnimationFrame(scaleStage); });
@@ -737,15 +752,15 @@ document.addEventListener('webkitfullscreenchange', refreshStageLayout);
 
 function positionStaticElements(){
   const styleMap={
-    // Home background coordinates (1536 x 1024)
-    homeEasy:[399,337,342,215,34],
-    homeMedium:[764,337,356,215,34],
-    homeHard:[399,565,342,224,34],
-    homeCustom:[764,565,356,224,34],
-    homeEditCustom:[1205,725,248,65,22],
-    homeSettings:[1178,21,88,88,44],
-    homeHome:[1295,21,88,88,44],
-    homeFull:[1412,21,88,88,44],
+    // v51 Letter Slide home: approved 1672×941 artwork mapped into the universal 16:9 shell.
+    homeEasy:[560.72,339.52,351.68,220.91,37],
+    homeMedium:[916.75,339.52,370.19,220.91,37],
+    homeHard:[549.84,558.25,361.48,228.52,37],
+    homeCustom:[916.75,558.25,370.19,228.52,37],
+    homeEditCustom:[1358.80,698.63,258.04,84.88,24],
+    homeSettings:[1412.15,33.73,87.10,87.06,44],
+    homeHome:[1521.03,33.73,87.10,87.06,44],
+    homeFull:[1629.91,33.73,87.10,87.06,44],
 
     // Play background coordinates (1672 x 941)
     playSettings:[1333,13,85,86,44],

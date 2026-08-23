@@ -2,6 +2,7 @@
 <!-- Teacher Francis Reading World PWA module: basa-tayo -->
 <html lang="fil">
 <head>
+<meta name="wq-stage-standard" content="1536x864-16:9-v50">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="only light">
@@ -499,6 +500,80 @@ button,input,select,textarea,option{color-scheme:light!important}
   .hit-voice{left:50%!important;top:90.5%!important;width:16.4%!important;height:9.3%!important}
   .lesson-tabs{left:13.5%!important;top:20.4%!important;width:74.2%!important;height:9%!important}
   .reader-score{left:74.2%!important;top:4.2%!important;width:22.2%!important;height:15.8%!important}
+}
+</style>
+
+<style id="wq-basa-mobile-hotspot-reference-v49">
+/* WonderQuest v49 — screenshot-referenced mobile hotspot geometry.
+   Coordinates are measured against the actual 1536×864 Basa Tayo gameplay artwork. */
+@media (max-width:700px) and (orientation:portrait){
+
+  /* Tabs are not equally spaced in the artwork, so do not use the desktop
+     equal-width grid on portrait phones. Map each one to its real painted tab. */
+  .lesson-tabs{
+    left:0!important;
+    top:0!important;
+    width:100%!important;
+    height:100%!important;
+    display:block!important;
+    pointer-events:none!important;
+  }
+  .lesson-tabs button{
+    position:absolute!important;
+    pointer-events:auto!important;
+    margin:0!important;
+    transform:none!important;
+  }
+  .lesson-tabs button:nth-child(1){
+    left:13.5417%!important; top:22.1065%!important;
+    width:17.7083%!important; height:7.2917%!important;
+  }
+  .lesson-tabs button:nth-child(2){
+    left:31.1849%!important; top:20.6019%!important;
+    width:18.9453%!important; height:8.7963%!important;
+  }
+  .lesson-tabs button:nth-child(3){
+    left:50.4557%!important; top:20.6019%!important;
+    width:18.8151%!important; height:8.7963%!important;
+  }
+  .lesson-tabs button:nth-child(4){
+    left:69.5964%!important; top:22.1065%!important;
+    width:19.0104%!important; height:7.2917%!important;
+  }
+
+  /* Keep the active indication on the painted tab itself—no upward shift. */
+  .lesson-tabs button[aria-selected="true"]{
+    transform:none!important;
+    box-shadow:
+      inset 0 0 0 .20cqw rgba(255,255,255,.58),
+      0 0 .62cqw .18cqw rgba(255,224,60,.90)!important;
+  }
+
+  /* Main artwork buttons, measured directly from the 1536×864 background. */
+  .hit-home{
+    left:3.5807%!important; top:4.6296%!important;
+    width:7.7474%!important; height:15.9722%!important;
+  }
+  .hit-previous{
+    left:3.7760%!important; top:76.3889%!important;
+    width:8.6589%!important; height:14.5833%!important;
+  }
+  .hit-next{
+    right:5.2083%!important; top:76.3889%!important;
+    width:8.2031%!important; height:14.5833%!important;
+  }
+  .hit-read{
+    left:37.4349%!important; top:79.1667%!important;
+    width:24.9349%!important; height:12.2685%!important;
+  }
+  .hit-autoplay{
+    left:32.5521%!important; top:91.4352%!important;
+    width:17.3177%!important; height:8.5648%!important;
+  }
+  .hit-voice{
+    left:50.4557%!important; top:91.4352%!important;
+    width:16.4714%!important; height:8.5648%!important;
+  }
 }
 </style>
 

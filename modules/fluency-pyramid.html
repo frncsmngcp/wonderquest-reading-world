@@ -2,6 +2,7 @@
 <!-- Teacher Francis Reading World PWA module: fluency-pyramid -->
 <html lang="en">
 <head>
+<meta name="wq-stage-standard" content="1536x864-16:9-v71">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="color-scheme" content="only light">
@@ -16,10 +17,11 @@
     button{border:0;cursor:pointer}
     button:focus-visible,input:focus-visible,select:focus-visible{outline:6px solid #fff;outline-offset:3px}
     #app{position:fixed;inset:0;overflow:hidden;background:radial-gradient(circle at 50% 20%,#2cc8e8,#07375d 72%)}
-    #stage{position:absolute;left:50%;top:50%;width:1536px;height:1024px;transform:translate(-50%,-50%) scale(var(--scale,1));transform-origin:center;overflow:hidden;background:#20a9d6;box-shadow:0 0 80px rgba(0,0,0,.35)}
-    .screen{position:absolute;inset:0;display:none;overflow:hidden}
+    #wq16stage{position:absolute;left:50%;top:50%;width:1536px;height:864px;transform-origin:center;overflow:hidden;background:url("../assets/ecd8143c83a5f40358be.png") center/100% 100% no-repeat;box-shadow:0 0 80px rgba(0,0,0,.28)}
+    #stage{position:absolute;left:120px;top:0;width:1536px;height:1024px;transform:scale(.84375);transform-origin:0 0;overflow:visible!important;background:transparent!important;box-shadow:none}
+    .screen{position:absolute;inset:0;display:none;overflow:hidden;background:transparent!important}
     .screen.active{display:block}
-    .art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;user-select:none;pointer-events:none}
+    .art{display:none!important}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
     /* Home */
@@ -201,7 +203,7 @@
     .game-hotspot{top:20px;width:82px;height:72px;border-radius:18px;background:linear-gradient(#fff3ca,#e7b76c);border:5px solid #95602c;box-shadow:0 5px 0 #653d1c;color:#6b3e1c;font-size:30px;z-index:12}
     .game-hotspot:hover,.game-hotspot:focus-visible{background:linear-gradient(#fffbe7,#f5cd80);box-shadow:0 0 0 5px #fff,0 7px 0 #653d1c;transform:translateY(-2px)}
     .game-hotspot:active{transform:translateY(4px);box-shadow:0 1px 0 #653d1c}
-    #gameHome{left:1068px}#gameLevels{left:1158px}#gameSound{left:1248px}#gameSettings{left:1338px}#gameFullscreen{left:1428px}
+    #gameHome{left:1036px;top:28px!important}#gameLevels{left:1128px;top:28px!important}#gameSound{left:1220px;top:28px!important}#gameSettings{left:1312px;top:28px!important}#gameFullscreen{left:1404px;top:28px!important}
     #gameMeta{right:28px;top:105px;width:268px;height:72px;border:5px solid #9a6027;border-radius:18px;background:rgba(255,237,190,.94);box-shadow:0 5px 0 #663d1e;font-size:21px;z-index:8}
     #gameMeta small{font-size:16px}
     #avatarRunner{width:108px;height:116px;border:0;border-radius:0;background:none;box-shadow:none;display:block;overflow:visible;z-index:11;transition:left .35s cubic-bezier(.3,1.25,.55,1),top .35s cubic-bezier(.3,1.25,.55,1),transform .22s}
@@ -451,9 +453,668 @@ button,input,select,textarea,option{color-scheme:light!important}
 </style>
 
   <link rel="stylesheet" href="../shared/wq-scrollbars.css">
+
+<style id="wq-fluency-game-fit-v56">
+/* WonderQuest v56 — fit the existing Fluency Pyramid gameplay UI to the regenerated 16:9 art. */
+
+/* The regenerated parchment occupies the center of the scene. Keep the reader UI inside it. */
+#gameScreen #readerPanel{
+  left:120px!important;
+  top:520px!important;
+  width:1296px!important;
+  height:330px!important;
+  padding:48px 66px 66px!important;
+}
+#gameScreen #readerTitle{
+  left:58px!important;right:58px!important;top:18px!important;height:34px!important;
+  font-size:19px!important;
+}
+#gameScreen #readerText{
+  height:198px!important;max-height:198px!important;
+  line-height:1.04!important;
+}
+#gameScreen #readerText .reader-line{line-height:1.08!important}
+#gameScreen #readerControls{
+  left:72px!important;right:72px!important;bottom:17px!important;height:43px!important;gap:14px!important;
+}
+#gameScreen .reader-btn{height:39px!important;padding:0 18px!important;font-size:16px!important;border-width:3px!important}
+#gameScreen #speed{width:155px!important}
+#gameScreen #speedLabel{font-size:15px!important;white-space:nowrap}
+
+/* Slightly reduce the floating HUD so it does not crowd the temple artwork. */
+#gameScreen::before{left:28px!important;top:20px!important;width:395px!important;height:132px!important}
+#gameScreen #gamePhoto{left:43px!important;top:34px!important;width:96px!important;height:96px!important;border-width:7px!important}
+#gameScreen #gameLearnerSelect{left:153px!important;top:33px!important;width:252px!important;height:52px!important;font-size:20px!important}
+#gameScreen #hearts{left:158px!important;top:91px!important;width:225px!important;height:49px!important;gap:9px!important}
+#gameScreen .heart-hit{width:62px!important;height:49px!important}
+#gameScreen .heart-hit::before{font-size:55px!important;top:-8px!important}
+
+#gameScreen .game-hotspot{top:22px!important;width:72px!important;height:64px!important;font-size:26px!important}
+#gameScreen #gameHome{left:1090px!important}
+#gameScreen #gameLevels{left:1170px!important}
+#gameScreen #gameSound{left:1250px!important}
+#gameScreen #gameSettings{left:1330px!important}
+#gameScreen #gameFullscreen{left:1410px!important}
+#gameScreen #gameMeta{right:30px!important;top:98px!important;width:252px!important;height:66px!important;font-size:19px!important}
+#gameScreen #gameMeta small{font-size:14px!important}
+
+/* Keep the climber readable without covering too much of the temple steps. */
+#gameScreen #avatarRunner{width:150px!important;height:150px!important}
+#gameScreen #runnerFace{left:28%!important;top:1%!important;width:44%!important;font-size:19px!important;border-width:4px!important}
+
+/* The arrows belong on the parchment's rolled side edges. */
+#gameScreen .step-arrow{top:635px!important;width:80px!important;height:88px!important}
+#gameScreen #stepUp{left:68px!important}
+#gameScreen #stepDown{right:68px!important}
+#gameScreen .step-arrow::before{font-size:52px!important}
+
+/* Reward display sits on the lower treasure shelf instead of hanging off the canvas. */
+#gameScreen #levelRelicFrame{left:690px!important;top:855px!important;width:155px!important;height:150px!important}
+#gameScreen #levelRelicRing{width:112px!important;height:112px!important;border-width:7px!important}
+#gameScreen #levelRelicLabel{min-width:145px!important;font-size:12px!important;margin-top:5px!important}
+#gameScreen #keyGuide{left:28px!important;bottom:17px!important;width:225px!important;font-size:12px!important;line-height:1.15!important}
+
+/* All module dialogs should cover the FULL 16:9 stage, not only the legacy 3:2 interaction plane.
+   Use a neutral warm-dark veil instead of the old blue/cyan cast. */
+.overlay{
+  left:-142.222222px!important;
+  top:0!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:1820.444444px!important;
+  height:1024px!important;
+  padding:38px!important;
+  background:rgba(24,16,12,.68)!important;
+  backdrop-filter:blur(6px) saturate(.78) brightness(.78)!important;
+  -webkit-backdrop-filter:blur(6px) saturate(.78) brightness(.78)!important;
+}
+
+/* Make the modal cards a touch more compact so controls never run into the 16:9 edges. */
+.modal{max-height:870px!important}
+.custom-modal{height:850px!important}
+.album-modal{height:830px!important}
+
+</style>
+
+<style id="wq-fluency-precision-fit-v57">
+/* WonderQuest v57 — screenshot-referenced precision fit for regenerated 16:9 Fluency Pyramid art. */
+
+/* Keep all reading content inside the parchment. */
+#gameScreen #readerPanel{
+  left:114px!important;
+  top:520px!important;
+  width:1308px!important;
+  height:300px!important;
+  padding:40px 60px 58px!important;
+}
+#gameScreen #readerTitle{
+  left:58px!important;
+  right:58px!important;
+  top:14px!important;
+  height:30px!important;
+  font-size:17px!important;
+}
+#gameScreen #readerText{
+  height:176px!important;
+  max-height:176px!important;
+  font-size:76px!important;
+  line-height:1.02!important;
+  padding:2px 12px 4px!important;
+  overflow:hidden!important;
+}
+#gameScreen #readerText .reader-line{
+  max-width:100%!important;
+  line-height:1.06!important;
+  text-align:center!important;
+  text-wrap:balance!important;
+}
+#gameScreen #readerControls{
+  left:62px!important;
+  right:62px!important;
+  bottom:13px!important;
+  height:42px!important;
+  gap:9px!important;
+  flex-wrap:nowrap!important;
+}
+#gameScreen .reader-btn{
+  height:37px!important;
+  padding:0 14px!important;
+  font-size:14px!important;
+  border-width:3px!important;
+  border-radius:12px!important;
+  white-space:nowrap!important;
+}
+#gameScreen #speedLabel{
+  font-size:13px!important;
+  white-space:nowrap!important;
+}
+#gameScreen #speed{
+  width:138px!important;
+  min-width:110px!important;
+}
+
+/* Compact top HUD. */
+#gameScreen::before{
+  left:30px!important;
+  top:18px!important;
+  width:380px!important;
+  height:126px!important;
+}
+#gameScreen #gamePhoto{
+  left:44px!important;
+  top:31px!important;
+  width:88px!important;
+  height:88px!important;
+  border-width:6px!important;
+}
+#gameScreen #gameLearnerSelect{
+  left:145px!important;
+  top:31px!important;
+  width:246px!important;
+  height:48px!important;
+  font-size:18px!important;
+}
+#gameScreen #hearts{
+  left:148px!important;
+  top:82px!important;
+  width:218px!important;
+  height:45px!important;
+  gap:7px!important;
+}
+#gameScreen .heart-hit{
+  width:60px!important;
+  height:45px!important;
+}
+#gameScreen .heart-hit::before{
+  font-size:50px!important;
+  top:-10px!important;
+}
+#gameScreen .game-hotspot{
+  top:20px!important;
+  width:62px!important;
+  height:58px!important;
+  border-width:4px!important;
+  border-radius:17px!important;
+  font-size:23px!important;
+}
+#gameScreen #gameHome{left:1110px!important}
+#gameScreen #gameLevels{left:1180px!important}
+#gameScreen #gameSound{left:1250px!important}
+#gameScreen #gameSettings{left:1320px!important}
+#gameScreen #gameFullscreen{left:1390px!important}
+#gameScreen #gameMeta{
+  right:34px!important;
+  top:91px!important;
+  width:235px!important;
+  height:60px!important;
+  font-size:17px!important;
+  line-height:1.08!important;
+}
+#gameScreen #gameMeta small{font-size:12px!important}
+
+/* Fit the climber to the regenerated staircase. */
+#gameScreen #avatarRunner{
+  width:132px!important;
+  height:132px!important;
+}
+#gameScreen #runnerFace{
+  left:29%!important;
+  top:1%!important;
+  width:42%!important;
+  font-size:17px!important;
+  border-width:4px!important;
+}
+
+/* Arrows remain inside the parchment rolls. */
+#gameScreen .step-arrow{
+  top:620px!important;
+  width:72px!important;
+  height:82px!important;
+}
+#gameScreen #stepUp{left:79px!important}
+#gameScreen #stepDown{right:79px!important}
+#gameScreen .step-arrow::before{font-size:46px!important}
+
+/* Reward stays on the lower treasure shelf. */
+#gameScreen #levelRelicFrame{
+  left:700px!important;
+  top:845px!important;
+  width:136px!important;
+  height:142px!important;
+}
+#gameScreen #levelRelicRing{
+  width:96px!important;
+  height:96px!important;
+  border-width:6px!important;
+}
+#gameScreen #levelRelicLabel{
+  min-width:132px!important;
+  max-width:150px!important;
+  font-size:11px!important;
+  line-height:1.05!important;
+  margin-top:4px!important;
+}
+#gameScreen #keyGuide{
+  left:30px!important;
+  bottom:18px!important;
+  width:205px!important;
+  padding:7px 9px!important;
+  font-size:11px!important;
+  line-height:1.12!important;
+}
+
+/* Full 16:9 modal veil; deliberately warm and nearly opaque so no cyan can bleed through. */
+.overlay{
+  left:-142.222222px!important;
+  top:0!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:1820.444444px!important;
+  height:1024px!important;
+  padding:34px!important;
+  background:rgba(31,20,12,.92)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.overlay.open{display:flex!important}
+.overlay::after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:-1!important;
+  background:radial-gradient(circle at 50% 42%,rgba(112,74,31,.14),rgba(18,11,7,.30) 72%)!important;
+  pointer-events:none!important;
+}
+.modal{
+  width:1080px!important;
+  max-width:calc(100% - 80px)!important;
+  max-height:880px!important;
+  padding:88px 34px 30px!important;
+  border-width:15px!important;
+}
+.modal-title{
+  top:15px!important;
+  font-size:38px!important;
+}
+.close{
+  width:52px!important;
+  height:52px!important;
+  font-size:27px!important;
+  border-width:4px!important;
+}
+.custom-modal{height:720px!important}
+.album-modal{height:790px!important}
+#settingsOverlay .modal{width:940px!important}
+#learnerOverlay .modal{width:1120px!important}
+</style>
+
+<style id="wq-fluency-text-modal-fix-v58">
+/* WonderQuest v58 — modal backdrop + long-text fitting fix. */
+
+/* Keep the actual Fluency Pyramid scene visible behind modals. */
+.overlay{
+  background:rgba(255,236,196,.10)!important;
+  backdrop-filter:blur(7px) brightness(.72) saturate(.82)!important;
+  -webkit-backdrop-filter:blur(7px) brightness(.72) saturate(.82)!important;
+}
+.overlay::after{
+  content:none!important;
+  display:none!important;
+}
+
+/* Give the gameplay reading area more usable height. */
+#gameScreen #readerPanel{
+  top:512px!important;
+  height:314px!important;
+  padding:38px 58px 56px!important;
+}
+#gameScreen #readerText{
+  height:188px!important;
+  max-height:188px!important;
+  padding:0 10px 2px!important;
+  overflow:visible!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+#gameScreen #readerText .reader-line{
+  width:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  overflow:visible!important;
+  white-space:normal!important;
+  text-wrap:balance!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+  line-height:1.02!important;
+}
+#gameScreen #readerText .word{
+  line-height:1.02!important;
+  padding-bottom:.02em!important;
+}
+#gameScreen #readerControls{
+  bottom:10px!important;
+  height:40px!important;
+}
+#gameScreen .reader-btn{
+  height:35px!important;
+  font-size:13px!important;
+}
+</style>
+
+<style id="wq-fluency-long-text-fit-v59">
+/* WonderQuest v59 — reserve a real text zone above the controls
+   and keep modal backdrops light enough to show the module artwork. */
+
+/* Lighter modal backdrop: artwork stays clearly visible, no black surround. */
+.overlay{
+  background:rgba(255,248,224,.055)!important;
+  backdrop-filter:blur(5px) brightness(.88) saturate(.88)!important;
+  -webkit-backdrop-filter:blur(5px) brightness(.88) saturate(.88)!important;
+}
+.overlay::after{
+  content:none!important;
+  display:none!important;
+}
+
+/* Deterministic parchment layout:
+   title band -> reading zone -> control band. */
+#gameScreen #readerPanel{
+  left:114px!important;
+  top:512px!important;
+  width:1308px!important;
+  height:314px!important;
+  padding:0!important;
+  display:block!important;
+}
+#gameScreen #readerTitle{
+  left:58px!important;
+  right:58px!important;
+  top:12px!important;
+  height:30px!important;
+  font-size:17px!important;
+}
+#gameScreen #readerText{
+  position:absolute!important;
+  left:54px!important;
+  right:54px!important;
+  top:48px!important;
+  width:auto!important;
+  height:190px!important;
+  max-height:190px!important;
+  padding:0 8px!important;
+  margin:0!important;
+  overflow:hidden!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:52px!important; /* JS overrides this with inline !important */
+  line-height:1!important;
+}
+#gameScreen #readerText .reader-line{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:center!important;
+  white-space:normal!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+  text-wrap:balance!important;
+  line-height:1!important;
+}
+#gameScreen #readerText .word{
+  display:inline!important;
+  line-height:1!important;
+  padding:0 .025em!important;
+  transform:none!important;
+}
+#gameScreen #readerText .word.spoken{
+  transform:none!important;
+}
+
+/* Controls get their own bottom strip and never overlap the passage. */
+#gameScreen #readerControls{
+  left:62px!important;
+  right:62px!important;
+  bottom:12px!important;
+  height:40px!important;
+  gap:8px!important;
+  z-index:3!important;
+}
+#gameScreen .reader-btn{
+  height:34px!important;
+  padding:0 12px!important;
+  font-size:13px!important;
+}
+#gameScreen #speedLabel{font-size:12px!important}
+#gameScreen #speed{width:126px!important}
+</style>
+
+<style id="wq-fluency-fullscreen-modal-blur-v60">
+/* WonderQuest v60 — modal blur covers the entire 1536×864 16:9 stage.
+   #stage is allowed to expose only the overlay beyond its legacy 3:2 bounds;
+   normal .screen content remains clipped. */
+.overlay{
+  left:-142.222222px!important;
+  top:0!important;
+  width:1820.444444px!important;
+  height:1024px!important;
+  right:auto!important;
+  bottom:auto!important;
+  box-sizing:border-box!important;
+  background:rgba(255,248,224,.055)!important;
+  backdrop-filter:blur(6px) brightness(.86) saturate(.86)!important;
+  -webkit-backdrop-filter:blur(6px) brightness(.86) saturate(.86)!important;
+}
+.overlay.open{
+  display:flex!important;
+}
+</style>
+
+
+<style id="wq-fluency-top-controls-final-v61">
+/* WonderQuest v61 — rebalance the gameplay top control row inside the new 16:9 stage. */
+#gameScreen .game-hotspot{
+  top:24px!important;
+  width:64px!important;
+  height:60px!important;
+  border-width:4px!important;
+  border-radius:17px!important;
+  font-size:23px!important;
+}
+#gameScreen #gameHome{left:1060px!important}
+#gameScreen #gameLevels{left:1136px!important}
+#gameScreen #gameSound{left:1212px!important}
+#gameScreen #gameSettings{left:1288px!important}
+#gameScreen #gameFullscreen{left:1364px!important}
+</style>
+
+<style id="wq-fluency-balance-pass-v62">
+/* WonderQuest v62 — lift the climber, enlarge passage text a little,
+   and push the left/right HUD clusters closer to the stage edges. */
+#gameScreen::before{left:18px!important;top:18px!important;width:388px!important}
+#gameScreen #gamePhoto{left:28px!important;top:28px!important}
+#gameScreen #gameLearnerSelect{left:130px!important;top:29px!important;width:250px!important}
+#gameScreen #hearts{left:132px!important;top:80px!important}
+#gameScreen .game-hotspot{top:22px!important;width:64px!important;height:60px!important;font-size:23px!important}
+#gameScreen #gameHome{left:1086px!important}
+#gameScreen #gameLevels{left:1162px!important}
+#gameScreen #gameSound{left:1238px!important}
+#gameScreen #gameSettings{left:1314px!important}
+#gameScreen #gameFullscreen{left:1390px!important}
+#gameScreen #gameMeta{right:18px!important;top:96px!important;width:254px!important}
+#gameScreen #readerPanel{top:510px!important;height:316px!important}
+#gameScreen #readerTitle{top:11px!important;font-size:18px!important}
+#gameScreen #readerText{left:46px!important;right:46px!important;top:42px!important;height:202px!important;max-height:202px!important;padding:0 4px!important}
+#gameScreen #readerText .reader-line{line-height:1.02!important}
+#gameScreen #readerControls{left:58px!important;right:58px!important;bottom:10px!important}
+#gameScreen #avatarRunner{width:132px!important;height:132px!important;transform:translateY(-18px)!important}
+#gameScreen #avatarRunner.moving{transform:translateY(-18px) scale(1.08) rotate(-3deg)!important}
+#gameScreen #runnerFace{top:0%!important}
+</style>
+
+
+<style id="wq-fluency-generated-inside-ui-v63">
+/* WonderQuest v63 — use the regenerated 16:9 inside UI as the gameplay artwork.
+   The five top controls are baked into the background, so the real buttons
+   remain as invisible, keyboard-accessible hotspots directly over them. */
+
+/* Top-right baked controls: invisible interactive hotspots only. */
+#gameScreen .game-hotspot{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  color:transparent!important;
+  text-shadow:none!important;
+  outline-offset:3px!important;
+}
+#gameScreen .game-hotspot:hover,
+#gameScreen .game-hotspot:active{
+  background:transparent!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+#gameScreen .game-hotspot:focus-visible{
+  outline:4px solid rgba(255,255,255,.92)!important;
+}
+
+/* Match the five baked buttons in the regenerated artwork. */
+#gameScreen #gameHome{
+  left:1092px!important;
+  top:20px!important;
+  width:72px!important;
+  height:68px!important;
+}
+#gameScreen #gameLevels{
+  left:1174px!important;
+  top:20px!important;
+  width:72px!important;
+  height:68px!important;
+}
+#gameScreen #gameSound{
+  left:1256px!important;
+  top:20px!important;
+  width:72px!important;
+  height:68px!important;
+}
+#gameScreen #gameSettings{
+  left:1338px!important;
+  top:20px!important;
+  width:72px!important;
+  height:68px!important;
+}
+#gameScreen #gameFullscreen{
+  left:1420px!important;
+  top:20px!important;
+  width:72px!important;
+  height:68px!important;
+}
+
+/* Learner HUD and level card sit in the open sky areas and do not compete
+   with the staircase or baked control row. */
+#gameScreen::before{
+  left:18px!important;
+  top:18px!important;
+  width:386px!important;
+  height:126px!important;
+}
+#gameScreen #gamePhoto{
+  left:30px!important;
+  top:28px!important;
+}
+#gameScreen #gameLearnerSelect{
+  left:132px!important;
+  top:28px!important;
+  width:246px!important;
+}
+#gameScreen #hearts{
+  left:134px!important;
+  top:80px!important;
+}
+#gameScreen #gameMeta{
+  right:20px!important;
+  top:100px!important;
+  width:250px!important;
+}
+
+/* Reading parchment in the new artwork. */
+#gameScreen #readerPanel{
+  left:118px!important;
+  top:466px!important;
+  width:1300px!important;
+  height:314px!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+#gameScreen #readerTitle{
+  left:62px!important;
+  right:62px!important;
+  top:14px!important;
+  height:28px!important;
+  font-size:17px!important;
+}
+#gameScreen #readerText{
+  left:52px!important;
+  right:52px!important;
+  top:50px!important;
+  height:186px!important;
+  max-height:186px!important;
+  padding:0 4px!important;
+}
+#gameScreen #readerControls{
+  left:58px!important;
+  right:58px!important;
+  bottom:11px!important;
+  height:40px!important;
+}
+
+/* Navigation arrows align with the parchment's side rolls. */
+#gameScreen .step-arrow{
+  top:578px!important;
+  width:68px!important;
+  height:82px!important;
+}
+#gameScreen #stepUp{left:82px!important}
+#gameScreen #stepDown{right:82px!important}
+
+/* Runner climbs the regenerated staircase and stays above the parchment edge. */
+#gameScreen #avatarRunner{
+  width:128px!important;
+  height:128px!important;
+  transform:translateY(-34px)!important;
+}
+#gameScreen #avatarRunner.moving{
+  transform:translateY(-34px) scale(1.07) rotate(-3deg)!important;
+}
+
+/* Reward pedestal/table is baked into the background. Keep only the dynamic
+   reward artwork and caption positioned on the open circular platform. */
+#gameScreen #levelRelicFrame{
+  left:700px!important;
+  top:804px!important;
+  width:136px!important;
+  height:138px!important;
+}
+#gameScreen #levelRelicRing{
+  width:92px!important;
+  height:92px!important;
+}
+#gameScreen #levelRelicLabel{
+  min-width:132px!important;
+  max-width:150px!important;
+  font-size:11px!important;
+  margin-top:3px!important;
+}
+</style>
+
 </head>
 <body>
 <main id="app" aria-label="Fluency Pyramid reading application">
+  <div id="wq16stage">
   <div id="stage">
     <section id="homeScreen" class="screen active" aria-label="Level selection">
       <img class="art" src="../assets/ecd8143c83a5f40358be.png" alt="">
@@ -478,11 +1139,11 @@ button,input,select,textarea,option{color-scheme:light!important}
       <select id="gameLearnerSelect" aria-label="Change the active learner"><option value="">Reader</option></select>
       <div id="gameMeta">Level 1<br><small>First Words</small></div>
       <div id="hearts" aria-label="Three reading lives"><button class="heart-hit" aria-label="Life 1"></button><button class="heart-hit" aria-label="Life 2"></button><button class="heart-hit" aria-label="Life 3"></button></div>
-      <button id="gameHome" class="game-hotspot" aria-label="Return home">⌂</button>
-      <button id="gameLevels" class="game-hotspot" aria-label="Choose another level">▦</button>
-      <button id="gameSound" class="game-hotspot" aria-label="Toggle quest music">♫</button>
-      <button id="gameSettings" class="game-hotspot" aria-label="Open learners">👥</button>
-      <button id="gameFullscreen" class="game-hotspot" aria-label="Fullscreen">⛶</button>
+      <button id="gameHome" class="game-hotspot" aria-label="Back to Fluency Pyramid">⌂</button>
+      <button id="gameLevels" class="game-hotspot" aria-label="Level selector">▦</button>
+      <button id="gameSound" class="game-hotspot" aria-label="Music">♫</button>
+      <button id="gameSettings" class="game-hotspot" aria-label="Select person">👥</button>
+      <button id="gameFullscreen" class="game-hotspot" aria-label="Fullscreen mode">⛶</button>
       <div id="avatarRunner"><img id="runnerBody" src="../assets/98d63bfea42692ff4ec2.png" alt=""><div id="runnerFace"><span>?</span></div></div>
       <div id="guardianMarks" aria-hidden="true"></div>
       <button id="stepUp" class="step-arrow" aria-label="Move up one reading step"></button>
@@ -490,7 +1151,7 @@ button,input,select,textarea,option{color-scheme:light!important}
       <div id="startCover" aria-hidden="true">START</div>
       <section id="readerPanel" aria-live="polite">
         <div id="readerTitle"><span id="stepLabel">Step 1 of 8</span><span id="stageLabel">First Words</span></div>
-        <div id="readerText"></div>
+        <div id="readerText"></div><button id="textScrollDown" type="button" aria-label="Scroll down the passage" title="Scroll down">▼</button>
         <div id="readerControls">
           <button id="mistakeBtn" class="reader-btn red">✕ Mistake</button>
           <button id="readBtn" class="reader-btn teal">▶ Read aloud</button>
@@ -503,6 +1164,13 @@ button,input,select,textarea,option{color-scheme:light!important}
       <div id="levelRelicFrame" class="tier-0" aria-label="Level reward"><div id="levelRelicRing"><div id="levelRelicSprite" class="relic-sprite"></div></div><div id="levelRelicLabel">Level 1 Relic</div></div>
       <div id="collectibleGlow"></div>
     </section>
+
+    <div id="gameLevelOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="Choose a Fluency Pyramid level">
+      <section class="modal game-level-modal">
+        <h2 class="modal-title">Choose a Level</h2><button class="close" data-close="gameLevelOverlay" aria-label="Close">×</button>
+        <div id="gameLevelGrid" aria-label="Level selector"></div>
+      </section>
+    </div>
 
     <div id="learnerOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="My Learners">
       <section class="modal">
@@ -586,6 +1254,7 @@ button,input,select,textarea,option{color-scheme:light!important}
     </div>
     <div id="toast" class="toast" role="status"></div>
   </div>
+  </div>
 </main>
 <script>
 /* TF_PAKO_XLSX_FALLBACK_START: offline DEFLATE fallback for macOS WKWebView */
@@ -664,9 +1333,9 @@ button,input,select,textarea,option{color-scheme:light!important}
     [13,760,814,850,43,56],[9,760,871,830,52,88]
   ];
   const RUN_POS=[
-    [673,0],[673,58],[673,106],[673,154],[673,202],[673,250],[673,298],[673,346],[673,394]
+    [706,100],[706,136],[707,182],[708,230],[709,279],[710,328],[711,352],[713,360],[715,368]
   ];
-  const MARK_POS=[[475,175],[1010,170],[407,282],[1047,282],[360,395],[1104,385],[316,477],[1164,454]];
+  const MARK_POS=[[575,149],[1001,157],[515,253],[1118,262],[437,359],[1184,370],[313,455],[1310,457]];
   let state={learners:[],selectedId:null,sound:true,music:true,musicVolume:.7,speed:.85,voiceURI:'',lastLevel:1,classProgress:{completed:[],collection:{},relics:{},achievements:[],perfectLevels:[],perfectRuns:0,lastLevel:1},custom:{title:"Teacher's Challenge",passage:'',steps:Array(8).fill('')}};
   let activeLevel=1,position=0,heartStates=[true,true,true],editingId=null,pendingPhoto='',pendingCrop={x:50,y:50,zoom:100},keyboardLevel=1,speechTimer=null,toastTimer=null,customMode=false,customSteps=[],customTitle='',audioCtx=null,musicGain=null,musicTimer=null,musicBeat=0,levelCompleting=false;
   const learnerBulkSelection=new Set();
@@ -700,7 +1369,7 @@ button,input,select,textarea,option{color-scheme:light!important}
     state.lastLevel=state.classProgress.lastLevel||1;keyboardLevel=state.lastLevel;
   }
   function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}catch(e){toast('Device storage is full. Remove a few large learner photos.')}}
-  function scaleStage(){const app=$('app'),vp=window.tfUsableViewport?.()||{width:innerWidth,height:innerHeight},w=app?.clientWidth||vp.width,h=app?.clientHeight||vp.height,s=Math.min(w/1536,h/1024);$('stage').style.setProperty('--scale',String(s))}
+  function scaleStage(){const app=$('app'),vp=window.tfUsableViewport?.()||{width:innerWidth,height:innerHeight},w=app?.clientWidth||vp.width,h=app?.clientHeight||vp.height,s=Math.min(w/1536,h/864),shell=$('wq16stage');if(shell){shell.style.transform=`translate(-50%,-50%) scale(${s})`}}
   function setRunner(learner){setAvatar($('runnerFace'),learner)}
   function applyAvatarCrop(img,crop={x:50,y:50,zoom:100}){if(!img)return;const x=Math.max(0,Math.min(100,Number(crop.x??50))),y=Math.max(0,Math.min(100,Number(crop.y??50))),zoom=Math.max(100,Math.min(220,Number(crop.zoom??100))),scale=zoom/100;img.style.objectPosition=`${x}% ${y}%`;img.style.transformOrigin=`${x}% ${y}%`;img.style.transform=`translateZ(0) scale(${scale})`}
   function setAvatar(el,learner){el.querySelectorAll('.avatar-img').forEach(x=>x.remove());el.style.backgroundImage='';const span=el.querySelector('span');if(span){span.textContent=initials(learner?.name);span.style.display=learner?.photo?'none':''}if(learner?.photo){const img=document.createElement('img'),crop={x:50,y:50,zoom:100,...(learner.crop||{})};img.className='avatar-img';img.src=learner.photo;img.alt='';applyAvatarCrop(img,crop);el.prepend(img)}}
@@ -718,7 +1387,20 @@ button,input,select,textarea,option{color-scheme:light!important}
   function buildLevelTargets(){
     let level=1;HOME_ROWS.forEach(([count,cx,y,totalW,h,targetW])=>{const gap=count===1?0:totalW/(count-1),start=cx-totalW/2;for(let i=0;i<count;i++){const n=level++,b=document.createElement('button');b.className='level-target stage-'+levelStage(n);b.textContent=n;b.setAttribute('aria-label',`Start level ${n}: ${STAGES[levelStage(n)][0]}`);b.style.left=`${start+(count===1?0:i*gap)-targetW/2}px`;b.style.top=`${y-h/2}px`;b.style.width=`${targetW}px`;b.style.height=`${h}px`;b.dataset.level=n;b.addEventListener('mouseenter',()=>{keyboardLevel=n;updateLevelInfo(n);renderHome()});b.addEventListener('focus',()=>{keyboardLevel=n;updateLevelInfo(n);renderHome()});b.addEventListener('click',()=>startLevel(n));$('levelTargets').appendChild(b)}})
   }
-  function showScreen(name){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(name).classList.add('active');speechSynthesis.cancel();clearInterval(speechTimer)}
+  function showScreen(name){
+    document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+    $(name).classList.add('active');
+    const shell=$('wq16stage');
+    if(shell){
+      const art=name==='gameScreen'?'../assets/fbd5fd93237762087a19.png':'../assets/ecd8143c83a5f40358be.png';
+      shell.style.backgroundImage=`url("${art}")`;
+      shell.style.backgroundSize='100% 100%';
+      shell.style.backgroundPosition='center';
+      shell.style.backgroundRepeat='no-repeat';
+    }
+    speechSynthesis.cancel();
+    clearInterval(speechTimer)
+  }
   function startLevel(n){
     const l=selectedLearner();if(!l){openLearners();toast('Add or select a learner first.');return}
     customMode=false;activeLevel=n;position=0;heartStates=[true,true,true];levelCompleting=false;state.lastLevel=n;state.classProgress.lastLevel=n;save();
@@ -729,15 +1411,69 @@ button,input,select,textarea,option{color-scheme:light!important}
   function buildGuardianMarks(){$('guardianMarks').innerHTML='';MARK_POS.forEach((p,i)=>{const m=document.createElement('div');m.className='guardian-mark';m.style.left=p[0]+'px';m.style.top=p[1]+'px';m.textContent='✓';m.dataset.step=i;$('guardianMarks').appendChild(m)})}
   function updateRun(){
     const steps=getActiveSteps(),idx=Math.min(position,7),pos=RUN_POS[position];
-    $('avatarRunner').style.left=pos[0]+'px';$('avatarRunner').style.top=pos[1]+'px';
+    $('avatarRunner').style.left=pos[0]+'px';$('avatarRunner').style.top=pos[1]+'px';$('avatarRunner').dataset.step=String(position);
     $('stepLabel').textContent=`Step ${idx+1} of 8`;$('stageLabel').textContent=customMode?customTitle:STAGES[levelStage(activeLevel)][0];renderReader(steps[idx]);updateLives();
     document.querySelectorAll('.guardian-mark').forEach((m,i)=>{m.classList.toggle('cleared',i<position);m.classList.toggle('current',i===position&&position<8)});
   }
-  function renderReader(text){const box=$('readerText');box.innerHTML=`<div class="reader-line">${text.split(/\s+/).map((w,i)=>`<span class="word" data-word="${i}">${escapeHtml(w)}</span>`).join(' ')}</div>`;fitReader()}
+  function renderReader(text){
+    const box=$('readerText');
+    box.innerHTML=`<div class="reader-line">${text.split(/\s+/).map((w,i)=>`<span class="word" data-word="${i}">${escapeHtml(w)}</span>`).join(' ')}</div>`;
+    box.scrollTop=0;
+    fitReader();
+    requestAnimationFrame(()=>{fitReader();updateReaderScrollUI()});
+    setTimeout(()=>{fitReader();updateReaderScrollUI()},60);
+  }
+  function updateReaderScrollUI(){
+    const box=$('readerText'),btn=$('textScrollDown');
+    if(!box||!btn)return;
+    const overflow=box.scrollHeight>box.clientHeight+6;
+    box.classList.toggle('has-overflow',overflow);
+    btn.style.display=overflow?'grid':'none';
+    if(!overflow){
+      btn.textContent='▼';
+      btn.setAttribute('aria-label','Scroll down the passage');
+      btn.title='Scroll down';
+      return;
+    }
+    const atBottom=box.scrollTop+box.clientHeight>=box.scrollHeight-8;
+    btn.textContent=atBottom?'↑':'▼';
+    btn.setAttribute('aria-label',atBottom?'Back to the top of the passage':'Scroll down the passage');
+    btn.title=atBottom?'Back to top':'Scroll down';
+  }
   function fitReader(){
-    const box=$('readerText');let size=customMode?96:activeLevel<=20?106:levelStage(activeLevel)<3?92:levelStage(activeLevel)<6?78:68;
-    const fits=()=>{const r=box.getBoundingClientRect(),line=box.querySelector('.reader-line')?.getBoundingClientRect();if(!line||!r.width)return true;return line.left>=r.left-3&&line.right<=r.right+3&&line.top>=r.top-3&&line.bottom<=r.bottom+3};
-    box.style.fontSize=size+'px';while(!fits()&&size>50){size-=2;box.style.fontSize=size+'px'}
+    const box=$('readerText');
+    const line=box?.querySelector('.reader-line');
+    if(!box||!line)return;
+
+    const raw=(box.textContent||'').trim();
+    if(!raw){ updateReaderScrollUI(); return; }
+
+    line.style.setProperty('font-size','inherit','important');
+    line.style.setProperty('line-height','1.06','important');
+    line.style.setProperty('white-space','normal','important');
+    line.style.setProperty('overflow-wrap','break-word','important');
+    line.style.setProperty('word-break','normal','important');
+    line.style.setProperty('text-wrap','pretty','important');
+
+    const chars=raw.length;
+    let size = 96;
+    if(chars > 35) size = 90;
+    if(chars > 55) size = 84;
+    if(chars > 80) size = 78;
+    if(chars > 120) size = 72;
+    if(chars > 170) size = 68;
+
+    const minSize = 68;
+    box.scrollTop = 0;
+    box.style.setProperty('font-size', size + 'px', 'important');
+
+    while(size > minSize && box.scrollWidth > box.clientWidth + 4){
+      size -= 2;
+      box.style.setProperty('font-size', size + 'px', 'important');
+    }
+
+    box.scrollTop = 0;
+    updateReaderScrollUI();
   }
   function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
   function moveDown(){if(levelCompleting)return;if(position>=8)return completeLevel();position++;animateRunner();if(position>=8){updateRun();setTimeout(completeLevel,520)}else updateRun()}
@@ -773,7 +1509,38 @@ button,input,select,textarea,option{color-scheme:light!important}
   function toggleSound(){state.sound=!state.sound;if(!state.sound)speechSynthesis.cancel();save();renderHome();toast(state.sound?'Read-aloud is on.':'Read-aloud is off.')}
   function populateVoices(){if(!('speechSynthesis'in window))return;const select=$('voiceSelect'),voices=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang)).sort((a,b)=>`${a.lang} ${a.name}`.localeCompare(`${b.lang} ${b.name}`)),current=state.voiceURI||'';select.innerHTML='<option value="">Automatic English</option>'+voices.map(v=>`<option value="${escapeHtml(v.voiceURI)}">${escapeHtml(v.name)} · ${escapeHtml(v.lang)}</option>`).join('');if(voices.some(v=>v.voiceURI===current))select.value=current;else{state.voiceURI='';select.value=''}}
   async function resetProgress(){if(!await tfConfirm('Reset the WHOLE CLASS progress? This will clear all completed levels, relics, badges, medals, and perfect finishes for the class. Learner names and photos will stay.',{title:'Reset Whole-Class Progress?',icon:'↻',tone:'danger',confirmText:'Reset Class Progress'}))return;state.classProgress={completed:[],collection:{},relics:{},achievements:[],perfectLevels:[],perfectRuns:0,lastLevel:1};state.lastLevel=1;keyboardLevel=1;save();$('settingsOverlay')?.classList.remove('open');renderHome();toast('Whole-class Fluency Pyramid progress was reset.')}
-  function fullscreen(){return window.tfTogglePortableFullscreen?.()}
+  function fullscreen(){
+    const doc=document,target=$('app')||document.documentElement;
+    const active=doc.fullscreenElement||doc.webkitFullscreenElement;
+    if(active){
+      const exit=doc.exitFullscreen||doc.webkitExitFullscreen;
+      if(exit){
+        const result=exit.call(doc);
+        result?.catch?.(()=>toast('Fullscreen could not be closed.'));
+        setTimeout(scaleStage,120);
+        return result;
+      }
+      return;
+    }
+    const request=target.requestFullscreen||target.webkitRequestFullscreen||target.msRequestFullscreen;
+    if(request){
+      const result=request.call(target);
+      result?.catch?.(()=>toast('Fullscreen needs permission from the browser.'));
+      setTimeout(scaleStage,120);
+      return result;
+    }
+    if(window.tfTogglePortableFullscreen)return window.tfTogglePortableFullscreen();
+    toast('Fullscreen is not available in this browser.');
+  }
+  function openGameLevels(){
+    const grid=$('gameLevelGrid');
+    grid.innerHTML=Array.from({length:100},(_,i)=>{
+      const level=i+1,stage=levelStage(level),done=(state.classProgress.completed||[]).includes(level),current=level===activeLevel&&!customMode;
+      return `<button class="game-level-choice stage-${stage}${done?' completed':''}${current?' current':''}" data-pick-level="${level}" type="button"><span>${level}</span><small>${escapeHtml(STAGES[stage][0])}</small></button>`;
+    }).join('');
+    grid.querySelectorAll('[data-pick-level]').forEach(btn=>btn.onclick=()=>{$('gameLevelOverlay').classList.remove('open');startLevel(Number(btn.dataset.pickLevel))});
+    $('gameLevelOverlay').classList.add('open');
+  }
 
   function normalizeImportHeader(value){return String(value??'').replace(/^\uFEFF/,'').trim().toLowerCase().replace(/[\s_.-]+/g,' ')}
   function firstImportedName(value){return String(value??'').trim()||''}
@@ -921,12 +1688,20 @@ button,input,select,textarea,option{color-scheme:light!important}
     addEventListener('resize',scaleStage);addEventListener('tfviewportchange',scaleStage);document.addEventListener('fullscreenchange',scaleStage);
     document.addEventListener('pointerdown',()=>{if(state.music)startMusic()},{once:true});
     $('learnersBtn').onclick=openLearners;$('homePhoto').onclick=openLearners;$('progressBtn').onclick=renderAlbum;$('settingsBtn').onclick=openSettings;$('soundBtn').onclick=toggleSound;$('resetBtn').onclick=resetProgress;$('musicBtn').onclick=toggleMusic;$('musicVolume').oninput=e=>{state.musicVolume=Math.max(0,Math.min(1,Number(e.target.value)||0));$('musicVolumeValue').textContent=`${Math.round(state.musicVolume*100)}%`;if(musicGain)musicGain.gain.value=.08*state.musicVolume;save()};$('customBtn').onclick=openCustom;$('homeFullscreen').onclick=fullscreen;
-    $('gameHome').onclick=home;$('gameLevels').onclick=home;$('gameSound').onclick=toggleMusic;$('gameSettings').onclick=openLearners;$('gameFullscreen').onclick=fullscreen;
-    [['gameHome','Home'],['gameLevels','Choose a level'],['gameSound','Quest music'],['gameSettings','Learners and photos'],['gameFullscreen','Fullscreen']].forEach(([id,title])=>$(id).title=title);
+    $('gameHome').onclick=home;$('gameLevels').onclick=openGameLevels;$('gameSound').onclick=toggleMusic;$('gameSettings').onclick=openLearners;$('gameFullscreen').onclick=fullscreen;
+    [['gameHome','Back to Fluency Pyramid'],['gameLevels','Level selector'],['gameSound','Music'],['gameSettings','Select person'],['gameFullscreen','Fullscreen mode']].forEach(([id,title])=>$(id).title=title);
     $('homeLearnerSelect').onchange=e=>e.target.value?selectLearner(e.target.value):openLearners();$('gameLearnerSelect').onchange=e=>e.target.value&&selectLearner(e.target.value);
     $('voiceSelect').onchange=e=>{state.voiceURI=e.target.value;save();const voice=e.target.options[e.target.selectedIndex]?.text||'Automatic English';toast(`Reading voice: ${voice}`)};
     if('speechSynthesis'in window)speechSynthesis.onvoiceschanged=populateVoices;
     $('stepUp').onclick=moveUp;$('stepDown').onclick=moveDown;$('mistakeBtn').onclick=loseLife;$('restoreBtn').onclick=restoreLife;$('readBtn').onclick=readCurrent;
+    $('readerText').addEventListener('scroll',updateReaderScrollUI);
+    $('textScrollDown').onclick=()=>{
+      const box=$('readerText');
+      if(!box)return;
+      const atBottom=box.scrollTop+box.clientHeight>=box.scrollHeight-8;
+      if(atBottom) box.scrollTo({top:0,behavior:'smooth'});
+      else box.scrollBy({top:Math.max(120,box.clientHeight*.72),behavior:'smooth'});
+    };
     document.querySelectorAll('.heart-hit').forEach((h,i)=>h.onclick=()=>toggleHeart(i));
     $('speed').oninput=e=>{$('speedValue').textContent=`${Number(e.target.value).toFixed(2)}×`;state.speed=Number(e.target.value);save()};
     document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).classList.remove('open'));
@@ -1276,5 +2051,852 @@ button,input,select,textarea,option{color-scheme:light!important}
   left: max(10px, env(safe-area-inset-left)) !important;
 }
 </style>
+
+<style id="fluency-pyramid-v65-gameplay-polish">
+  /* Final gameplay alignment for the approved v64 inside background */
+  #gameScreen .game-hotspot{
+    top: 22px !important;
+    width: 72px !important;
+    height: 72px !important;
+    border-radius: 18px !important;
+  }
+  #gameScreen #gameHome{left:1084px !important;}
+  #gameScreen #gameLevels{left:1168px !important;}
+  #gameScreen #gameSound{left:1252px !important;}
+  #gameScreen #gameSettings{left:1336px !important;}
+  #gameScreen #gameFullscreen{left:1420px !important;}
+
+  #gameScreen #gameMeta{
+    right: 26px !important;
+    top: 102px !important;
+    width: 250px !important;
+    height: 64px !important;
+    font-size: 18px !important;
+    line-height: 1.15 !important;
+  }
+  #gameScreen #gameMeta small{font-size:13px !important;}
+
+  /* Put the runner on the stairs and keep the clear marks beside each creature */
+  #gameScreen #avatarRunner{
+    width: 132px !important;
+    height: 132px !important;
+    z-index: 12 !important;
+  }
+  #gameScreen #avatarRunner.moving{
+    transform: scale(1.06) rotate(-3deg) !important;
+  }
+  #gameScreen .guardian-mark{
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 24px !important;
+    border-width: 4px !important;
+    z-index: 12 !important;
+  }
+
+  /* Use the full parchment area and keep text on the parchment */
+  #gameScreen #readerPanel{
+    left: 122px !important;
+    top: 448px !important;
+    width: 1292px !important;
+    height: 304px !important;
+    padding: 0 !important;
+    z-index: 10 !important;
+    display: block !important;
+    background: transparent !important;
+  }
+  #gameScreen #readerTitle{
+    left: 40px !important;
+    right: 40px !important;
+    top: 18px !important;
+    height: 32px !important;
+    font-size: 22px !important;
+    color: #7a4a27 !important;
+    z-index: 2 !important;
+  }
+  #gameScreen #readerText{
+    position: absolute !important;
+    left: 48px !important;
+    right: 48px !important;
+    top: 56px !important;
+    bottom: 76px !important;
+    width: auto !important;
+    height: auto !important;
+    max-height: none !important;
+    padding: 4px 14px 10px 8px !important;
+    display: block !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    text-align: center !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(130,79,39,.55) rgba(0,0,0,0) !important;
+  }
+  #gameScreen #readerText::-webkit-scrollbar{width:10px !important;}
+  #gameScreen #readerText::-webkit-scrollbar-track{background:transparent !important;}
+  #gameScreen #readerText::-webkit-scrollbar-thumb{
+    background: rgba(130,79,39,.55) !important;
+    border-radius: 12px !important;
+    border: 2px solid transparent !important;
+    background-clip: padding-box !important;
+  }
+  #gameScreen #readerText .reader-line{
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+    line-height: 1.12 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+  }
+  #gameScreen #readerText .word{
+    display: inline !important;
+    padding: 0 .05em !important;
+    border-radius: 8px !important;
+  }
+  #gameScreen #readerControls{
+    left: 42px !important;
+    right: 42px !important;
+    bottom: 18px !important;
+    height: 42px !important;
+    gap: 12px !important;
+    z-index: 2 !important;
+  }
+  #gameScreen .reader-btn{
+    height: 38px !important;
+    padding: 0 16px !important;
+    font-size: 16px !important;
+    border-width: 3px !important;
+  }
+  #gameScreen #speedLabel{
+    font-size: 14px !important;
+    white-space: nowrap !important;
+  }
+  #gameScreen #speed{width:150px !important;}
+
+  #textScrollDown{
+    position: absolute !important;
+    right: 18px !important;
+    bottom: 84px !important;
+    width: 46px !important;
+    height: 46px !important;
+    display: none;
+    place-items: center !important;
+    border-radius: 50% !important;
+    border: 4px solid #8f5729 !important;
+    background: linear-gradient(#fff3ca,#e7b76c) !important;
+    box-shadow: 0 4px 0 #653d1c !important;
+    color: #6b3e1c !important;
+    font-size: 24px !important;
+    font-weight: 900 !important;
+    z-index: 14 !important;
+  }
+
+  /* Move the collectible reward above the left flame */
+  #gameScreen #levelRelicFrame{
+    left: 18px !important;
+    top: 594px !important;
+    width: 110px !important;
+    height: auto !important;
+    z-index: 13 !important;
+    pointer-events: none !important;
+  }
+  #gameScreen #levelRelicRing{
+    width: 84px !important;
+    height: 84px !important;
+    border-width: 6px !important;
+    box-shadow: 0 0 0 5px #e8ad31, 0 0 22px 10px rgba(255,218,68,.62), 0 6px 0 #71411f !important;
+  }
+  #gameScreen #levelRelicLabel{
+    min-width: 104px !important;
+    margin-top: 5px !important;
+    padding: 4px 5px !important;
+    font-size: 10px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* Keep step arrows balanced beside the parchment */
+  #gameScreen .step-arrow{
+    top: 578px !important;
+    width: 76px !important;
+    height: 84px !important;
+    z-index: 13 !important;
+  }
+  #gameScreen #stepUp{left: 58px !important;}
+  #gameScreen #stepDown{right: 58px !important;}
+  #gameScreen .step-arrow::before{font-size: 48px !important;}
+
+  #gameScreen #keyGuide{
+    left: 18px !important;
+    bottom: 14px !important;
+    width: 250px !important;
+  }
+</style>
+
+
+<style id="fluency-pyramid-v66-readability-layout">
+#gameScreen .game-hotspot{top:18px!important;width:74px!important;height:74px!important;border-radius:18px!important;font-size:34px!important;}
+#gameScreen #gameHome{left:1098px!important;}
+#gameScreen #gameLevels{left:1181px!important;}
+#gameScreen #gameSound{left:1264px!important;}
+#gameScreen #gameSettings{left:1347px!important;}
+#gameScreen #gameFullscreen{left:1430px!important;}
+#gameScreen #gameMeta{right:18px!important;top:102px!important;width:268px!important;height:66px!important;font-size:18px!important;line-height:1.16!important;}
+#gameScreen #gameMeta small{font-size:13px!important;}
+#gameScreen #avatarRunner{width:126px!important;height:126px!important;z-index:12!important;}
+#gameScreen #readerPanel{left:120px!important;top:448px!important;width:1298px!important;height:310px!important;padding:0!important;background:transparent!important;}
+#gameScreen #readerTitle{left:38px!important;right:38px!important;top:14px!important;height:30px!important;font-size:22px!important;color:#7a4a27!important;}
+#gameScreen #readerText{left:56px!important;right:56px!important;top:58px!important;bottom:92px!important;padding:8px 12px 4px 12px!important;text-align:center!important;overflow-y:auto!important;overflow-x:hidden!important;}
+#gameScreen #readerText .reader-line{display:block!important;width:100%!important;max-width:100%!important;margin:0 auto!important;line-height:1.08!important;white-space:normal!important;overflow-wrap:break-word!important;word-break:normal!important;}
+#gameScreen #readerText .word{display:inline!important;padding:0 .05em!important;border-radius:8px!important;}
+#gameScreen #readerControls{left:78px!important;right:78px!important;bottom:18px!important;height:48px!important;display:grid!important;grid-template-columns:auto auto auto 180px auto!important;align-items:center!important;justify-content:center!important;column-gap:14px!important;row-gap:0!important;}
+#gameScreen .reader-btn{height:42px!important;min-width:118px!important;padding:0 16px!important;font-size:17px!important;border-width:3px!important;white-space:nowrap!important;}
+#gameScreen #mistakeBtn{min-width:104px!important;}
+#gameScreen #restoreBtn{min-width:128px!important;}
+#gameScreen #speedLabel{font-size:15px!important;white-space:nowrap!important;justify-self:end!important;}
+#gameScreen #speed{width:180px!important;justify-self:start!important;}
+#textScrollDown{right:18px!important;bottom:98px!important;width:46px!important;height:46px!important;font-size:24px!important;}
+#gameScreen #levelRelicFrame{left:16px!important;top:590px!important;width:108px!important;z-index:13!important;}
+#gameScreen #levelRelicRing{width:82px!important;height:82px!important;}
+#gameScreen #levelRelicLabel{min-width:102px!important;font-size:10px!important;line-height:1.08!important;}
+#gameScreen .step-arrow{top:578px!important;width:76px!important;height:84px!important;}
+#gameScreen #stepUp{left:56px!important;}
+#gameScreen #stepDown{right:56px!important;}
+#gameScreen #keyGuide{left:16px!important;bottom:12px!important;width:248px!important;}
+</style>
+
+
+<style id="fluency-pyramid-v68-functional-alignment">
+/* Exact overlay alignment for the approved 1536×864 gameplay background */
+
+/* Five baked top-right controls remain invisible clickable hotspots. */
+#gameScreen .game-hotspot{
+  top:18px!important;
+  width:74px!important;
+  height:74px!important;
+  border-radius:18px!important;
+}
+#gameScreen #gameHome{left:1098px!important;}
+#gameScreen #gameLevels{left:1181px!important;}
+#gameScreen #gameSound{left:1264px!important;}
+#gameScreen #gameSettings{left:1347px!important;}
+#gameScreen #gameFullscreen{left:1430px!important;}
+
+#gameScreen #gameMeta{
+  right:20px!important;
+  top:102px!important;
+  width:268px!important;
+  height:64px!important;
+  font-size:18px!important;
+  line-height:1.15!important;
+}
+#gameScreen #gameMeta small{font-size:13px!important;}
+
+/* Runner and creature completion markers */
+#gameScreen #avatarRunner{
+  width:122px!important;
+  height:122px!important;
+  z-index:14!important;
+}
+#gameScreen #avatarRunner.moving{
+  transform:scale(1.06) rotate(-3deg)!important;
+}
+#gameScreen .guardian-mark{
+  width:42px!important;
+  height:42px!important;
+  font-size:26px!important;
+  border-width:4px!important;
+  z-index:13!important;
+}
+
+/* Parchment reading zone */
+#gameScreen #readerPanel{
+  left:118px!important;
+  top:450px!important;
+  width:1300px!important;
+  height:300px!important;
+  padding:0!important;
+  display:block!important;
+  background:transparent!important;
+  z-index:10!important;
+}
+#gameScreen #readerTitle{
+  left:44px!important;
+  right:44px!important;
+  top:14px!important;
+  height:28px!important;
+  font-size:20px!important;
+  color:#754521!important;
+}
+
+/* At most roughly two large visible lines. Longer content scrolls. */
+#gameScreen #readerText{
+  position:absolute!important;
+  left:92px!important;
+  right:92px!important;
+  top:54px!important;
+  height:132px!important;
+  max-height:132px!important;
+  bottom:auto!important;
+  padding:0 10px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  text-align:center!important;
+  background:transparent!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#b67d34 transparent!important;
+}
+#gameScreen #readerText.has-overflow{
+  align-items:flex-start!important;
+}
+#gameScreen #readerText .reader-line{
+  flex:0 0 auto!important;
+  width:100%!important;
+  max-width:100%!important;
+  margin:0 auto!important;
+  text-align:center!important;
+  line-height:1.08!important;
+  white-space:normal!important;
+  overflow-wrap:break-word!important;
+  word-break:normal!important;
+  text-wrap:pretty!important;
+}
+#gameScreen #readerText .word{
+  display:inline!important;
+  padding:0 .04em!important;
+  border-radius:8px!important;
+}
+#gameScreen #readerText::-webkit-scrollbar{width:10px!important;}
+#gameScreen #readerText::-webkit-scrollbar-track{background:transparent!important;}
+#gameScreen #readerText::-webkit-scrollbar-thumb{
+  background:#b67d34!important;
+  border-radius:999px!important;
+  border:2px solid rgba(255,244,202,.92)!important;
+}
+
+/* Scroll passage control; only appears when passage is longer than the two-line window. */
+#textScrollDown{
+  right:30px!important;
+  top:137px!important;
+  bottom:auto!important;
+  width:48px!important;
+  height:48px!important;
+  border-radius:50%!important;
+  font-size:24px!important;
+  z-index:15!important;
+}
+
+/* Clean, single-row reading controls at parchment bottom */
+#gameScreen #readerControls{
+  left:112px!important;
+  right:112px!important;
+  bottom:20px!important;
+  height:46px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex-wrap:nowrap!important;
+  gap:12px!important;
+}
+#gameScreen .reader-btn{
+  height:40px!important;
+  min-width:106px!important;
+  padding:0 14px!important;
+  font-size:16px!important;
+  border-width:3px!important;
+  white-space:nowrap!important;
+}
+#gameScreen #mistakeBtn{min-width:100px!important;}
+#gameScreen #restoreBtn{min-width:122px!important;}
+#gameScreen #speedLabel{
+  font-size:15px!important;
+  white-space:nowrap!important;
+  margin-left:5px!important;
+}
+#gameScreen #speed{
+  width:152px!important;
+  min-width:152px!important;
+}
+
+/* Movement arrows remain beside the parchment rolls. */
+#gameScreen .step-arrow{
+  top:578px!important;
+  width:72px!important;
+  height:82px!important;
+  z-index:14!important;
+}
+#gameScreen #stepUp{left:56px!important;}
+#gameScreen #stepDown{right:56px!important;}
+
+/* Collectible is placed directly over the RIGHT bottom flame. */
+#gameScreen #levelRelicFrame{
+  left:1404px!important;
+  top:584px!important;
+  width:104px!important;
+  height:104px!important;
+  z-index:15!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  pointer-events:none!important;
+}
+#gameScreen #levelRelicRing{
+  width:82px!important;
+  height:82px!important;
+  border-width:6px!important;
+}
+#gameScreen #levelRelicLabel{display:none!important;}
+
+#gameScreen #keyGuide{
+  left:16px!important;
+  bottom:12px!important;
+  width:248px!important;
+}
+</style>
+
+
+<style id="fluency-pyramid-v69-readability-tune">
+/* --- Gameplay readability and alignment tune v69 --- */
+
+#gameScreen #readerPanel{
+  left:168px !important;
+  top:458px !important;
+  width:1200px !important;
+  height:282px !important;
+  padding:0 !important;
+  display:block !important;
+  background:transparent !important;
+  z-index:10 !important;
+}
+#gameScreen #readerTitle{
+  left:58px !important;
+  right:58px !important;
+  top:14px !important;
+  height:24px !important;
+  font-size:18px !important;
+  line-height:1.1 !important;
+  color:#6f4323 !important;
+}
+#gameScreen #readerText{
+  position:absolute !important;
+  left:78px !important;
+  right:78px !important;
+  top:52px !important;
+  height:138px !important;
+  max-height:138px !important;
+  padding:0 12px 6px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  background:transparent !important;
+  color:#4a2a17 !important;
+  text-align:center !important;
+  scrollbar-width:thin !important;
+  scrollbar-color:#b67d34 transparent !important;
+  scroll-behavior:smooth !important;
+}
+#gameScreen #readerText.has-overflow{
+  align-items:flex-start !important;
+}
+#gameScreen #readerText .reader-line{
+  width:100% !important;
+  max-width:100% !important;
+  margin:0 auto !important;
+  line-height:1.06 !important;
+  text-align:center !important;
+  white-space:normal !important;
+  overflow-wrap:break-word !important;
+  word-break:normal !important;
+  text-wrap:pretty !important;
+}
+#gameScreen #readerText .word{
+  display:inline !important;
+  padding:0 .03em !important;
+  border-radius:8px !important;
+}
+#gameScreen #readerText::-webkit-scrollbar{
+  width:10px !important;
+}
+#gameScreen #readerText::-webkit-scrollbar-track{
+  background:transparent !important;
+}
+#gameScreen #readerText::-webkit-scrollbar-thumb{
+  background:#b67d34 !important;
+  border-radius:999px !important;
+  border:2px solid rgba(255,244,202,.92) !important;
+}
+
+#textScrollDown{
+  right:34px !important;
+  top:99px !important;
+  bottom:auto !important;
+  width:48px !important;
+  height:48px !important;
+  font-size:24px !important;
+  z-index:15 !important;
+}
+
+#gameScreen #readerControls{
+  left:86px !important;
+  right:86px !important;
+  bottom:18px !important;
+  height:44px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex-wrap:nowrap !important;
+  gap:12px !important;
+}
+#gameScreen .reader-btn{
+  height:38px !important;
+  min-width:104px !important;
+  padding:0 14px !important;
+  font-size:16px !important;
+  border-width:3px !important;
+  white-space:nowrap !important;
+}
+#gameScreen #mistakeBtn{min-width:102px !important;}
+#gameScreen #restoreBtn{min-width:122px !important;}
+#gameScreen #speedLabel{
+  font-size:15px !important;
+  white-space:nowrap !important;
+  color:#75451f !important;
+}
+#gameScreen #speed{
+  width:150px !important;
+  min-width:150px !important;
+}
+
+#gameScreen #levelRelicFrame{
+  left:726px !important;
+  top:88px !important;
+  width:84px !important;
+  height:84px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  pointer-events:none !important;
+  z-index:15 !important;
+}
+#gameScreen #levelRelicRing{
+  width:78px !important;
+  height:78px !important;
+  border-width:6px !important;
+  box-shadow:0 0 0 5px #e8ad31,0 0 20px 10px rgba(255,218,68,.58),0 6px 0 #71411f !important;
+}
+#gameScreen #levelRelicLabel{
+  display:none !important;
+}
+</style>
+
+
+
+<style id="fluency-pyramid-v72-parchment-reader">
+/* Reader / parchment alignment */
+#gameScreen .game-hotspot{
+  top:22px!important;
+  width:74px!important;
+  height:74px!important;
+  border:0!important;
+  border-radius:18px!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:transparent!important;
+  font-size:0!important;
+  text-shadow:none!important;
+  z-index:34!important;
+}
+#gameScreen .game-hotspot:hover,
+#gameScreen .game-hotspot:focus-visible{
+  background:rgba(255,255,255,.16)!important;
+  box-shadow:0 0 0 5px rgba(255,255,255,.8)!important;
+  transform:none!important;
+}
+#gameScreen #gameHome{left:1155px!important}
+#gameScreen #gameLevels{left:1253px!important}
+#gameScreen #gameSound{left:1351px!important}
+#gameScreen #gameSettings{left:1449px!important}
+#gameScreen #gameFullscreen{left:1547px!important}
+
+#gameScreen #avatarRunner{
+  z-index:40!important;
+  width:178px!important;
+  height:178px!important;
+  transform:none!important;
+}
+#gameScreen #avatarRunner.moving{
+  transform:scale(1.06) rotate(-3deg)!important;
+}
+#gameScreen #avatarRunner[data-step="0"]{
+  transform:none!important;
+}
+#gameScreen #levelRelicFrame{left:723px!important;top:111px!important;width:86px!important;height:86px!important;z-index:14!important}
+#gameScreen #levelRelicRing{width:78px!important;height:78px!important;border-width:6px!important}
+#gameScreen #levelRelicLabel{display:none!important}
+#gameScreen #gameMeta{
+  top:126px!important;
+}
+
+#gameScreen #readerPanel{
+  left:98px!important;
+  top:558px!important;
+  width:1384px!important;
+  height:326px!important;
+  padding:0!important;
+  background:transparent!important;
+  display:block!important;
+  z-index:10!important;
+}
+#gameScreen #readerTitle{
+  left:44px!important;
+  right:44px!important;
+  top:10px!important;
+  height:26px!important;
+  display:flex!important;
+  justify-content:space-between!important;
+  align-items:center!important;
+  font-size:19px!important;
+  line-height:1!important;
+  color:#75451f!important;
+  z-index:12!important;
+}
+#gameScreen #readerText{
+  position:absolute!important;
+  left:62px!important;
+  right:100px!important;
+  top:54px!important;
+  bottom:52px!important;
+  height:auto!important;
+  max-height:none!important;
+  padding:0 16px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  text-align:center!important;
+  color:#4a2a17!important;
+  background:transparent!important;
+  scroll-behavior:smooth!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+#gameScreen #readerText.has-overflow{display:block!important}
+#gameScreen #readerText .reader-line{
+  width:100%!important;
+  max-width:100%!important;
+  margin:0 auto!important;
+  line-height:1.06!important;
+  text-align:center!important;
+  white-space:normal!important;
+  overflow-wrap:break-word!important;
+  word-break:normal!important;
+  text-wrap:pretty!important;
+}
+#gameScreen #readerText .word{display:inline!important;padding:0 .01em!important}
+#gameScreen #readerText.has-overflow .reader-line{padding-right:18px!important}
+#gameScreen #readerTitleLeft,
+#gameScreen #readerTitleRight,
+#gameScreen #stepCount,
+#gameScreen #stepTitle{font-size:19px!important;color:#75451f!important}
+#textScrollDown{
+  position:absolute!important;
+  left:50%!important;
+  right:auto!important;
+  top:auto!important;
+  bottom:-24px!important;
+  transform:translateX(-50%)!important;
+  width:50px!important;
+  height:50px!important;
+  border-radius:16px!important;
+  border:4px solid #95602c!important;
+  background:linear-gradient(#fff3ca,#e7b76c)!important;
+  box-shadow:0 4px 0 #653d1c!important;
+  color:#6b3e1c!important;
+  font-size:26px!important;
+  line-height:1!important;
+  display:none;
+  place-items:center!important;
+  z-index:18!important;
+}
+#gameScreen #readerControls{
+  position:absolute!important;
+  left:82px!important;
+  right:82px!important;
+  bottom:-78px!important;
+  height:44px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:14px!important;
+  flex-wrap:nowrap!important;
+}
+#gameScreen .reader-btn{
+  height:40px!important;
+  min-width:112px!important;
+  padding:0 15px!important;
+  font-size:16px!important;
+  white-space:nowrap!important;
+}
+#gameScreen #readBtn{min-width:128px!important}
+#gameScreen #restoreBtn{min-width:126px!important}
+#gameScreen #speedLabel{font-size:15px!important;color:#75451f!important;white-space:nowrap!important}
+#gameScreen #speed{width:150px!important;min-width:150px!important}
+
+#gameScreen::before{
+  left:48px!important;
+  top:22px!important;
+  width:440px!important;
+  height:146px!important;
+}
+#gameScreen #gamePhoto{
+  left:68px!important;
+  top:36px!important;
+  width:118px!important;
+  height:118px!important;
+}
+#gameScreen #gameLearnerSelect{
+  left:205px!important;
+  top:39px!important;
+  width:256px!important;
+  height:56px!important;
+  font-size:21px!important;
+}
+#gameScreen #hearts{
+  left:204px!important;
+  top:100px!important;
+  width:258px!important;
+  height:56px!important;
+  justify-content:space-between!important;
+  gap:0!important;
+}
+#gameScreen .heart-hit{
+  width:64px!important;
+  height:54px!important;
+}
+#gameScreen .heart-hit::before{
+  font-size:58px!important;
+  top:-8px!important;
+}
+
+#gameScreen .step-arrow{
+  top:676px!important;
+  width:74px!important;
+  height:84px!important;
+  z-index:35!important;
+}
+#gameScreen #stepUp{left:35px!important}
+#gameScreen #stepDown{left:auto!important;right:35px!important}
+#gameScreen #stepUp::before{content:"‹"!important}
+#gameScreen #stepDown::before{content:"›"!important}
+#gameScreen .step-arrow::before{
+  inset:0 0 8px 0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:54px!important;
+  line-height:1!important;
+  padding:0!important;
+  transform:none!important;
+}
+
+.game-level-modal{
+  width:1160px!important;
+  height:780px!important;
+  padding:92px 34px 34px!important;
+}
+#gameLevelGrid{
+  height:620px;
+  overflow:auto;
+  display:grid;
+  grid-template-columns:repeat(10,1fr);
+  gap:10px;
+  padding:6px 10px 16px;
+}
+.game-level-choice{
+  position:relative;
+  min-height:76px;
+  border:4px solid #8f5728;
+  border-radius:14px;
+  background:linear-gradient(#fff4cc,#e8b66b);
+  color:#55301a;
+  box-shadow:0 4px 0 #6a3d1d;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  font-weight:900;
+}
+.game-level-choice span{font-size:25px;line-height:1}
+.game-level-choice small{font-size:10px;line-height:1.05;max-width:84px;white-space:normal}
+.game-level-choice.current{outline:6px solid #ffe05a;outline-offset:0}
+.game-level-choice.completed::after{content:"✓";position:absolute;margin:0 0 48px 58px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#43b649;color:white;border:3px solid white;font-size:15px;box-shadow:0 2px 3px rgba(0,0,0,.28)}
+
+/* v82: keep home controls tucked to the edges so the new art stays visible. */
+#homeScreen::before{
+  left:-6px!important;
+  top:116px!important;
+}
+#homeScreen::after{
+  left:8px!important;
+  top:130px!important;
+}
+#homeScreen #homePhoto{
+  left:52px!important;
+  top:139px!important;
+}
+#homeScreen #homeLearnerSelect{
+  left:18px!important;
+  top:312px!important;
+}
+#homeScreen .home-stat{
+  left:37px!important;
+}
+#homeScreen #homeLevelStat{top:378px!important}
+#homeScreen #homeTreasureStat{top:424px!important}
+#homeScreen #homeBookStat{top:470px!important}
+#homeScreen #customBtn,
+#homeScreen #musicBtn{
+  left:6px!important;
+}
+#homeScreen #learnersBtn,
+#homeScreen #progressBtn,
+#homeScreen #settingsBtn{
+  left:1268px!important;
+}
+
+/* v82: tuck the gameplay learner HUD closer to the left edge too. */
+#gameScreen::before{
+  left:4px!important;
+  top:20px!important;
+  width:420px!important;
+  height:144px!important;
+}
+#gameScreen #gamePhoto{
+  left:24px!important;
+  top:36px!important;
+  width:116px!important;
+  height:116px!important;
+}
+#gameScreen #gameLearnerSelect{
+  left:158px!important;
+  top:39px!important;
+  width:246px!important;
+  height:56px!important;
+  font-size:21px!important;
+}
+#gameScreen #hearts{
+  left:157px!important;
+  top:100px!important;
+  width:248px!important;
+  height:56px!important;
+  justify-content:space-between!important;
+  gap:0!important;
+}
+</style>
+
 </body>
 </html>

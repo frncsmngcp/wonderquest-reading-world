@@ -25,7 +25,7 @@
   <style>
     :root {
       color-scheme: only light;
-      --stage-ratio: 1.7778958555;
+      --stage-ratio: 1.7777777778;
       --focus: #ffe66a;
       --deep: #041d24;
       --teal: #087c87;
@@ -41,7 +41,7 @@
     }
     button { font: inherit; }
     /* Browser fallback used when iPhone Safari does not expose the Fullscreen API. */
-    body.tf-pseudo-fullscreen #suite{width:var(--tf-usable-width,100vw)!important;height:var(--tf-usable-height,100vh)!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important;}
+    body.tf-pseudo-fullscreen #suite{width:min(var(--tf-usable-width,100vw),calc(var(--tf-usable-height,100vh) * 16 / 9))!important;height:min(var(--tf-usable-height,100vh),calc(var(--tf-usable-width,100vw) * 9 / 16))!important;max-width:none!important;max-height:none!important;aspect-ratio:16 / 9!important;}
 
     #suite {
       position: fixed;
@@ -49,7 +49,7 @@
       top: var(--tf-usable-center-y, 50vh);
       width: min(var(--tf-usable-width, 100vw), calc(var(--tf-usable-height, 100vh) * var(--stage-ratio)));
       height: min(var(--tf-usable-height, 100vh), calc(var(--tf-usable-width, 100vw) / var(--stage-ratio)));
-      aspect-ratio: 1672 / 941;
+      aspect-ratio: 16 / 9;
       transform: translate(-50%, -50%);
       overflow: hidden;
       isolation: isolate;
