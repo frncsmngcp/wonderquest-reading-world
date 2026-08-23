@@ -2896,6 +2896,19 @@ button,input,select,textarea,option{color-scheme:light!important}
   justify-content:space-between!important;
   gap:0!important;
 }
+
+/* v83: mobile portrait safety. Keep all five baked top control hotspots inside
+   the 1536px stage so none disappear when the 16:9 canvas is letterboxed. */
+#gameScreen .game-hotspot{
+  top:22px!important;
+  width:74px!important;
+  height:74px!important;
+}
+#gameScreen #gameHome{left:1086px!important}
+#gameScreen #gameLevels{left:1171px!important}
+#gameScreen #gameSound{left:1256px!important}
+#gameScreen #gameSettings{left:1341px!important}
+#gameScreen #gameFullscreen{left:1426px!important}
 </style>
 
 </body>
