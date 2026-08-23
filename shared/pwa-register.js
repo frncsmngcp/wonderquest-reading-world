@@ -5,7 +5,7 @@
   let warmupScheduled = false;
   let registration = null;
   let updatePrompt = null;
-  let updatePromptDismissed = false;
+  let updatePromptCollapsed = false;
   let reloadForUpdate = false;
 
   function preloadGateOwnsCaching() {
@@ -39,8 +39,8 @@
     const style = document.createElement('style');
     style.id = 'wq-update-prompt-style';
     style.textContent = `
-      #wq-update-prompt{position:fixed;z-index:2147483647;left:50%;bottom:max(16px,calc(env(safe-area-inset-bottom) + 12px));transform:translateX(-50%);width:min(560px,calc(100vw - 28px));font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#fff;filter:drop-shadow(0 14px 32px rgba(0,0,0,.42));}
-      #wq-update-prompt .wq-update-card{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:12px 14px;border:2px solid #e4b44c;border-radius:22px;background:linear-gradient(145deg,rgba(50,22,90,.98),rgba(20,58,112,.98));box-shadow:inset 0 1px rgba(255,255,255,.26),0 0 0 2px rgba(93,55,16,.42);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
+      #wq-update-prompt{position:fixed;z-index:2147483647;right:max(12px,calc(env(safe-area-inset-right) + 10px));bottom:max(12px,calc(env(safe-area-inset-bottom) + 10px));width:min(520px,calc(100vw - 24px));font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#fff;filter:drop-shadow(0 14px 32px rgba(0,0,0,.34));pointer-events:none;}
+      #wq-update-prompt .wq-update-card{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:11px 13px;border:2px solid rgba(228,180,76,.92);border-radius:20px;background:linear-gradient(145deg,rgba(50,22,90,.94),rgba(20,58,112,.94));box-shadow:inset 0 1px rgba(255,255,255,.26),0 0 0 2px rgba(93,55,16,.34);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);pointer-events:auto;}
       #wq-update-prompt .wq-update-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe97b,#f4ac23 62%,#9c5d12);box-shadow:0 0 0 3px #5f3610,0 3px 10px rgba(0,0,0,.25);font-size:22px;}
       #wq-update-prompt .wq-update-copy{min-width:0;line-height:1.18;}
       #wq-update-prompt .wq-update-title{display:block;font-weight:850;font-size:15px;letter-spacing:.01em;}
@@ -49,17 +49,27 @@
       #wq-update-prompt button{appearance:none;border:0;font:inherit;font-weight:800;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;}
       #wq-update-prompt .wq-update-now{padding:9px 12px;border-radius:14px;background:linear-gradient(#ffe979,#f0ae28);color:#4c290a;box-shadow:0 3px 0 #8d5415;}
       #wq-update-prompt .wq-update-later{padding:8px 9px;border-radius:12px;background:rgba(255,255,255,.12);color:#fff;}
+      #wq-update-prompt .wq-update-chip{display:none;align-items:center;gap:7px;margin-left:auto;padding:9px 12px;border:2px solid rgba(255,232,142,.95);border-radius:999px;background:linear-gradient(145deg,rgba(26,76,130,.94),rgba(49,22,86,.94));color:#fff;font-size:13px;font-weight:850;box-shadow:inset 0 1px rgba(255,255,255,.22),0 0 0 2px rgba(93,55,16,.26);pointer-events:auto;}
+      #wq-update-prompt .wq-update-chip-dot{width:9px;height:9px;border-radius:50%;background:#ffe66c;box-shadow:0 0 0 3px rgba(255,230,108,.18),0 0 12px rgba(255,230,108,.85);}
+      #wq-update-prompt.is-collapsed{width:auto;}
+      #wq-update-prompt.is-collapsed .wq-update-card{display:none;}
+      #wq-update-prompt.is-collapsed .wq-update-chip{display:flex;}
       #wq-update-prompt button:active{transform:translateY(1px);}
-      @media(max-width:560px){#wq-update-prompt .wq-update-card{grid-template-columns:auto 1fr;gap:9px 10px;padding:10px 11px;border-radius:18px}#wq-update-prompt .wq-update-icon{width:36px;height:36px;font-size:19px}#wq-update-prompt .wq-update-actions{grid-column:1/-1;justify-content:flex-end}#wq-update-prompt .wq-update-title{font-size:14px}#wq-update-prompt .wq-update-text{font-size:11px}}
+      @media(max-width:560px){#wq-update-prompt{right:max(8px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom));width:min(360px,calc(100vw - 16px))}#wq-update-prompt .wq-update-card{grid-template-columns:auto 1fr;gap:8px 10px;padding:9px 10px;border-radius:17px}#wq-update-prompt .wq-update-icon{width:34px;height:34px;font-size:18px}#wq-update-prompt .wq-update-actions{grid-column:1/-1;justify-content:flex-end}#wq-update-prompt .wq-update-title{font-size:13px}#wq-update-prompt .wq-update-text{font-size:11px}#wq-update-prompt .wq-update-chip{padding:8px 10px;font-size:12px}}
     `;
     document.head.appendChild(style);
   }
 
   function showUpdatePrompt(reg) {
-    if (!reg?.waiting || updatePrompt || updatePromptDismissed) return;
+    if (!reg?.waiting) return;
+    if (updatePrompt) {
+      updatePrompt.classList.toggle('is-collapsed', updatePromptCollapsed);
+      return;
+    }
     ensureUpdateStyles();
     const host = document.createElement('div');
     host.id = 'wq-update-prompt';
+    host.classList.toggle('is-collapsed', updatePromptCollapsed);
     host.setAttribute('role', 'status');
     host.setAttribute('aria-live', 'polite');
     host.innerHTML = `
@@ -70,13 +80,21 @@
           <span class="wq-update-text">I-update para makuha ang pinakabagong app, larawan, at mga pag-aayos.</span>
         </div>
         <div class="wq-update-actions">
-          <button class="wq-update-later" type="button">Mamaya</button>
+          <button class="wq-update-later" type="button">Small View</button>
           <button class="wq-update-now" type="button">Update Now</button>
         </div>
-      </div>`;
+      </div>
+      <button class="wq-update-chip" type="button" aria-label="WonderQuest update available. Tap to open update notice.">
+        <span class="wq-update-chip-dot" aria-hidden="true"></span>
+        <span>Update available</span>
+      </button>`;
     host.querySelector('.wq-update-later')?.addEventListener('click', () => {
-      updatePromptDismissed = true;
-      removeUpdatePrompt();
+      updatePromptCollapsed = true;
+      host.classList.add('is-collapsed');
+    });
+    host.querySelector('.wq-update-chip')?.addEventListener('click', () => {
+      updatePromptCollapsed = false;
+      host.classList.remove('is-collapsed');
     });
     host.querySelector('.wq-update-now')?.addEventListener('click', () => {
       const waiting = reg.waiting;
@@ -121,7 +139,7 @@
       if (registration.waiting && navigator.serviceWorker.controller) showUpdatePrompt(registration);
       if (registration.installing) watchInstallingWorker(registration, registration.installing);
       registration.addEventListener('updatefound', () => {
-        updatePromptDismissed = false;
+        updatePromptCollapsed = false;
         watchInstallingWorker(registration, registration.installing);
       });
 

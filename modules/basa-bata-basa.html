@@ -316,7 +316,7 @@ button,input,select,textarea,option{color-scheme:light!important}
   function celebrate(id,after,custom=false){celebrateAfter=after;const titles=state.selectedLang==='fil'?["Magaling!","Mahusay!","Ang galing!","Basa Star!","Napakahusay!","Panalo!","Galing-galing!"]:["Amazing!","Fantastic!","Super Reader!","Brilliant!","Word Star!","Wonderful!","You Did It!"];$('#celebrateTitle').textContent=titles[(id+state.progress.streak)%titles.length];$('#celebrateMessage').textContent=custom?'10 words from My List mastered — bonus squishy cheer!':`${(id%20+1)*10} ${langName(state.selectedLang).toLowerCase()} words — rare squishy unlocked!`;$('#rewardName').textContent=custom?'CUSTOM LIST READING STAR':RARE_NAMES[id];$('#rewardMedallion').innerHTML='';$('#rewardMedallion').append(rare(id));const card=$('#celebrateCard');card.className='celebrate-card '+(['','spin','bounce'][(id+state.progress.streak)%3]);const layer=$('#confetti');layer.innerHTML='';for(let i=0;i<90;i++){const c=document.createElement('i');c.className='confetti';c.style.setProperty('--l',Math.random()*100+'%');c.style.setProperty('--d',2.2+Math.random()*3+'s');c.style.setProperty('--c',['#f35f87','#ffc936','#38bdf0','#70cf68','#9b70ee','#ff8a3d'][i%6]);c.style.setProperty('--r',Math.random()*180+'deg');c.style.animationDelay=Math.random()*-3+'s';layer.append(c)}$('#celebration').classList.add('open');fx('reward');$('#continueBtn').focus()}
   function closeCelebrate(){if(!$('#celebration').classList.contains('open'))return;$('#celebration').classList.remove('open');const cb=celebrateAfter;celebrateAfter=null;if(cb)cb()}
   function openWordList(){if(!state.selectedLang){toast('Choose a language first.');return}const l=state.selectedLang,p=activeProgress(l),arr=words(l);$('#wordListTitle').textContent=`${arr.length} ${l==='fil'?'Filipino':'English'} ${isCustom(l)?'Custom':'Sight'} Words`;const grid=$('#wordGrid');grid.innerHTML='';arr.forEach((w,i)=>{const b=document.createElement('button');b.className='word-tile'+(p.mastered.includes(i)?' done':'')+(i===index?' current':'');b.textContent=`${i+1}. ${w}`;b.onclick=()=>{index=i;syllableIndex=0;p.index=i;closeModal('wordListModal');mode=mode==='play'?'learn':mode;show('reader');renderReader();if(state.settings.autoRead)speakCurrent()};grid.append(b)});openModal('wordListModal')}
-  function renderCollection(){const layer=$('#milestoneLayer');layer.innerHTML='';const xsFil=[109,239,368,498,628],xsEn=[808,938,1067,1196,1325],ys=[268,418,566,714];for(let id=0;id<40;id++){const local=id%20,row=Math.floor(local/5),col=local%5,l=id<20?'fil':'en',unlocked=Math.floor(state.progress[l].mastered.length/10)>local;const slot=document.createElement('div');slot.className=`milestone-slot ${l}`+(unlocked?'':' locked');slot.style.left=(l==='fil'?xsFil[col]:xsEn[col])+'px';slot.style.top=ys[row]+'px';slot.style.setProperty('--delay',`${-(id%7)*.23}s`);slot.append(rare(id));if(!unlocked){const lock=document.createElement('span');lock.className='lock';lock.textContent='🔒';slot.append(lock)}slot.insertAdjacentHTML('beforeend',`<span class="milestone-label">${(local+1)*10}</span>`);slot.title=unlocked?RARE_NAMES[id]:`Master ${(local+1)*10} ${l==='fil'?'Filipino':'English'} words`;layer.append(slot)}}
+  function renderCollection(){const layer=$('#milestoneLayer');layer.innerHTML='';const xsFil=[107,235,362,489,617],xsEn=[805,931,1059,1186,1313],ys=[224,351,478,605];for(let id=0;id<40;id++){const local=id%20,row=Math.floor(local/5),col=local%5,l=id<20?'fil':'en',unlocked=Math.floor(state.progress[l].mastered.length/10)>local;const slot=document.createElement('div');slot.className=`milestone-slot ${l}`+(unlocked?'':' locked');slot.style.left=(l==='fil'?xsFil[col]:xsEn[col])+'px';slot.style.top=ys[row]+'px';slot.style.setProperty('--delay',`${-(id%7)*.23}s`);slot.append(rare(id));if(!unlocked){const lock=document.createElement('span');lock.className='lock';lock.textContent='🔒';slot.append(lock)}slot.insertAdjacentHTML('beforeend',`<span class="milestone-label">${(local+1)*10}</span>`);slot.title=unlocked?RARE_NAMES[id]:`Master ${(local+1)*10} ${l==='fil'?'Filipino':'English'} words`;layer.append(slot)}}
   function populateVoices(){voices=speechSynthesis.getVoices();for(const [id,prefix,key] of [['filVoice','fil','filVoice'],['enVoice','en','enVoice']]){const sel=$('#'+id),current=state.settings[key];sel.innerHTML='<option value="">Automatic voice</option>';voices.filter(v=>v.lang.toLowerCase().startsWith(prefix)||(prefix==='fil'&&v.lang.toLowerCase().startsWith('tl'))).forEach(v=>{const o=document.createElement('option');o.value=v.name;o.textContent=`${v.name} (${v.lang})`;sel.append(o)});sel.value=current||''}}
   function renderSettings(){populateVoices();$('#voiceSpeed').value=state.settings.speed;$('#wordCase').value=state.settings.case;$('#modalAuto').textContent=`Auto Read: ${state.settings.autoRead?'On':'Off'}`;$('#modalAuto').classList.toggle('on',state.settings.autoRead);$('#modalSyllables').textContent=`Syllable Reading: ${state.settings.syllableRead?'On':'Off'}`;$('#modalSyllables').classList.toggle('on',state.settings.syllableRead);$('#soundEffects').textContent=`Sound Effects: ${state.settings.sounds?'On':'Off'}`;$('#soundEffects').classList.toggle('on',state.settings.sounds);$('#modalMusic').textContent=`Music: ${state.settings.music?'On':'Off'}`;$('#modalMusic').classList.toggle('on',state.settings.music);$('#musicVolume').value=String(state.settings.musicVolume);$('#musicVolumeValue').textContent=`${Math.round(state.settings.musicVolume*100)}%`;$('#filSource').value=state.settings.source.fil;$('#enSource').value=state.settings.source.en;$('#filCustom').value=state.settings.customWords.fil;$('#enCustom').value=state.settings.customWords.en}
   function openSettings(){renderSettings();openModal('settingsModal')}function openModal(id){$('#'+id).classList.add('open')}function closeModal(id){$('#'+id).classList.remove('open')}
@@ -774,5 +774,37 @@ button,input,select,textarea,option{color-scheme:light!important}
 .reader .correct{left:939px!important;top:699px!important;width:239px!important;height:108px!important;border-radius:32px!important}
 .collection .home-hit{left:23px!important;top:20px!important;width:162px!important;height:160px!important;border-radius:44px!important}
 .collection .reset-hit{left:518px!important;top:762px!important;width:500px!important;height:88px!important;border-radius:28px!important}
+</style>
+<style id="wq-bbb-collection-label-map-v53">
+.milestone-label{
+  top:96px!important;
+  left:17px!important;
+  width:84px!important;
+  height:24px!important;
+  align-items:center!important;
+  justify-items:center!important;
+  line-height:1!important;
+}
+</style>
+<style id="wq-bbb-reader-reward-badge-v54">
+.next-reward{
+  left:1190px!important;
+  top:698px!important;
+  width:122px!important;
+  height:130px!important;
+  display:block!important;
+}
+.next-reward .rare-sprite{
+  position:absolute!important;
+  left:50%!important;
+  top:48px!important;
+  width:66px!important;
+  height:66px!important;
+  margin:0!important;
+  transform:translate(-50%,-50%)!important;
+}
+.reward-count{
+  bottom:2px!important;
+}
 </style>
 </body></html>
