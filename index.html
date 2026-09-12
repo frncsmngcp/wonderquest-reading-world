@@ -560,6 +560,147 @@
   </style>
   <!-- TF_HOME_FOREST_MUSIC_STYLE_END -->
 
+  <style id="wq-offline-status-style">
+    #offline-status-panel {
+      position: absolute;
+      left: 2.65%;
+      bottom: 2.6%;
+      z-index: 5;
+      width: auto;
+      color: #f9fffa;
+      pointer-events: auto;
+      text-shadow: 0 1px 2px rgba(0,31,38,.42);
+    }
+    #offline-status-toggle {
+      appearance: none;
+      width: clamp(18px,2.05cqw,34px);
+      height: clamp(18px,2.05cqw,34px);
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: max(2px,.14cqw) solid rgba(255,255,255,.72);
+      border-radius: 999px;
+      background: rgba(7,54,74,.56);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.32), 0 .25cqw .75cqw rgba(0,24,36,.28);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    #offline-status-toggle:focus-visible {
+      outline: max(2px,.14cqw) solid rgba(255,239,167,.92);
+      outline-offset: max(2px,.14cqw);
+    }
+    #offline-status-toggle:active {
+      transform: translateY(1px);
+    }
+    .offline-status-indicator {
+      width: 62%;
+      height: 62%;
+      border-radius: 50%;
+      background: rgba(255,255,255,.48);
+      box-shadow: 0 0 0 max(1px,.08cqw) rgba(255,255,255,.28);
+    }
+    #offline-status-panel[data-summary-state="ready"] .offline-status-indicator {
+      background: #8ff07f;
+      box-shadow: 0 0 0 max(1px,.08cqw) rgba(255,255,255,.55), 0 0 .8cqw rgba(143,240,127,.84);
+    }
+    #offline-status-panel[data-summary-state="available"] .offline-status-indicator {
+      background: #ffe46d;
+      box-shadow: 0 0 0 max(1px,.08cqw) rgba(255,255,255,.62), 0 0 .92cqw rgba(255,228,109,.92);
+    }
+    .offline-status-details {
+      position: absolute;
+      left: 0;
+      bottom: calc(100% + .45cqw);
+      width: min(28.5cqw, 420px);
+      display: grid;
+      gap: .42cqw;
+      padding: .58cqw .68cqw;
+      border: max(1px,.12cqw) solid rgba(255,255,255,.54);
+      border-radius: 1.05cqw;
+      background: linear-gradient(135deg, rgba(7,54,74,.58), rgba(27,82,92,.38));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 .45cqw 1.1cqw rgba(0,24,36,.22);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(.25cqw) scale(.98);
+      transform-origin: left bottom;
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+    }
+    #offline-status-panel[data-open="true"] .offline-status-details {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+    .offline-status-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: .42cqw;
+      min-width: 0;
+      font-size: clamp(8px,.74cqw,13px);
+      font-weight: 850;
+      line-height: 1.08;
+      letter-spacing: .01em;
+      opacity: .72;
+    }
+    .offline-status-row span:last-child {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .offline-status-dot {
+      width: .76cqw;
+      height: .76cqw;
+      min-width: 8px;
+      min-height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.42);
+      box-shadow: 0 0 0 max(1px,.08cqw) rgba(255,255,255,.32);
+    }
+    .offline-status-row[data-state="ready"],
+    .offline-status-row[data-state="available"] {
+      opacity: 1;
+    }
+    .offline-status-row[data-state="ready"] .offline-status-dot {
+      background: #8ff07f;
+      box-shadow: 0 0 0 max(1px,.08cqw) rgba(255,255,255,.55), 0 0 .8cqw rgba(143,240,127,.84);
+    }
+    .offline-status-row[data-state="available"] {
+      color: #fff6bf;
+    }
+    .offline-status-row[data-state="available"] .offline-status-dot {
+      background: #ffe46d;
+      box-shadow: 0 0 0 max(1px,.08cqw) rgba(255,255,255,.62), 0 0 .92cqw rgba(255,228,109,.92);
+    }
+    @media (max-width: 760px) {
+      #offline-status-panel {
+        left: 2.2%;
+        bottom: 1.9%;
+      }
+      #offline-status-toggle {
+        width: 24px;
+        height: 24px;
+      }
+      .offline-status-details {
+        width: min(54vw, 270px);
+        gap: 3px;
+        padding: 5px 7px;
+        border-radius: 10px;
+      }
+      .offline-status-row {
+        gap: 5px;
+        font-size: clamp(7px,1.35cqw,10px);
+      }
+    }
+  </style>
+
   <style id="tf-six-home-sound-hotspot-style">
     #home-music-control{
       top:3.35% !important;
@@ -1072,10 +1213,29 @@ button,input,select,textarea,option{color-scheme:light!important}
       <!-- TF_HOME_FOREST_MUSIC_CONTROL_START -->
       <button id="home-music-control" type="button" aria-pressed="true" aria-label="Toggle Reading World background music">
         <span class="home-music-icon" aria-hidden="true">♫</span>
-        <span class="home-music-title">Castle Story Music</span>
-        <span id="home-music-state" class="home-music-state">ON · Mythical Castle</span>
+        <span class="home-music-title">Wizard Saga Music</span>
+        <span id="home-music-state" class="home-music-state">ON · Wizard Saga</span>
       </button>
       <!-- TF_HOME_FOREST_MUSIC_CONTROL_END -->
+      <section id="offline-status-panel" data-open="false" data-summary-state="pending" aria-label="WonderQuest offline status">
+        <button id="offline-status-toggle" type="button" aria-expanded="false" aria-label="Open offline status">
+          <span class="offline-status-indicator" aria-hidden="true"></span>
+        </button>
+        <div class="offline-status-details" role="status" aria-live="polite">
+          <div class="offline-status-row" data-status-item="modules" data-state="pending">
+            <span class="offline-status-dot" aria-hidden="true"></span>
+            <span>All reading modules saved for offline use</span>
+          </div>
+          <div class="offline-status-row" data-status-item="audio" data-state="pending">
+            <span class="offline-status-dot" aria-hidden="true"></span>
+            <span>Audio downloaded</span>
+          </div>
+          <div class="offline-status-row" data-status-item="update" data-state="idle">
+            <span class="offline-status-dot" aria-hidden="true"></span>
+            <span>Update available</span>
+          </div>
+        </div>
+      </section>
     </section>
 
 
@@ -1415,14 +1575,110 @@ button,input,select,textarea,option{color-scheme:light!important}
 <script src="./shared/pwa-register.js" defer></script>
 <script src="./shared/install-assistant.js" defer></script>
 
+<script id="wq-offline-status-script">
+(() => {
+  const panel = document.getElementById("offline-status-panel");
+  if (!panel) return;
+  const toggle = document.getElementById("offline-status-toggle");
+
+  const rows = {
+    modules: panel.querySelector('[data-status-item="modules"]'),
+    audio: panel.querySelector('[data-status-item="audio"]'),
+    update: panel.querySelector('[data-status-item="update"]')
+  };
+
+  function updateSummary() {
+    const updateAvailable = rows.update?.dataset.state === "available";
+    const offlineReady = rows.modules?.dataset.state === "ready" && rows.audio?.dataset.state === "ready";
+    const summary = updateAvailable ? "available" : offlineReady ? "ready" : "pending";
+    panel.dataset.summaryState = summary;
+    const openText = panel.dataset.open === "true" ? "Close" : "Open";
+    const stateText = updateAvailable ? "update available" : offlineReady ? "offline ready" : "offline setup preparing";
+    toggle?.setAttribute("aria-label", `${openText} offline status: ${stateText}`);
+  }
+
+  function setState(name, state) {
+    const row = rows[name];
+    if (!row) return;
+    row.dataset.state = state;
+    updateSummary();
+  }
+
+  function hasCompletedOfflineSetup() {
+    try {
+      if (localStorage.getItem("wonderquest-preload-ever-complete") === "done") return true;
+      for (let i = 0; i < localStorage.length; i += 1) {
+        const key = localStorage.key(i) || "";
+        if (key.startsWith("wonderquest-preload-complete::") && localStorage.getItem(key) === "done") return true;
+      }
+    } catch {}
+    return false;
+  }
+
+  function markOfflineReady() {
+    setState("modules", "ready");
+    setState("audio", "ready");
+  }
+
+  function markUpdateAvailable() {
+    setState("update", "available");
+    try { sessionStorage.setItem("wonderquest-update-available", "yes"); } catch {}
+  }
+
+  if (hasCompletedOfflineSetup()) markOfflineReady();
+  if (document.documentElement.dataset.wqUpdateAvailable === "true") markUpdateAvailable();
+  try {
+    if (sessionStorage.getItem("wonderquest-update-available") === "yes") markUpdateAvailable();
+  } catch {}
+
+  window.addEventListener("wonderquest:offline-ready", markOfflineReady);
+  window.addEventListener("wonderquest:update-available", markUpdateAvailable);
+  function togglePanel(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const open = panel.dataset.open !== "true";
+    panel.dataset.open = String(open);
+    toggle?.setAttribute("aria-expanded", String(open));
+    updateSummary();
+  }
+
+  toggle?.addEventListener("click", togglePanel);
+  panel.querySelector(".offline-status-details")?.addEventListener("click", event => {
+    if (panel.dataset.open !== "true") return;
+    togglePanel(event);
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && panel.dataset.open === "true") {
+      panel.dataset.open = "false";
+      toggle?.setAttribute("aria-expanded", "false");
+      updateSummary();
+    }
+  });
+  navigator.serviceWorker?.addEventListener?.("message", event => {
+    if (event.data?.type === "READING_WORLD_CACHE_COMPLETE") markOfflineReady();
+  });
+
+  const checkTimer = setInterval(() => {
+    if (hasCompletedOfflineSetup()) {
+      markOfflineReady();
+      clearInterval(checkTimer);
+    }
+  }, 2500);
+  setTimeout(() => clearInterval(checkTimer), 45000);
+  updateSummary();
+})();
+</script>
+
 <!-- TF_HOME_FOREST_MUSIC_SCRIPT_START -->
 <script id="tf-home-forest-music-script">
 (() => {
   const STORAGE_KEY = "teacher-francis-reading-world-home-castle-music";
-  const TARGET_VOLUME = 0.66;
+  const HOME_MUSIC_SRC = "./assets/audio/home/wonderquest-home-wizard-saga-v1.mp3";
+  const TARGET_VOLUME = 0.58;
   const homeScreen = document.getElementById("home-screen");
   const musicButton = document.getElementById("home-music-control");
   const musicState = document.getElementById("home-music-state");
+  const musicTitle = musicButton?.querySelector(".home-music-title");
 
   if (!homeScreen || !musicButton || !musicState) return;
 
@@ -1438,20 +1694,10 @@ button,input,select,textarea,option{color-scheme:light!important}
   }
 
   let enabled = readStoredSetting();
-  let audioContext = null;
-  let masterGain = null;
-  let ambienceBus = null;
-  let musicBus = null;
-  let shimmerBus = null;
-  let airSource = null;
-  let hallSource = null;
-  let padNodes = [];
-  let melodyTimer = 0;
-  let sparkleTimer = 0;
-  let musicGeneration = 0;
-  let initialized = false;
-
-  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  let audio = null;
+  let fadeFrame = 0;
+  let pauseTimer = 0;
+  let resumeBound = false;
 
   function isHomeActive() {
     return homeScreen.classList.contains("active");
@@ -1461,313 +1707,118 @@ button,input,select,textarea,option{color-scheme:light!important}
     musicButton.setAttribute("aria-pressed", String(enabled));
     musicButton.setAttribute(
       "aria-label",
-      enabled ? "Turn storybook castle background music off" : "Turn storybook castle background music on"
+      enabled ? "Turn Wizard Saga background music off" : "Turn Wizard Saga background music on"
     );
-    musicState.textContent = enabled ? "ON · Mythical Castle" : "OFF · Mythical Castle";
+    if (musicTitle) musicTitle.textContent = "Wizard Saga Music";
+    musicState.textContent = enabled ? "ON · Wizard Saga" : "OFF · Wizard Saga";
   }
 
-  function makeNoiseBuffer(seconds = 3) {
-    const length = Math.max(1, Math.floor(audioContext.sampleRate * seconds));
-    const buffer = audioContext.createBuffer(1, length, audioContext.sampleRate);
-    const data = buffer.getChannelData(0);
-    let smooth = 0;
-    for (let i = 0; i < length; i += 1) {
-      const white = Math.random() * 2 - 1;
-      smooth = smooth * 0.88 + white * 0.12;
-      data[i] = smooth;
-    }
-    return buffer;
-  }
-
-  function createLoopingNoise({ type, frequency, q, gain, destination }) {
-    const source = audioContext.createBufferSource();
-    source.buffer = makeNoiseBuffer(4.2);
-    source.loop = true;
-
-    const filter = audioContext.createBiquadFilter();
-    filter.type = type;
-    filter.frequency.value = frequency;
-    filter.Q.value = q;
-
-    const level = audioContext.createGain();
-    level.gain.value = gain;
-
-    source.connect(filter);
-    filter.connect(level);
-    level.connect(destination);
-    source.start();
-    return { source, filter, level };
-  }
-
-  function makePad(freq, gainValue, detune = 0, type = "triangle") {
-    const osc = audioContext.createOscillator();
-    const filter = audioContext.createBiquadFilter();
-    const gain = audioContext.createGain();
-    const lfo = audioContext.createOscillator();
-    const lfoGain = audioContext.createGain();
-
-    osc.type = type;
-    osc.frequency.value = freq;
-    osc.detune.value = detune;
-
-    filter.type = "lowpass";
-    filter.frequency.value = 980;
-    filter.Q.value = 0.45;
-
-    gain.gain.value = gainValue;
-
-    lfo.type = "sine";
-    lfo.frequency.value = 0.05 + Math.random() * 0.025;
-    lfoGain.gain.value = gainValue * 0.22;
-
-    lfo.connect(lfoGain);
-    lfoGain.connect(gain.gain);
-    osc.connect(filter);
-    filter.connect(gain);
-    gain.connect(musicBus);
-
-    osc.start();
-    lfo.start();
-    return { osc, gain, lfo };
-  }
-
-  function initAudio() {
-    if (initialized || !AudioCtx) return;
-    initialized = true;
-
-    audioContext = new AudioCtx();
-    masterGain = audioContext.createGain();
-    ambienceBus = audioContext.createGain();
-    musicBus = audioContext.createGain();
-    shimmerBus = audioContext.createGain();
-
-    masterGain.gain.value = 0.0001;
-    ambienceBus.gain.value = 1;
-    musicBus.gain.value = 1;
-    shimmerBus.gain.value = 1;
-
-    ambienceBus.connect(masterGain);
-    musicBus.connect(masterGain);
-    shimmerBus.connect(masterGain);
-    masterGain.connect(audioContext.destination);
-
-    airSource = createLoopingNoise({
-      type: "lowpass",
-      frequency: 1200,
-      q: 0.35,
-      gain: 0.028,
-      destination: ambienceBus
+  function getAudio() {
+    if (audio) return audio;
+    audio = new Audio(HOME_MUSIC_SRC);
+    audio.loop = true;
+    audio.preload = "auto";
+    audio.autoplay = true;
+    audio.volume = 0;
+    audio.setAttribute("playsinline", "");
+    audio.addEventListener("error", () => {
+      musicState.textContent = "Audio unavailable";
     });
-
-    hallSource = createLoopingNoise({
-      type: "bandpass",
-      frequency: 2650,
-      q: 0.75,
-      gain: 0.018,
-      destination: shimmerBus
-    });
-
-    padNodes = [
-      makePad(130.81, 0.038, -2, "triangle"),
-      makePad(196.00, 0.030,  2, "sine"),
-      makePad(261.63, 0.020, -5, "triangle"),
-      makePad(293.66, 0.013,  4, "sine")
-    ];
+    try { audio.load(); } catch {}
+    return audio;
   }
 
-  function playCelesta(freq, when, duration = 2.8, level = 0.055) {
-    if (!audioContext || audioContext.state !== "running" || !enabled || !isHomeActive()) return;
-
-    const osc = audioContext.createOscillator();
-    const bright = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    const brightGain = audioContext.createGain();
-    const filter = audioContext.createBiquadFilter();
-
-    osc.type = "triangle";
-    osc.frequency.setValueAtTime(freq, when);
-
-    bright.type = "sine";
-    bright.frequency.setValueAtTime(freq * 2.01, when);
-
-    filter.type = "lowpass";
-    filter.frequency.setValueAtTime(3400, when);
-    filter.Q.value = 0.8;
-
-    gain.gain.setValueAtTime(0.0001, when);
-    gain.gain.exponentialRampToValueAtTime(level, when + 0.05);
-    gain.gain.exponentialRampToValueAtTime(0.0001, when + duration);
-
-    brightGain.gain.setValueAtTime(0.0001, when);
-    brightGain.gain.exponentialRampToValueAtTime(level * 0.34, when + 0.04);
-    brightGain.gain.exponentialRampToValueAtTime(0.0001, when + duration * 0.74);
-
-    osc.connect(filter);
-    filter.connect(gain);
-    bright.connect(brightGain);
-    gain.connect(musicBus);
-    brightGain.connect(shimmerBus);
-
-    osc.start(when);
-    bright.start(when);
-    osc.stop(when + duration + 0.05);
-    bright.stop(when + duration + 0.05);
+  function cancelFade() {
+    if (fadeFrame) cancelAnimationFrame(fadeFrame);
+    fadeFrame = 0;
+    if (pauseTimer) clearTimeout(pauseTimer);
+    pauseTimer = 0;
   }
 
-  function playHarp(freq, when, duration = 2.3, level = 0.040) {
-    if (!audioContext || audioContext.state !== "running" || !enabled || !isHomeActive()) return;
-
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    const filter = audioContext.createBiquadFilter();
-
-    osc.type = "sawtooth";
-    osc.frequency.setValueAtTime(freq, when);
-    osc.frequency.exponentialRampToValueAtTime(freq * 0.996, when + duration);
-
-    filter.type = "lowpass";
-    filter.frequency.setValueAtTime(1800, when);
-    filter.Q.value = 0.9;
-
-    gain.gain.setValueAtTime(0.0001, when);
-    gain.gain.exponentialRampToValueAtTime(level, when + 0.012);
-    gain.gain.exponentialRampToValueAtTime(0.0001, when + duration);
-
-    osc.connect(filter);
-    filter.connect(gain);
-    gain.connect(musicBus);
-    osc.start(when);
-    osc.stop(when + duration + 0.03);
-  }
-
-  const melody = [
-    [261.63, 329.63, 392.00, 523.25],
-    [293.66, 349.23, 440.00, 587.33],
-    [329.63, 392.00, 493.88, 659.25],
-    [261.63, 392.00, 523.25, 698.46],
-    [293.66, 440.00, 523.25, 659.25],
-    [329.63, 392.00, 523.25, 783.99]
-  ];
-  let phraseIndex = 0;
-
-  function scheduleMelody() {
-    if (!audioContext || !enabled || !isHomeActive() || audioContext.state !== "running") return;
-    const now = audioContext.currentTime + 0.08;
-    const phrase = melody[phraseIndex % melody.length];
-    phraseIndex += 1;
-
-    playHarp(phrase[0] / 2, now, 2.0, 0.030);
-    playCelesta(phrase[0], now + 0.00, 2.5, 0.056);
-    playCelesta(phrase[1], now + 1.25, 2.5, 0.050);
-    playHarp(phrase[2] / 2, now + 1.85, 1.9, 0.028);
-    playCelesta(phrase[2], now + 2.55, 2.9, 0.058);
-    playCelesta(phrase[3], now + 4.05, 3.2, 0.062);
-  }
-
-  function sparkleBurst() {
-    if (!audioContext || !enabled || !isHomeActive() || audioContext.state !== "running") return;
-    const now = audioContext.currentTime;
-    const notes = [1046.50, 1174.66, 1318.51, 1567.98];
-    const count = 2 + Math.floor(Math.random() * 2);
-    for (let i = 0; i < count; i += 1) {
-      const freq = notes[Math.floor(Math.random() * notes.length)];
-      playCelesta(freq, now + i * (0.18 + Math.random() * 0.06), 1.6 + Math.random() * 1.1, 0.028 + Math.random() * 0.014);
-    }
-  }
-
-  function stopSchedulers() {
-    musicGeneration += 1;
-    if (melodyTimer) window.clearTimeout(melodyTimer);
-    if (sparkleTimer) window.clearTimeout(sparkleTimer);
-    melodyTimer = 0;
-    sparkleTimer = 0;
-  }
-
-  function startSchedulers() {
-    stopSchedulers();
-    const generation = musicGeneration;
-
-    const melodyLoop = () => {
-      if (generation !== musicGeneration || !enabled || !isHomeActive()) return;
-      scheduleMelody();
-      melodyTimer = window.setTimeout(melodyLoop, 6800);
+  function fadeTo(target, duration = 650) {
+    const track = getAudio();
+    cancelFade();
+    const startVolume = track.volume;
+    const startTime = performance.now();
+    const step = now => {
+      const t = Math.min(1, (now - startTime) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      track.volume = Math.max(0, Math.min(TARGET_VOLUME, startVolume + (target - startVolume) * eased));
+      if (t < 1) fadeFrame = requestAnimationFrame(step);
+      else fadeFrame = 0;
     };
-
-    const sparkleLoop = () => {
-      if (generation !== musicGeneration || !enabled || !isHomeActive()) return;
-      sparkleBurst();
-      sparkleTimer = window.setTimeout(sparkleLoop, 2600 + Math.random() * 2500);
-    };
-
-    scheduleMelody();
-    melodyTimer = window.setTimeout(melodyLoop, 6800);
-    sparkleTimer = window.setTimeout(sparkleLoop, 1800 + Math.random() * 1200);
+    fadeFrame = requestAnimationFrame(step);
   }
 
-  async function fadeIn() {
+  function bindResumeGesture() {
+    if (resumeBound) return;
+    resumeBound = true;
+    const resume = async () => {
+      resumeBound = false;
+      document.removeEventListener("pointerdown", resume, true);
+      document.removeEventListener("keydown", resume, true);
+      if (enabled && isHomeActive()) await playMusic();
+    };
+    document.addEventListener("pointerdown", resume, true);
+    document.addEventListener("keydown", resume, true);
+  }
+
+  async function playMusic() {
     if (!enabled || !isHomeActive()) return;
-    initAudio();
-    if (!audioContext || !masterGain) return;
-
-    try { await audioContext.resume(); } catch {}
-
-    const now = audioContext.currentTime;
-    masterGain.gain.cancelScheduledValues(now);
-    masterGain.gain.setValueAtTime(Math.max(masterGain.gain.value, 0.0001), now);
-    masterGain.gain.exponentialRampToValueAtTime(TARGET_VOLUME, now + 0.9);
-    startSchedulers();
+    const track = getAudio();
+    try {
+      track.volume = Math.max(track.volume, 0.001);
+      await track.play();
+      fadeTo(TARGET_VOLUME, 900);
+    } catch (_) {
+      bindResumeGesture();
+    }
   }
 
-  function fadeOut() {
-    stopSchedulers();
-    if (!audioContext || !masterGain) return;
-
-    const now = audioContext.currentTime;
-    masterGain.gain.cancelScheduledValues(now);
-    masterGain.gain.setValueAtTime(Math.max(masterGain.gain.value, 0.0001), now);
-    masterGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+  function pauseMusic() {
+    if (!audio) return;
+    fadeTo(0, 420);
+    pauseTimer = setTimeout(() => {
+      if (audio && (!enabled || !isHomeActive())) audio.pause();
+    }, 460);
   }
 
-  async function setEnabled(value, { userGesture = false } = {}) {
+  async function setEnabled(value) {
     enabled = Boolean(value);
     storeSetting(enabled);
     updateControl();
-
-    if (enabled && isHomeActive()) {
-      if (userGesture) initAudio();
-      await fadeIn();
-    } else {
-      fadeOut();
-    }
+    if (enabled && isHomeActive()) await playMusic();
+    else pauseMusic();
   }
 
   musicButton.addEventListener("click", async event => {
     event.preventDefault();
     event.stopPropagation();
-    await setEnabled(!enabled, { userGesture: true });
+    await setEnabled(!enabled);
   });
 
   new MutationObserver(() => {
     if (isHomeActive()) {
-      if (enabled) fadeIn();
+      if (enabled) playMusic();
     } else {
-      fadeOut();
+      pauseMusic();
     }
   }).observe(homeScreen, { attributes: true, attributeFilter: ["class"] });
 
-  const resumeFromGesture = async () => {
-    if (enabled && isHomeActive()) await fadeIn();
+  const firstGesture = async () => {
+    if (enabled && isHomeActive()) await playMusic();
   };
-  document.addEventListener("pointerdown", resumeFromGesture, { once: true, capture: true });
-  document.addEventListener("keydown", resumeFromGesture, { once: true, capture: true });
+  document.addEventListener("pointerdown", firstGesture, { once: true, capture: true });
+  document.addEventListener("keydown", firstGesture, { once: true, capture: true });
 
   window.__TF_HOME_MUSIC_API = {
-    activateFromGesture: async () => { await setEnabled(enabled, { userGesture: true }); },
-    setEnabled: async value => { await setEnabled(value, { userGesture: true }); }
+    activateFromGesture: async () => { await setEnabled(enabled); },
+    setEnabled: async value => { await setEnabled(value); },
+    getAudio: () => getAudio()
   };
 
   updateControl();
-  if (enabled && isHomeActive()) fadeIn();
+  if (enabled && isHomeActive()) playMusic();
 })();
 </script>
 <!-- TF_HOME_FOREST_MUSIC_SCRIPT_END -->

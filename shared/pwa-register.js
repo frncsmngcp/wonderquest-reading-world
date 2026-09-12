@@ -34,6 +34,11 @@
     updatePrompt = null;
   }
 
+  function announceUpdateAvailable() {
+    try { document.documentElement.dataset.wqUpdateAvailable = 'true'; } catch (_) {}
+    try { window.dispatchEvent(new CustomEvent('wonderquest:update-available')); } catch (_) {}
+  }
+
   function ensureUpdateStyles() {
     if (document.getElementById('wq-update-prompt-style')) return;
     const style = document.createElement('style');
@@ -62,6 +67,7 @@
 
   function showUpdatePrompt(reg) {
     if (!reg?.waiting) return;
+    announceUpdateAvailable();
     if (updatePrompt) {
       updatePrompt.classList.toggle('is-collapsed', updatePromptCollapsed);
       return;

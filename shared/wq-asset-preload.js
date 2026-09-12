@@ -58,6 +58,7 @@
       localStorage.setItem(STORAGE_KEY, 'done');
       localStorage.setItem(EVER_KEY, 'done');
     } catch (_) {}
+    try { window.dispatchEvent(new CustomEvent('wonderquest:offline-ready')); } catch (_) {}
   }
 
   function clearDone() {

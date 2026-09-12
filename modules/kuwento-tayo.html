@@ -500,8 +500,8 @@ function renderQuestion(){const b=state.book,q=b.questions[state.qIndex];$('#lef
  const letters=['A','B','C'];$('#rightPage').innerHTML=`<div class="question-wrap"><div class="q-number">Question ${state.qIndex+1} of 5</div><div class="q-text">${q[0]}</div><div class="choices">${q[1].map((c,i)=>`<button class="choice" data-choice="${i}"><b>${letters[i]}.</b> ${c}</button>`).join('')}</div><div class="q-progress">${[0,1,2,3,4].map(i=>`<span class="q-dot ${i<=state.qIndex?'on':''}"></span>`).join('')}</div></div>`;
  $$('.choice').forEach(btn=>btn.onclick=()=>answerQuestion(Number(btn.dataset.choice)));$('#prevBtn').disabled=state.qIndex===0;$('#nextBtn').disabled=true;state.qLocked=false;requestAnimationFrame(fitQuestionText);}
 function answerQuestion(i){if(state.qLocked)return;state.qLocked=true;const q=state.book.questions[state.qIndex];const correct=q[2];$$('.choice').forEach((b,idx)=>{if(idx===correct)b.classList.add('correct');else if(idx===i)b.classList.add('wrong')});if(i===correct){state.qScore++;successTone()}else errorTone();setTimeout(()=>{if(state.qIndex<4){state.qIndex++;renderReader();if(settings.autoVoice)readCurrent()}else finishBook()},850)}
-function nextPage(){if(state.mode==='story'){if(state.scene<state.book.scenes.length-1){state.scene++;renderReader();if(settings.autoVoice)readCurrent()}else{state.mode='quiz';state.qIndex=0;state.qScore=0;renderReader();toast(state.lang==='en'?'Time for 5 comprehension questions!':'Oras na para sa 5 tanong!');if(settings.autoVoice)readCurrent()}}}
-function prevPage(){if(state.mode==='story'){if(state.scene>0){state.scene--;renderReader()}}else{if(state.qIndex>0){state.qIndex--;renderReader()}else{state.mode='story';state.scene=state.book.scenes.length-1;renderReader()}}}
+function nextPage(){cancelReadAudio();if(state.mode==='story'){if(state.scene<state.book.scenes.length-1){state.scene++;renderReader();if(settings.autoVoice)readCurrent()}else{state.mode='quiz';state.qIndex=0;state.qScore=0;renderReader();toast(state.lang==='en'?'Time for 5 comprehension questions!':'Oras na para sa 5 tanong!');if(settings.autoVoice)readCurrent()}}}
+function prevPage(){cancelReadAudio();if(state.mode==='story'){if(state.scene>0){state.scene--;renderReader()}}else{if(state.qIndex>0){state.qIndex--;renderReader()}else{state.mode='story';state.scene=state.book.scenes.length-1;renderReader()}}}
 function finishBook(){const stars=state.qScore===5?3:state.qScore===4?2:state.qScore===3?1:0;const key=state.lang+'-'+state.book.n;const prev=progress[key]||{score:0,stars:0};progress[key]={score:Math.max(prev.score,state.qScore),stars:Math.max(prev.stars,stars),badge:state.book.badge,title:state.book.title};saveProgress();reportAnalytics('kuwento_story_complete',{story_language:state.lang,story_number:state.book.n,story_title:state.book.title,quiz_score:state.qScore,stars_earned:stars});$('#resultStars').textContent=stars?('★'.repeat(stars)+'☆'.repeat(3-stars)):'☆☆☆';$('#resultMsg').textContent=`${state.qScore} / 5 • ${stars?state.book.badge:'Try again to earn a badge!'}`;$('#resultModal').classList.add('open');celebrateTone();}
 function showBadges(){const books=STORIES[state.lang];const unlocked=books.filter(b=>progress[state.lang+'-'+b.n]);$('#badgeSummary').textContent=`${languageLabel()}: ${unlocked.length} / 30 stories completed`;$('#badgeGrid').innerHTML=books.map(b=>{const p=progress[state.lang+'-'+b.n];return `<div class="badge-card ${p?'':'locked'}"><div class="badge-icon">${p?'⭐':'🔒'}</div><div class="badge-name">${b.badge}</div><div class="badge-score">Book ${b.n} • ${p?`Best: ${p.score}/5`:'Not unlocked yet'}</div></div>`}).join('');$('#badgesModal').classList.add('open')}
 
@@ -517,7 +517,7 @@ $$('.js-settings').forEach(b=>b.onclick=()=>$('#settingsModal').classList.add('o
 $('#bgmToggle').onclick=()=>{settings.bgm=!settings.bgm;$('#bgmToggle').classList.toggle('on',settings.bgm);$('#bgmToggle').textContent=settings.bgm?'ON':'OFF';saveSettings();if(settings.bgm)startAudioIfNeeded();else setMusicState()};
 $('#bgmVol').oninput=e=>{settings.bgmVol=+e.target.value;saveSettings();if(settings.bgm)startAudioIfNeeded();else setMusicState()};$('#autoVoice').onclick=()=>{settings.autoVoice=!settings.autoVoice;$('#autoVoice').classList.toggle('on',settings.autoVoice);$('#autoVoice').textContent=settings.autoVoice?'ON':'OFF';saveSettings()};$('#speechRate').oninput=e=>{settings.speechRate=+e.target.value;saveSettings()};$('#focusToggle').onclick=()=>{settings.readingFocus=!settings.readingFocus;settings.focusPreferenceSet=true;$('#focusToggle').classList.toggle('on',settings.readingFocus);$('#focusToggle').textContent=settings.readingFocus?'ON':'OFF';saveSettings();if(state.screen==='reader'&&state.mode==='story')renderStory()};$('#focusUnit').onchange=e=>{settings.focusUnit=e.target.value==='word'?'word':'syllable';settings.readingFocus=true;settings.focusPreferenceSet=true;$('#focusToggle').classList.add('on');$('#focusToggle').textContent='ON';saveSettings();if(state.screen==='reader'&&state.mode==='story')renderStory()};
 $('#resetProgress').onclick=()=>{if(confirm('Reset all Kuwento Tayo reading progress and badges?')){progress={};saveProgress();renderShelf();toast('Reading progress reset.')}};
-$('#doorEn').onclick=()=>openLibrary('en');$('#doorFil').onclick=()=>openLibrary('fil');$('#shelfPrev').onclick=()=>{state.shelfPage--;renderShelf();clickChime()};$('#shelfNext').onclick=()=>{state.shelfPage++;renderShelf();clickChime()};$('#readerBack').onclick=()=>{speechSynthesis.cancel();setScreen('shelf');renderShelf();clickChime()};$('#prevBtn').onclick=prevPage;$('#nextBtn').onclick=nextPage;$('#readAudio').onclick=readCurrent;
+$('#doorEn').onclick=()=>openLibrary('en');$('#doorFil').onclick=()=>openLibrary('fil');$('#shelfPrev').onclick=()=>{state.shelfPage--;renderShelf();clickChime()};$('#shelfNext').onclick=()=>{state.shelfPage++;renderShelf();clickChime()};$('#readerBack').onclick=()=>{cancelReadAudio();setScreen('shelf');renderShelf();clickChime()};$('#prevBtn').onclick=prevPage;$('#nextBtn').onclick=nextPage;$('#readAudio').onclick=readCurrent;
 $('#retryQuiz').onclick=()=>{$('#resultModal').classList.remove('open');state.mode='quiz';state.qIndex=0;state.qScore=0;renderReader()};$('#backShelfResult').onclick=()=>{$('#resultModal').classList.remove('open');setScreen('shelf');renderShelf()};
 async function toggleFullscreen(){
  try{await window.tfTogglePortableFullscreen?.();}catch(_){ }
@@ -525,6 +525,34 @@ async function toggleFullscreen(){
 }
 
 // Voice — independent English and Filipino selectors.
+const FILIPINO_AUDIO_MANIFEST='../assets/audio/kuwento-tayo/filipino-manifest.json';
+let filipinoAudioMap={},filipinoAudioReady=false,currentReadAudio=null,readAudioToken=0;
+function audioKey(text){return String(text||'').trim().toLocaleLowerCase('fil').normalize('NFC')}
+async function loadFilipinoAudioMap(){
+ try{const res=await fetch(FILIPINO_AUDIO_MANIFEST,{cache:'no-store'});if(res.ok)filipinoAudioMap=await res.json()}catch(_){filipinoAudioMap={}}
+ filipinoAudioReady=true;
+}
+function getFilipinoAudioSrc(text){return filipinoAudioMap[audioKey(text)]||''}
+function cancelReadAudio(){
+ readAudioToken++;
+ try{currentReadAudio&&currentReadAudio.pause();if(currentReadAudio)currentReadAudio.currentTime=0}catch(_){}
+ currentReadAudio=null;
+ try{speechSynthesis.cancel()}catch(_){}
+}
+function playGeneratedFilipino(text,onFallback){
+ if(state.lang!=='fil'||!filipinoAudioReady)return false;
+ const src=getFilipinoAudioSrc(text);
+ if(!src)return false;
+ cancelReadAudio();
+ const token=readAudioToken,audio=new Audio(src);
+ currentReadAudio=audio;
+ audio.preload='auto';
+ audio.playbackRate=Math.max(.6,Math.min(1.4,Number(settings.speechRate)||1));
+ audio.addEventListener('ended',()=>{if(token===readAudioToken)currentReadAudio=null},{once:true});
+ audio.addEventListener('error',()=>{if(token!==readAudioToken)return;currentReadAudio=null;onFallback?.()},{once:true});
+ audio.play().catch(()=>{if(token!==readAudioToken)return;currentReadAudio=null;onFallback?.()});
+ return true;
+}
 let voices=[];
 function voiceKey(v){return v.voiceURI||v.name||''}
 function voiceMatches(v,lang){
@@ -561,7 +589,9 @@ speechSynthesis.onvoiceschanged=loadVoices;loadVoices();
 $('#voiceSelectEn').onchange=e=>{settings.voiceNameEn=e.target.value;saveSettings()};
 $('#voiceSelectFil').onchange=e=>{settings.voiceNameFil=e.target.value;saveSettings()};
 function selectedVoice(lang){const key=lang==='fil'?settings.voiceNameFil:settings.voiceNameEn;return voices.find(v=>voiceKey(v)===key)||preferredVoice(lang,voices.filter(v=>voiceMatches(v,lang)))||null}
-function readCurrent(){if(!state.book)return;speechSynthesis.cancel();let text='';if(state.mode==='story')text=state.book.scenes[state.scene];else{const q=state.book.questions[state.qIndex];text=q[0]+'. A. '+q[1][0]+'. B. '+q[1][1]+'. C. '+q[1][2]}const u=new SpeechSynthesisUtterance(text);u.rate=settings.speechRate;u.lang=state.lang==='fil'?'fil-PH':'en-US';const v=selectedVoice(state.lang);if(v)u.voice=v;speechSynthesis.speak(u);}
+function readWithBrowserVoice(text){cancelReadAudio();const u=new SpeechSynthesisUtterance(text);u.rate=settings.speechRate;u.lang=state.lang==='fil'?'fil-PH':'en-US';const v=selectedVoice(state.lang);if(v)u.voice=v;speechSynthesis.speak(u)}
+function readCurrent(){if(!state.book)return;let text='';if(state.mode==='story')text=state.book.scenes[state.scene];else{const q=state.book.questions[state.qIndex];text=q[0]+'. A. '+q[1][0]+'. B. '+q[1][1]+'. C. '+q[1][2]}if(playGeneratedFilipino(text,()=>readWithBrowserVoice(text)))return;readWithBrowserVoice(text);}
+loadFilipinoAudioMap();
 
 // Procedural serene garden BGM — offline, no external audio file.
 let audioCtx=null,master=null,musicTimer=null,birdTimer=null,windSrc=null;
