@@ -1,0 +1,2373 @@
+<!doctype html>
+<!-- Teacher Francis Reading World PWA module: letter-slide -->
+<html lang="en">
+<head>
+<meta name="wq-stage-standard" content="1536x864-16:9-v52">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="color-scheme" content="only light">
+<meta name="supported-color-schemes" content="light">
+<title>WonderQuest: Letter Slide</title>
+<style>
+@font-face{font-family:"TF Portable Andika";src:url("../assets/d6f963bddedd6b61549a.ttf") format("truetype");font-display:swap}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:radial-gradient(circle at top,#1782b7,#08304d 70%);font-family:"Comic Sans MS","Chalkboard SE","Trebuchet MS","Arial Rounded MT Bold","TF Portable Andika",system-ui,sans-serif}
+body{touch-action:manipulation}
+#app{position:fixed;inset:0;display:block;overflow:hidden;background:radial-gradient(circle at top,#1782b7,#08304d 70%)}
+#wq16stage{position:absolute;left:50%;top:50%;width:1536px;height:864px;transform-origin:50% 50%;overflow:hidden;background:radial-gradient(circle at top,#1782b7,#08304d 70%);box-shadow:0 0 70px rgba(0,0,0,.22)}
+#stage{position:absolute;left:62.625px;top:0;width:1672px;height:1024px;transform-origin:0 0;transform:scale(.84375);}
+.screen{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .28s ease}
+.screen.active{opacity:1;pointer-events:auto}
+#homeScreen{left:-74.222222px;top:0;width:1820.444444px;height:1024px;right:auto;bottom:auto}
+.home-inner{position:absolute;left:0;top:0;width:1820.444444px;height:1024px;background:url('../assets/wq-letter-slide-home-v51.webp') center/cover no-repeat}
+#playScreen{left:-74.222222px;top:0;width:1820.444444px;height:1024px;right:auto;bottom:auto;overflow:hidden}
+.play-normalize{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;transform:scale(1.0887825622);overflow:visible}
+.play-inner{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform;transition:transform .62s cubic-bezier(.22,.78,.18,1);background:url('../assets/0ee3e0f352e730e650f4.png') center/cover no-repeat}
+.invis-btn{position:absolute;background:transparent;border:0;cursor:pointer;outline:none;overflow:hidden;isolation:isolate;transition:background .12s ease,box-shadow .12s ease,transform .12s ease,filter .12s ease}
+.invis-btn:focus-visible{box-shadow:0 0 0 4px rgba(255,255,255,.65),0 0 0 8px rgba(26,114,214,.4);border-radius:24px}
+.invis-btn::before{
+  content:"";
+  position:absolute;
+  z-index:2;
+  top:-18%;
+  bottom:-18%;
+  left:-65%;
+  width:46%;
+  pointer-events:none;
+  border-radius:inherit;
+  background:linear-gradient(
+    112deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,.08) 20%,
+    rgba(255,255,255,.55) 48%,
+    rgba(255,255,255,.14) 69%,
+    rgba(255,255,255,0) 100%
+  );
+  transform:skewX(-17deg);
+  opacity:0;
+}
+.invis-btn:hover{
+  background:rgba(255,255,255,.055);
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,.24),0 5px 14px rgba(0,0,0,.08);
+  filter:brightness(1.04);
+}
+.invis-btn:hover::before{
+  opacity:1;
+  animation:glassSheenSweep .72s ease-out;
+}
+@keyframes glassSheenSweep{
+  0%{left:-65%;opacity:0}
+  15%{opacity:.92}
+  100%{left:128%;opacity:0}
+}
+
+.invis-btn.is-pressed{background:rgba(255,255,255,.24);box-shadow:inset 0 0 0 5px rgba(255,255,255,.72),0 5px 16px rgba(0,0,0,.18);transform:scale(.965);filter:brightness(1.08)}
+.invis-btn.click-flash{animation:buttonClickFlash .34s ease}
+@keyframes buttonClickFlash{
+  0%{background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 0 rgba(255,255,255,0)}
+  35%{background:rgba(255,255,255,.35);box-shadow:inset 0 0 0 5px rgba(255,255,255,.82),0 0 18px rgba(255,255,255,.38)}
+  100%{background:transparent;box-shadow:inset 0 0 0 0 rgba(255,255,255,0)}
+}
+
+.overlay-display{position:absolute;pointer-events:none;user-select:none}
+.letter-box{display:flex;align-items:center;justify-content:center;text-align:center;line-height:1;color:#1ea2d4;font-family:"Comic Sans MS","Chalkboard SE","Trebuchet MS","Arial Rounded MT Bold","TF Portable Andika",sans-serif;font-weight:900;letter-spacing:.5px;text-shadow:0 4px 0 rgba(255,255,255,.95),0 10px 18px rgba(0,0,0,.12)}
+#activeLetter{left:28px;top:422px;width:268px;height:300px;font-size:198px;color:#1b9fd3;overflow:hidden;padding:12px}
+#activeLetter.multiUnit{font-size:132px;letter-spacing:-2px}
+#activeLetter.triUnit{font-size:104px;letter-spacing:-4px}
+#currentLetter{left:1266px;top:178px;width:308px;height:242px;font-size:180px;color:#41b43f;overflow:hidden;padding:10px}
+#currentLetter.multiUnit{font-size:126px;letter-spacing:-2px}
+#currentLetter.triUnit{font-size:98px;letter-spacing:-3px}
+#currentLetter.wordDone{font-size:84px;letter-spacing:2px;color:#41b43f}
+#activeLetter.wordDone,#currentLetter.wordDone{white-space:nowrap;line-height:1;letter-spacing:0}
+#activeLetter.multiUnit,#currentLetter.multiUnit{font-size:128px}
+#activeLetter.triUnit,#currentLetter.triUnit{font-size:104px}
+
+.progress-dot{position:absolute;width:38px;height:38px;border-radius:50%;background:transparent;box-shadow:inset 0 0 0 5px rgba(0,0,0,0);transition:transform .2s ease, opacity .2s ease;opacity:0}
+.progress-dot.on{opacity:1;background:#54d46d;border:4px solid #9d7843;box-shadow:0 4px 0 rgba(90,60,22,.35), inset 0 2px 0 rgba(255,255,255,.35);transform:scale(.98)}
+#slideLayer,#trayLayer{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+.slide-letter{position:absolute;transform:translate(-50%,-50%);font-family:"Comic Sans MS","Chalkboard SE","Trebuchet MS","Arial Rounded MT Bold","TF Portable Andika",sans-serif;font-weight:900;line-height:1;color:#e7c98f;text-shadow:0 2px 0 rgba(126,82,28,.42),0 6px 12px rgba(0,0,0,.08);opacity:.38;transition:opacity .25s ease, transform .25s ease, color .25s ease, filter .25s ease;filter:saturate(.45) brightness(1.03) drop-shadow(0 2px 2px rgba(0,0,0,.08));z-index:8}
+.slide-letter.next{opacity:.42;color:#e4c68d;transform:translate(-50%,-50%) scale(.98);filter:saturate(.35) brightness(1.05)}
+.slide-letter.active{opacity:1;color:#fff5cc;transform:translate(-50%,-50%) scale(1.18);filter:saturate(1) brightness(1.05) drop-shadow(0 3px 3px rgba(0,0,0,.13));animation:popLetter .35s ease}
+.slide-letter.done{opacity:1;color:#fff5cc;transform:translate(-50%,-50%) scale(1.08);filter:saturate(1) brightness(1.04) drop-shadow(0 3px 3px rgba(0,0,0,.12))}
+.tray-letter{position:absolute;transform:translate(-50%,-50%);font-family:"Comic Sans MS","Chalkboard SE","Trebuchet MS","Arial Rounded MT Bold","TF Portable Andika",sans-serif;font-weight:900;line-height:1;color:#fff7d8;text-shadow:0 3px 0 rgba(110,62,12,.72),0 0 12px rgba(255,246,189,.15);opacity:0;transition:opacity .24s ease, transform .24s ease;z-index:8}
+.tray-letter.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#kid{position:absolute;width:138px;height:auto;transform:translate(-50%,-50%) rotate(0deg);transform-origin:50% 62%;transition:left .38s cubic-bezier(.22,.82,.25,1),top .38s cubic-bezier(.22,.82,.25,1),transform .38s cubic-bezier(.22,.82,.25,1);pointer-events:none;filter:drop-shadow(0 12px 16px rgba(0,0,0,.2));z-index:4}
+.word-card-hud{
+  position:absolute;
+  left:0;
+  top:0;
+  width:1672px;
+  height:941px;
+  z-index:600;
+  display:grid;
+  place-items:center;
+  pointer-events:none;
+}
+.badge{
+  position:relative;
+  left:auto;
+  top:auto;
+  z-index:1;
+  min-width:1080px;
+  max-width:1420px;
+  box-sizing:border-box;
+  transform:none;
+  padding:48px 104px 54px;
+  border-radius:78px;
+  border:11px solid #ff9f2f;
+  outline:7px solid rgba(255,255,255,.9);
+  outline-offset:-19px;
+  background:
+    radial-gradient(circle at 9% 18%,rgba(255,255,255,.94) 0 8px,transparent 9px),
+    radial-gradient(circle at 91% 22%,rgba(255,255,255,.9) 0 7px,transparent 8px),
+    radial-gradient(circle at 14% 80%,rgba(255,255,255,.85) 0 6px,transparent 7px),
+    radial-gradient(circle at 87% 78%,rgba(255,255,255,.9) 0 8px,transparent 9px),
+    linear-gradient(135deg,#fff19b 0%,#ffd46a 23%,#ffb4d6 50%,#b9e9ff 76%,#c8f5b4 100%);
+  box-shadow:
+    0 18px 0 #9e6221,
+    0 32px 54px rgba(0,0,0,.3),
+    inset 0 9px 20px rgba(255,255,255,.74),
+    inset 0 -9px 18px rgba(255,149,64,.16);
+  font-size:138px;
+  font-family:"Comic Sans MS","Chalkboard SE","Trebuchet MS","Arial Rounded MT Bold","TF Portable Andika",sans-serif;
+  font-weight:900;
+  color:#7a3f13;
+  -webkit-text-stroke:2px rgba(255,255,255,.36);
+  text-shadow:
+    0 5px 0 rgba(255,255,255,.94),
+    0 10px 0 rgba(150,81,22,.14);
+  letter-spacing:1px;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  line-height:1;
+  pointer-events:none;
+  animation:wholeWordPop .5s cubic-bezier(.18,.88,.18,1.12);
+}
+.badge::before,.badge::after{
+  content:"★";
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%) rotate(-12deg);
+  font-size:72px;
+  line-height:1;
+  color:#fff;
+  text-shadow:0 4px 0 rgba(218,119,29,.35);
+  opacity:.94;
+}
+.badge::before{left:34px}
+.badge::after{right:34px;transform:translateY(-50%) rotate(12deg)}
+.badge.hidden{display:none}
+@keyframes wholeWordPop{
+  0%{opacity:0;transform:translateY(22px) scale(.58)}
+  62%{opacity:1;transform:translateY(-9px) scale(1.07)}
+  82%{transform:translateY(3px) scale(.985)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+  62%{opacity:1;transform:translateX(-50%) translateY(-8px) scale(1.07)}
+  82%{transform:translateX(-50%) translateY(2px) scale(.985)}
+  100%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
+}68%{opacity:1;transform:translateX(-50%) scale(1.07)}100%{opacity:1;transform:translateX(-50%) scale(1)}}70%{opacity:1;transform:translateX(-50%) scale(1.06)}100%{opacity:1;transform:translateX(-50%) scale(1)}}
+.badge.hidden{display:none}
+.info-pill{position:absolute;right:42px;bottom:24px;padding:10px 18px;border-radius:999px;background:rgba(255,255,255,.18);backdrop-filter:blur(4px);font-size:16px;font-weight:700;color:#fff;pointer-events:none;opacity:.0}
+@keyframes popLetter{0%{transform:translate(-50%,-50%) scale(1.0)}45%{transform:translate(-50%,-50%) scale(1.42)}100%{transform:translate(-50%,-50%) scale(1.18)}}
+.overlay{position:fixed;inset:0;background:rgba(8,31,47,.45);display:none !important;visibility:hidden;opacity:0;align-items:center;justify-content:center;padding:18px;z-index:50}
+.overlay.open{display:flex !important;visibility:visible;opacity:1}
+.modal{width:min(94vw,560px);background:#fff8ef;border:6px solid #b97735;border-radius:28px;box-shadow:0 16px 40px rgba(0,0,0,.28);padding:22px 22px 18px}
+.modal.wide{width:min(95vw,980px)}
+.word-manager-modal{max-height:min(92vh,900px);overflow:auto}
+.word-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:8px 0 12px}
+.word-tab{
+  border:0;border-radius:16px;padding:11px 10px;
+  font:900 18px/1 "Comic Sans MS","Chalkboard SE",sans-serif;
+  color:#fff;background:#3a9bd9;cursor:pointer;
+  box-shadow:0 4px 0 rgba(0,0,0,.18)
+}
+.word-tab[data-word-mode="easy"]{background:#62b82b}
+.word-tab[data-word-mode="medium"]{background:#299de0}
+.word-tab[data-word-mode="hard"]{background:#e34f37}
+.word-tab[data-word-mode="custom"]{background:#8b59d6}
+.word-tab.active{outline:4px solid #ffd65a;transform:translateY(-1px)}
+.manager-note{font-size:16px!important;margin:4px 4px 12px!important;text-align:center}
+.manager-summary{
+  display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;
+  margin:8px 0;padding:10px 14px;border-radius:16px;background:#f3e2c9;
+  color:#704114;font-weight:900;font-size:17px
+}
+.level-words-input{min-height:100px;max-height:150px;font-size:18px}
+.manager-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:12px 0}
+.manager-actions button{
+  border:0;border-radius:16px;padding:11px 16px;
+  font:900 17px/1 "Comic Sans MS","Chalkboard SE",sans-serif;
+  background:#62b72a;color:#fff;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.2)
+}
+.manager-actions button.secondary{background:#8e5bdb}
+.word-chip-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));
+  gap:9px;max-height:310px;overflow:auto;padding:8px 4px 4px
+}
+.word-chip{
+  border:3px solid #d1a56f;border-radius:15px;padding:9px 8px;
+  background:#fffaf2;color:#6a411e;cursor:pointer;
+  font:900 17px/1.1 "Comic Sans MS","Chalkboard SE",sans-serif;
+  box-shadow:0 3px 0 rgba(112,73,29,.18);
+  transition:transform .12s ease,background .12s ease,border-color .12s ease
+}
+.word-chip:hover{transform:translateY(-2px);background:#fff2c8}
+.word-chip.selected{background:#fff0a6;border-color:#f0a400;box-shadow:0 0 0 3px rgba(255,203,54,.28),0 3px 0 rgba(112,73,29,.18)}
+.word-chip .num{font-size:11px;opacity:.6;display:block;margin-bottom:2px}
+
+.modal h2{margin:0 0 14px;font-size:34px;color:#704114;text-align:center}
+.modal p{margin:10px 4px 0;color:#6f4721;font-size:18px;line-height:1.45}
+.row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:12px 0;font-size:23px;font-weight:700;color:#663d1a}
+.toggle, .modalBtns button{border:0;border-radius:18px;padding:12px 20px;font-size:20px;font-weight:900;color:#fff;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.2)}
+.toggle{background:#1fa8b7;min-width:96px}
+.modalBtns{display:flex;justify-content:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+.modalBtns button{background:#64b72a}
+.modalBtns button.secondary{background:#8e5bdb}
+.modalBtns button.danger{background:#df4c46}
+.modalBtns button.danger:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.2)}
+
+.range-wrap{margin:8px 0 4px}
+input[type=range]{width:100%}
+textarea{width:100%;min-height:170px;border:4px solid #d5b387;border-radius:20px;padding:14px;font:700 20px/1.35 "Comic Sans MS","Chalkboard SE",sans-serif;resize:vertical;outline:none}
+.hidden-access{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+
+
+
+/* v1.4.2 phone portrait compact controls */
+@media (max-width:600px) and (orientation:portrait){
+  #playScreen.active{touch-action:none}
+  .overlay{padding:6px;background:rgba(8,31,47,.30)}
+  .modal{width:min(80vw,350px);max-height:58vh;overflow:auto;border-width:3px;border-radius:18px;padding:12px 14px 11px;box-shadow:0 10px 26px rgba(0,0,0,.24)}
+  .modal.wide{width:min(88vw,390px)}
+  .modal h2{font-size:24px;margin-bottom:8px}
+  .modal p,.manager-note{font-size:13px!important;line-height:1.3!important;margin:6px 2px!important}
+  .row{gap:8px;margin:7px 0;font-size:17px}
+  .toggle,.modalBtns button{border-radius:13px;padding:8px 11px;font-size:15px;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+  .toggle{min-width:72px}
+  .modalBtns{gap:7px;margin-top:9px}
+  .modalBtns button{max-width:100%}
+  .range-wrap{margin:4px 0 2px}
+  textarea{min-height:82px;border-width:2px;border-radius:13px;padding:9px;font-size:14px}
+  .word-manager-modal{max-height:62vh}
+  .word-tabs{gap:5px;margin:5px 0 8px}
+  .word-tab{border-radius:11px;padding:7px 5px;font-size:12px;box-shadow:0 2px 0 rgba(0,0,0,.16)}
+  .manager-summary{gap:5px;margin:5px 0;padding:7px 9px;border-radius:11px;font-size:12px}
+  .level-words-input{min-height:62px;max-height:88px;font-size:13px}
+  .manager-actions{gap:5px;margin:7px 0}
+  .manager-actions button{border-radius:11px;padding:7px 9px;font-size:12px;box-shadow:0 2px 0 rgba(0,0,0,.16)}
+  .word-chip-grid{grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:5px;max-height:150px;padding:4px 2px}
+  .word-chip{border-width:2px;border-radius:10px;padding:6px 5px;font-size:12px;box-shadow:0 2px 0 rgba(112,73,29,.16)}
+}
+
+:fullscreen,:-webkit-full-screen{background:#08304d}
+:fullscreen #app,:-webkit-full-screen #app{width:100vw;height:100vh}
+:fullscreen .overlay,:-webkit-full-screen .overlay{position:fixed;inset:0;width:100vw;height:100vh}
+
+
+/* v1.4.4 stronger phone sizing — Letter Slide settings */
+@media (max-width: 700px) and (orientation: portrait){
+  #settingsOverlay{padding:4px!important;align-items:center!important}
+  #settingsOverlay .modal{
+    width:min(70vw,280px)!important;
+    max-height:54vh!important;
+    padding:8px 10px 9px!important;
+    border-width:3px!important;
+    border-radius:15px!important;
+    overflow:auto!important;
+    box-shadow:0 8px 20px rgba(0,0,0,.22)!important;
+  }
+  #settingsOverlay .modal h2{font-size:19px!important;margin:0 0 5px!important}
+  #settingsOverlay .row{font-size:13px!important;line-height:1.1!important;gap:6px!important;margin:5px 0!important}
+  #settingsOverlay .toggle{min-width:55px!important;padding:6px 8px!important;border-radius:10px!important;font-size:12px!important;box-shadow:0 2px 0 rgba(0,0,0,.16)!important}
+  #settingsOverlay .range-wrap{margin:2px 0!important}
+  #settingsOverlay input[type=range]{height:22px!important}
+  #settingsOverlay .modalBtns{gap:5px!important;margin-top:6px!important}
+  #settingsOverlay .modalBtns button{padding:6px 8px!important;border-radius:10px!important;font-size:11px!important;line-height:1.1!important;box-shadow:0 2px 0 rgba(0,0,0,.16)!important}
+  #settingsOverlay #wordManagerBtn{width:100%!important}
+}
+@media (max-height: 560px) and (orientation: landscape){
+  #settingsOverlay{padding:3px!important;align-items:center!important}
+  #settingsOverlay .modal{
+    width:min(46vw,330px)!important;
+    max-height:78vh!important;
+    padding:7px 9px 8px!important;
+    border-width:3px!important;
+    border-radius:14px!important;
+    overflow:auto!important;
+    box-shadow:0 8px 20px rgba(0,0,0,.22)!important;
+  }
+  #settingsOverlay .modal h2{font-size:18px!important;margin:0 0 4px!important}
+  #settingsOverlay .row{font-size:12px!important;line-height:1.05!important;gap:6px!important;margin:4px 0!important}
+  #settingsOverlay .toggle{min-width:50px!important;padding:5px 7px!important;border-radius:9px!important;font-size:11px!important;box-shadow:0 2px 0 rgba(0,0,0,.15)!important}
+  #settingsOverlay .range-wrap{margin:1px 0!important}
+  #settingsOverlay input[type=range]{height:20px!important}
+  #settingsOverlay .modalBtns{gap:4px!important;margin-top:5px!important}
+  #settingsOverlay .modalBtns button{padding:5px 7px!important;border-radius:9px!important;font-size:10px!important;line-height:1.05!important;box-shadow:0 2px 0 rgba(0,0,0,.15)!important}
+  #settingsOverlay #wordManagerBtn{width:100%!important}
+}
+
+</style>
+
+<style id="wq-letter-slide-custom-mobile-v48">
+/* WonderQuest v48 — keep Letter Slide Custom List fully usable inside the
+   short landscape-shaped module viewport used by phones held in portrait. */
+#customOverlay{
+  overscroll-behavior:contain;
+  touch-action:pan-y;
+}
+#customOverlay .modal{
+  max-width:calc(100vw - 12px);
+  max-height:calc(100dvh - 12px);
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* The parent app letterboxes this module into a short, wide viewport on a
+   portrait phone. Use a compact two-column editor instead of stacking the
+   textarea, note and buttons vertically. */
+@media (max-height:520px){
+  #customOverlay{
+    padding:4px!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+  #customOverlay .modal{
+    width:min(96vw,760px)!important;
+    max-height:calc(100dvh - 8px)!important;
+    padding:8px 10px!important;
+    border-width:3px!important;
+    border-radius:15px!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1.55fr) minmax(175px,.9fr)!important;
+    grid-template-rows:auto 1fr!important;
+    column-gap:10px!important;
+    row-gap:5px!important;
+    overflow:hidden!important;
+  }
+  #customOverlay .modal h2{
+    grid-column:1/-1!important;
+    margin:0!important;
+    font-size:18px!important;
+    line-height:1.05!important;
+  }
+  #customOverlay #customInput{
+    grid-column:1!important;
+    grid-row:2!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:none!important;
+    resize:none!important;
+    margin:0!important;
+    padding:8px 10px!important;
+    border-width:2px!important;
+    border-radius:11px!important;
+    font-size:13px!important;
+    line-height:1.25!important;
+    overflow:auto!important;
+  }
+  #customOverlay .modal p{
+    grid-column:2!important;
+    grid-row:2!important;
+    align-self:start!important;
+    margin:2px 0 46px!important;
+    font-size:11px!important;
+    line-height:1.22!important;
+  }
+  #customOverlay .modalBtns{
+    grid-column:2!important;
+    grid-row:2!important;
+    align-self:end!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:6px!important;
+    margin:0!important;
+  }
+  #customOverlay .modalBtns button{
+    min-width:0!important;
+    padding:7px 7px!important;
+    border-radius:10px!important;
+    font-size:12px!important;
+    line-height:1!important;
+    box-shadow:0 2px 0 rgba(0,0,0,.16)!important;
+  }
+}
+
+/* Extra-tight embedded height (older iPhones / browser chrome visible). */
+@media (max-height:300px){
+  #customOverlay .modal{
+    grid-template-columns:minmax(0,1.7fr) minmax(150px,.8fr)!important;
+    padding:5px 7px!important;
+    column-gap:7px!important;
+    row-gap:3px!important;
+  }
+  #customOverlay .modal h2{font-size:14px!important}
+  #customOverlay #customInput{font-size:11px!important;padding:5px 7px!important;border-radius:8px!important}
+  #customOverlay .modal p{font-size:9px!important;line-height:1.12!important;margin:0 0 32px!important}
+  #customOverlay .modalBtns{gap:4px!important}
+  #customOverlay .modalBtns button{padding:5px 4px!important;font-size:10px!important;border-radius:8px!important}
+}
+</style>
+
+<style id="tf-unified-dialog-style">
+  .tf-dialog-layer{
+    position:fixed;inset:0;z-index:2147483647;display:none;align-items:center;justify-content:center;
+    padding:clamp(18px,4vw,58px);background:radial-gradient(circle at 50% 42%,rgba(29,22,61,.48),rgba(7,10,28,.82));
+    -webkit-backdrop-filter:blur(10px) saturate(1.15);backdrop-filter:blur(10px) saturate(1.15);
+    font-family:inherit;color:#fff;isolation:isolate
+  }
+  .tf-dialog-layer.open{display:flex;animation:tfDialogFade .18s ease-out both}
+  .tf-dialog-card{
+    position:relative;width:min(620px,94vw);max-height:min(82vh,720px);overflow:auto;
+    border:3px solid #f5cc68;border-radius:30px;padding:28px 30px 24px;
+    background:
+      radial-gradient(circle at 12% 10%,rgba(255,224,121,.18),transparent 26%),
+      radial-gradient(circle at 88% 14%,rgba(158,202,255,.14),transparent 25%),
+      linear-gradient(160deg,#37206e 0%,#251456 46%,#141035 100%);
+    box-shadow:0 28px 90px rgba(0,0,0,.52),inset 0 1px 0 rgba(255,255,255,.24),0 0 0 7px rgba(96,64,160,.22);
+    transform-origin:center;animation:tfDialogPop .22s cubic-bezier(.2,.9,.25,1.15) both
+  }
+  .tf-dialog-card::before,.tf-dialog-card::after{content:"";position:absolute;pointer-events:none;border-radius:50%;filter:blur(.3px)}
+  .tf-dialog-card::before{width:170px;height:170px;right:-70px;top:-80px;background:radial-gradient(circle,rgba(255,232,134,.38),rgba(255,223,93,.07) 48%,transparent 70%);animation:tfDialogOrb 3.4s ease-in-out infinite alternate}
+  .tf-dialog-card::after{width:115px;height:115px;left:-45px;bottom:-45px;background:radial-gradient(circle,rgba(137,209,255,.30),rgba(137,209,255,.06) 50%,transparent 72%);animation:tfDialogOrb 4.1s ease-in-out -1.2s infinite alternate-reverse}
+  .tf-dialog-top{display:flex;align-items:center;gap:14px;margin-bottom:14px;position:relative;z-index:2}
+  .tf-dialog-icon{width:54px;height:54px;flex:0 0 54px;border-radius:18px;display:grid;place-items:center;font-size:28px;
+    color:#4b2b04;background:linear-gradient(180deg,#fff4b0,#e9b93f);border:2px solid #fff0a1;
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.65),0 8px 20px rgba(0,0,0,.23),0 0 24px rgba(255,210,82,.18)}
+  .tf-dialog-title{margin:0;color:#fff6d7;font-weight:950;font-size:clamp(24px,4vw,34px);line-height:1.08;letter-spacing:-.02em;text-shadow:0 3px 0 rgba(35,14,70,.8)}
+  .tf-dialog-message{position:relative;z-index:2;margin:8px 0 22px;color:#f8f3ff;font-size:clamp(17px,2.5vw,22px);font-weight:700;line-height:1.45;white-space:pre-line;text-wrap:pretty}
+  .tf-dialog-input{position:relative;z-index:2;width:100%;min-height:48px;margin:0 0 20px;padding:10px 14px;border:2px solid rgba(255,233,157,.8);border-radius:15px;background:#fffdf5;color:#221944;font:800 18px/1.2 inherit;outline:none;box-shadow:inset 0 2px 5px rgba(51,31,86,.12)}
+  .tf-dialog-input:focus{border-color:#fff2a8;box-shadow:0 0 0 4px rgba(255,222,104,.24),inset 0 2px 5px rgba(51,31,86,.12)}
+  .tf-dialog-actions{position:relative;z-index:2;display:flex;justify-content:flex-end;gap:12px;flex-wrap:wrap}
+  .tf-dialog-btn{min-width:132px;min-height:48px;border:2px solid rgba(255,255,255,.86);border-radius:999px;padding:10px 20px;cursor:pointer;
+    color:#fff;font:950 clamp(16px,2.2vw,19px)/1 inherit;letter-spacing:.01em;box-shadow:0 8px 20px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.3);transition:transform .13s ease,filter .13s ease,box-shadow .13s ease}
+  .tf-dialog-btn:hover,.tf-dialog-btn:focus-visible{filter:brightness(1.08);transform:translateY(-1px);outline:none;box-shadow:0 0 0 3px rgba(255,236,146,.52),0 8px 20px rgba(0,0,0,.28)}
+  .tf-dialog-btn:active{transform:translateY(1px)}
+  .tf-dialog-cancel{background:linear-gradient(180deg,#6e6a8a,#4e496b)}
+  .tf-dialog-confirm{background:linear-gradient(180deg,#168de9,#0967c7)}
+  .tf-dialog-card.danger .tf-dialog-confirm{background:linear-gradient(180deg,#ed6670,#bb3345)}
+  .tf-dialog-card.danger .tf-dialog-icon{background:linear-gradient(180deg,#ffe6a2,#f0b74e);color:#6e270c}
+  .tf-dialog-sparkles{position:absolute;inset:0;overflow:hidden;border-radius:27px;pointer-events:none;z-index:1}
+  .tf-dialog-sparkles i{position:absolute;width:7px;height:7px;border-radius:50%;background:#fff7bc;box-shadow:0 0 12px #ffe273,0 0 22px rgba(255,229,121,.5);animation:tfDialogSparkle 2.4s ease-in-out infinite}
+  .tf-dialog-sparkles i:nth-child(1){left:8%;top:18%;animation-delay:-.2s}.tf-dialog-sparkles i:nth-child(2){left:91%;top:35%;animation-delay:-1.1s}.tf-dialog-sparkles i:nth-child(3){left:82%;top:83%;animation-delay:-.7s}.tf-dialog-sparkles i:nth-child(4){left:18%;top:86%;animation-delay:-1.7s}.tf-dialog-sparkles i:nth-child(5){left:69%;top:9%;animation-delay:-1.35s}
+  @keyframes tfDialogFade{from{opacity:0}to{opacity:1}}
+  @keyframes tfDialogPop{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+  @keyframes tfDialogOrb{from{transform:translate3d(-6px,6px,0) scale(.96);opacity:.7}to{transform:translate3d(8px,-8px,0) scale(1.06);opacity:1}}
+  @keyframes tfDialogSparkle{0%,100%{opacity:.2;transform:scale(.65)}50%{opacity:1;transform:scale(1.2)}}
+  @media(max-width:600px){.tf-dialog-card{border-radius:24px;padding:22px 20px 20px}.tf-dialog-actions{display:grid;grid-template-columns:1fr 1fr}.tf-dialog-btn{min-width:0}.tf-dialog-icon{width:48px;height:48px;flex-basis:48px;border-radius:15px}}
+</style>
+
+
+<style id="tf-dialog-fit-no-scroll-fix">
+  /* Clean, fixed-size in-app prompts: no internal scrolling or decorative overflow layers. */
+  .tf-dialog-layer{
+    padding:clamp(12px,2.2vw,34px)!important;
+    overflow:hidden!important;
+  }
+  .tf-dialog-card{
+    box-sizing:border-box!important;
+    width:min(720px,calc(100vw - 32px))!important;
+    max-width:720px!important;
+    max-height:none!important;
+    overflow:hidden!important;
+    
+    padding:clamp(18px,2.4vh,26px) clamp(20px,2.7vw,30px) clamp(18px,2.2vh,24px)!important;
+    border-radius:28px!important;
+    background:linear-gradient(155deg,#3a2372 0%,#251653 50%,#17113a 100%)!important;
+    box-shadow:0 24px 70px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.22),0 0 0 5px rgba(101,72,164,.20)!important;
+  }.tf-dialog-card::before,
+  .tf-dialog-card::after,
+  .tf-dialog-sparkles{display:none!important}
+  .tf-dialog-top{
+    gap:12px!important;
+    margin-bottom:10px!important;
+  }
+  .tf-dialog-icon{
+    width:50px!important;height:50px!important;flex:0 0 50px!important;
+    border-radius:16px!important;font-size:25px!important;
+  }
+  .tf-dialog-title{
+    font-size:clamp(22px,3vw,32px)!important;
+    line-height:1.05!important;
+    overflow-wrap:anywhere!important;
+  }
+  .tf-dialog-message{
+    margin:6px 0 18px!important;
+    font-size:clamp(15px,2vw,20px)!important;
+    line-height:1.34!important;
+    white-space:pre-line!important;
+    overflow-wrap:anywhere!important;
+  }
+  .tf-dialog-input{
+    min-height:44px!important;
+    margin:0 0 16px!important;
+    padding:9px 12px!important;
+    font-size:17px!important;
+  }
+  .tf-dialog-actions{
+    width:100%!important;
+    display:flex!important;
+    justify-content:flex-end!important;
+    align-items:center!important;
+    gap:10px!important;
+    flex-wrap:nowrap!important;
+    overflow:visible!important;
+  }
+  .tf-dialog-btn{
+    box-sizing:border-box!important;
+    min-width:118px!important;
+    max-width:48%!important;
+    min-height:44px!important;
+    padding:9px 16px!important;
+    font-size:clamp(14px,1.8vw,18px)!important;
+    line-height:1.08!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+  @media (max-width:520px){
+    .tf-dialog-card{width:calc(100vw - 22px)!important;padding:16px 16px 15px!important;border-radius:23px!important}
+    .tf-dialog-icon{width:44px!important;height:44px!important;flex-basis:44px!important;font-size:22px!important}
+    .tf-dialog-title{font-size:21px!important}
+    .tf-dialog-message{font-size:15px!important;line-height:1.28!important;margin-bottom:14px!important}
+    .tf-dialog-btn{min-width:0!important;flex:1 1 0!important;max-width:none!important;padding:8px 10px!important;font-size:14px!important}
+  }
+  @media (max-height:620px){
+    .tf-dialog-card{padding:15px 20px 14px!important}
+    .tf-dialog-top{margin-bottom:7px!important}
+    .tf-dialog-icon{width:42px!important;height:42px!important;flex-basis:42px!important;font-size:21px!important}
+    .tf-dialog-title{font-size:21px!important}
+    .tf-dialog-message{font-size:14px!important;line-height:1.25!important;margin:4px 0 12px!important}
+    .tf-dialog-input{min-height:40px!important;margin-bottom:12px!important;font-size:15px!important}
+    .tf-dialog-btn{min-height:40px!important;padding:7px 13px!important;font-size:14px!important}
+  }
+</style>
+
+
+<style id="tf-descender-safe-mac-fix">
+/* macOS WKWebView descender safety: keep g, j, p, q, y tails inside their line boxes. */
+html,body,#app,#stage,#viewport{ -webkit-font-smoothing:antialiased; text-rendering:geometricPrecision; }
+.tf-descender-safe-text{ -webkit-font-smoothing:antialiased; text-rendering:geometricPrecision; }
+</style>
+
+<style id="tf-descender-safe-module-fix">
+.letter-box{
+  line-height:1.15!important;
+  overflow:visible!important;
+  padding-bottom:.12em!important;
+  -webkit-font-smoothing:antialiased!important;
+  text-rendering:geometricPrecision!important;
+  backface-visibility:hidden!important;
+}
+#activeLetter,#currentLetter{line-height:1.15!important;overflow:visible!important;padding-bottom:28px!important}
+#activeLetter.wordDone,#currentLetter.wordDone{line-height:1.16!important;padding-bottom:20px!important}
+.slide-letter,.tray-letter{
+  line-height:1.16!important;
+  padding-bottom:.10em!important;
+  -webkit-font-smoothing:antialiased!important;
+  text-rendering:geometricPrecision!important;
+  backface-visibility:hidden!important;
+}
+.badge{line-height:1.16!important;padding-bottom:68px!important;-webkit-font-smoothing:antialiased!important;text-rendering:geometricPrecision!important}
+</style>
+
+  <script src="../shared/pwa-compat.js"></script>
+
+<style id="tf-force-light-scheme">
+:root,html,body{color-scheme:only light!important}
+button,input,select,textarea,option{color-scheme:light!important}
+</style>
+
+  <link rel="stylesheet" href="../shared/wq-scrollbars.css">
+</head>
+<body>
+<div id="app">
+  <div id="wq16stage">
+  <div id="stage">
+    <section id="homeScreen" class="screen active">
+      <div class="home-inner">
+        <button id="homeEasy" class="invis-btn" aria-label="Easy"></button>
+        <button id="homeMedium" class="invis-btn" aria-label="Medium"></button>
+        <button id="homeHard" class="invis-btn" aria-label="Difficult"></button>
+        <button id="homeCustom" class="invis-btn" aria-label="Custom List"></button>
+        <button id="homeEditCustom" class="invis-btn" aria-label="Edit Custom List"></button>
+        <button id="homeSettings" class="invis-btn" aria-label="Settings"></button>
+        <button id="homeHome" class="invis-btn" aria-label="Home"></button>
+        <button id="homeFull" class="invis-btn" aria-label="Fullscreen"></button>
+      </div>
+    </section>
+
+    <section id="playScreen" class="screen">
+      <div class="play-normalize">
+      <div class="play-inner">
+        <button id="playEasy" class="invis-btn" aria-label="Easy"></button>
+        <button id="playMedium" class="invis-btn" aria-label="Medium"></button>
+        <button id="playHard" class="invis-btn" aria-label="Difficult"></button>
+        <button id="playSettings" class="invis-btn" aria-label="Settings"></button>
+        <button id="playHome" class="invis-btn" aria-label="Home"></button>
+        <button id="playFull" class="invis-btn" aria-label="Fullscreen"></button>
+        <button id="stepBtn" class="invis-btn" aria-label="Slide One Step"></button>
+        <button id="repeatBtn" class="invis-btn" aria-label="Say Again"></button>
+        <button id="nextBtn" class="invis-btn" aria-label="Next Word"></button>
+
+        <div id="activeLetter" class="overlay-display letter-box">c</div>
+        <div id="currentLetter" class="overlay-display letter-box">c</div>
+
+        <div id="slideLayer"></div>
+        <div id="trayLayer"></div>
+        <img id="kid" src="../assets/5e1a0ec95f148cb4a86e.png" alt="">
+        <div id="wordInfo" class="info-pill"></div>
+      </div>
+
+      <div id="wordCardHud" class="word-card-hud">
+        <div id="badgeWord" class="badge hidden">cat</div>
+      </div>
+      </div>
+    </section>
+  </div>
+  </div>
+</div>
+
+<div id="settingsOverlay" class="overlay" aria-hidden="true">
+  <div class="modal">
+    <h2>Settings</h2>
+    <div class="row"><span>Background music</span><button id="musicToggle" class="toggle">On</button></div>
+    <div class="row"><span>Read aloud</span><button id="speechToggle" class="toggle">On</button></div>
+    <div class="row"><span>Music volume</span><span id="volumeVal">70%</span></div>
+    <div class="range-wrap"><input id="volumeSlider" type="range" min="0" max="100" value="70"></div>
+    <div class="modalBtns">
+      <button id="wordManagerBtn" class="secondary">Word Lists & Continue Point</button>
+      <button id="resetProgressBtn" class="danger">Reset Progress</button>
+      <button id="doneSettings">Done</button>
+    </div>
+  </div>
+</div>
+
+<div id="customOverlay" class="overlay" aria-hidden="true">
+  <div class="modal">
+    <h2>Custom List</h2>
+    <textarea id="customInput" placeholder="cat, dog, funny, purple"></textarea>
+    <p>Separate words with commas. To keep the slide readable, only 1–8 letter words are used.</p>
+    <div class="modalBtns">
+      <button id="saveCustom">Save</button>
+      <button id="closeCustom" class="secondary">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="wordManagerOverlay" class="overlay" aria-hidden="true">
+  <div class="modal wide word-manager-modal">
+    <h2>Word Lists & Continue Point</h2>
+
+    <div class="word-tabs">
+      <button type="button" class="word-tab" data-word-mode="easy">Easy</button>
+      <button type="button" class="word-tab" data-word-mode="medium">Medium</button>
+      <button type="button" class="word-tab" data-word-mode="hard">Difficult</button>
+      <button type="button" class="word-tab" data-word-mode="custom">Custom</button>
+    </div>
+
+    <p class="manager-note">
+      Click any word below to make it the saved <b>continue point</b> for that level.
+      You can also edit the list itself, then press <b>Save Word List</b>.
+    </p>
+
+    <div class="manager-summary">
+      <span id="wordManagerModeLabel">Easy</span>
+      <span id="wordManagerCount">0 words</span>
+      <span id="wordManagerSelected">Continue: —</span>
+    </div>
+
+    <textarea id="levelWordsInput" class="level-words-input"
+      placeholder="cat, dog, sun, ship, frog"></textarea>
+
+    <div class="manager-actions">
+      <button id="saveLevelWords" type="button">Save Word List</button>
+      <button id="restoreLevelDefaults" type="button" class="secondary">Restore Defaults</button>
+      <button id="continueSelectedWord" type="button">Continue Selected</button>
+      <button id="closeWordManager" type="button" class="secondary">Close</button>
+    </div>
+
+    <div id="wordChipGrid" class="word-chip-grid"></div>
+  </div>
+</div>
+
+<script>
+const STORAGE='letter_slide_teacher_francis_v2';
+const WORDS={"easy": ["cat", "dog", "sun", "hat", "pen", "cup", "bus", "box", "red", "map", "jam", "pig", "hen", "fan", "web", "kid", "bed", "fox", "run", "top", "car", "egg", "leg", "yak", "bat", "lip", "bug", "net", "pot", "cow", "mop", "van", "ant", "hot", "mud", "zip", "rat", "fin", "tap", "nut", "ship", "frog", "tree", "milk", "book", "fish", "hand", "rain", "star", "home"], "medium": ["funny", "rabbit", "planet", "sister", "rocket", "yellow", "window", "basket", "garden", "button", "puppy", "kitten", "flower", "winter", "summer", "school", "dragon", "farmer", "market", "napkin", "pencil", "jungle", "bright", "bridge", "friend", "guitar", "little", "orange", "silver", "circle", "banana", "castle", "soccer", "thirst", "wallet", "monkey", "pirate", "doctor", "finger", "gloves", "vacuum", "spring", "apple", "beach", "cloud", "smiley", "kitten", "people", "orange", "button"], "hard": ["school", "puzzle", "bright", "castle", "bridge", "silver", "orange", "window", "planet", "jungle", "yellow", "friend", "little", "banana", "monkey", "market", "dragon", "pirate", "farmer", "gloves", "crayon", "goblet", "rabbit", "button", "bucket", "forest", "rocket", "pocket", "spring", "kitten", "doctor", "napkin", "pencil", "flower", "basket", "circle", "finger", "secret", "vacuum", "sunset", "parrot", "apple", "beach", "cloud", "dance", "earth", "garden", "happy", "island", "jacket"]};
+const STAGE_W=1536, STAGE_H=864;
+const PLAY={left:0,top:42,w:1672,h:941};
+const HOME={left:68,top:0,w:1536,h:1024};
+
+const PROGRESS_POINTS=[
+  {x:65,y:97},{x:118,y:97},{x:170,y:97},{x:224,y:98},{x:278,y:98},{x:333,y:98}
+];
+const SLIDE_PATH=[
+  {x:376,y:312},{x:482,y:356},{x:596,y:409},{x:719,y:468},{x:851,y:531},{x:992,y:596},{x:1132,y:662},{x:1268,y:726}
+];
+const KID_TOP={x:262,y:250,r:8};
+const TRAY={x1:348,y:847,x2:1260};
+
+const $=id=>document.getElementById(id);
+const state={
+  music:true,volume:70,speech:false,speechUserSet:false,custom:[],lastMode:'easy',
+  levelWords:{easy:null,medium:null,hard:null},
+  progress:{
+    easy:{word:0,unit:0,complete:false},
+    medium:{word:0,unit:0,complete:false},
+    hard:{word:0,unit:0,complete:false},
+    custom:{word:0,unit:0,complete:false}
+  }
+};
+let currentMode='easy', currentWords=[...WORDS.easy], currentIndex=0, currentWord='', letters=[], units=[], stepIndex=0, afterComplete=false, busy=false;
+let audioUnlocked=false, musicCtx=null, sfxCtx=null, musicGain=null, musicTimer=null;
+let phonicsCtx=null, phonicsGain=null, phonicsCompressor=null;
+let currentPhonicsAudio=null;
+const PHONICS_CACHE={};
+
+function scaleStage(){
+  const fsEl=document.fullscreenElement || document.webkitFullscreenElement;
+  const app=$('app'),vp=window.tfUsableViewport?.()||{width:innerWidth,height:innerHeight};
+  const vw=Math.max(1,fsEl?.clientWidth || app?.clientWidth || vp.width || STAGE_W);
+  const vh=Math.max(1,fsEl?.clientHeight || app?.clientHeight || vp.height || STAGE_H);
+  const margin=fsEl ? 8 : 4;
+  const s=Math.min(Math.max(1,vw-margin*2)/STAGE_W, Math.max(1,vh-margin*2)/STAGE_H);
+  const shell=$('wq16stage');
+  if(shell){
+    shell.style.left='50%';shell.style.top='50%';
+    shell.style.transform=`translate(-50%,-50%) scale(${s})`;
+  }
+}
+function refreshStageLayout(){
+  requestAnimationFrame(()=>{ scaleStage(); requestAnimationFrame(scaleStage); });
+  setTimeout(scaleStage,120);
+}
+window.addEventListener('resize', refreshStageLayout);window.addEventListener('tfviewportchange', refreshStageLayout);
+if(window.visualViewport) window.visualViewport.addEventListener('resize', refreshStageLayout);
+document.addEventListener('fullscreenchange', refreshStageLayout);
+document.addEventListener('webkitfullscreenchange', refreshStageLayout);
+
+function positionStaticElements(){
+  const styleMap={
+    // v51 Letter Slide home: approved 1672×941 artwork mapped into the universal 16:9 shell.
+    homeEasy:[560.72,339.52,351.68,220.91,37],
+    homeMedium:[916.75,339.52,370.19,220.91,37],
+    homeHard:[549.84,558.25,361.48,228.52,37],
+    homeCustom:[916.75,558.25,370.19,228.52,37],
+    homeEditCustom:[1358.80,698.63,258.04,84.88,24],
+    homeSettings:[1412.15,33.73,87.10,87.06,44],
+    homeHome:[1521.03,33.73,87.10,87.06,44],
+    homeFull:[1629.91,33.73,87.10,87.06,44],
+
+    // Play background coordinates (1672 x 941)
+    playSettings:[1333,13,85,86,44],
+    playHome:[1435,13,85,86,44],
+    playFull:[1538,13,85,86,44],
+    playEasy:[1260,424,117,49,20],
+    playMedium:[1379,424,99,49,20],
+    playHard:[1480,424,103,49,20],
+    stepBtn:[1300,508,333,87,32],
+    repeatBtn:[1301,607,332,82,32],
+    nextBtn:[1301,701,332,76,32]
+  };
+  Object.entries(styleMap).forEach(([id,[l,t,w,h,r]])=>{
+    const el=$(id); el.style.left=l+'px'; el.style.top=t+'px'; el.style.width=w+'px'; el.style.height=h+'px'; el.style.borderRadius=r+'px';
+  });
+  // progress dots
+  const container=document.querySelector('.play-inner');
+  [...container.querySelectorAll('.progress-dot')].forEach(n=>n.remove());
+  PROGRESS_POINTS.forEach((p,i)=>{
+    const d=document.createElement('div'); d.id='prog'+i; d.className='progress-dot';
+    d.style.left=(p.x-19)+'px'; d.style.top=(p.y-19)+'px';
+    container.appendChild(d);
+  });
+}
+
+function showScreen(id){ if(id!=='playScreen'){ closeSettings(); closeCustom(); closeWordManager(); } document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); }
+function freshProgress(){
+  return {
+    easy:{word:0,unit:0,complete:false},
+    medium:{word:0,unit:0,complete:false},
+    hard:{word:0,unit:0,complete:false},
+    custom:{word:0,unit:0,complete:false}
+  };
+}
+function sanitizeWordArray(input){
+  const raw=Array.isArray(input) ? input : String(input||'').split(/[\n,]+/);
+  const seen=new Set();
+  const out=[];
+  for(const item of raw){
+    const w=String(item||'').trim().toLowerCase().replace(/[^a-z]/g,'');
+    if(!w || w.length>8 || seen.has(w)) continue;
+    seen.add(w);out.push(w);
+  }
+  return out.slice(0,100);
+}
+function normalizeLevelWords(){
+  if(!state.levelWords || typeof state.levelWords!=='object'){
+    state.levelWords={easy:null,medium:null,hard:null};
+  }
+  for(const mode of ['easy','medium','hard']){
+    const val=state.levelWords[mode];
+    state.levelWords[mode]=Array.isArray(val) && val.length ? sanitizeWordArray(val) : null;
+  }
+}
+function getWordsForMode(mode){
+  if(mode==='custom') return getCustomWords();
+  normalizeLevelWords();
+  const edited=state.levelWords[mode];
+  return Array.isArray(edited) && edited.length ? [...edited] : [...(WORDS[mode]||[])];
+}
+
+function normalizeProgress(){
+  const defaults=freshProgress();
+  if(!state.progress || typeof state.progress!=='object') state.progress=defaults;
+  for(const mode of ['easy','medium','hard','custom']){
+    const p=state.progress[mode] || defaults[mode];
+    state.progress[mode]={
+      word:Math.max(0,Number.isFinite(Number(p.word))?Math.floor(Number(p.word)):0),
+      unit:Math.max(0,Number.isFinite(Number(p.unit))?Math.floor(Number(p.unit)):0),
+      complete:!!p.complete
+    };
+  }
+  if(!['easy','medium','hard','custom'].includes(state.lastMode)) state.lastMode='easy';
+}
+function loadState(){
+  try{const saved=JSON.parse(localStorage.getItem(STORAGE)||'null'); if(saved) Object.assign(state,saved);}catch(e){}
+  if(!Array.isArray(state.custom)) state.custom=[];
+  if(state.speechUserSet!==true) state.speech=false;
+  normalizeLevelWords();
+  state.volume=Math.max(0,Math.min(100,Number(state.volume)||70));
+  normalizeProgress();
+  $('customInput').value=state.custom.join(', ');
+  syncSettings();
+}
+function saveState(){ localStorage.setItem(STORAGE, JSON.stringify(state)); }
+function rememberProgress(){
+  normalizeProgress();
+  state.lastMode=currentMode;
+  state.progress[currentMode]={word:Math.max(0,currentIndex),unit:Math.max(0,stepIndex),complete:!!afterComplete};
+  saveState();
+}
+function savedProgressFor(mode){
+  normalizeProgress();
+  return state.progress[mode] || {word:0,unit:0,complete:false};
+}
+function revealUnitSilently(unit,ui){
+  if(!unit) return;
+  (unit.indices||[]).forEach(li=>{
+    const td=$('tray'+li);
+    if(td){td.textContent=letters[li]||'';td.classList.add('show');}
+  });
+  const dot=$('prog'+Math.min(5,ui));
+  if(dot) dot.classList.add('on');
+}
+function restoreSavedVisualProgress(){
+  const p=savedProgressFor(currentMode);
+  stepIndex=Math.max(0,Math.min(Number(p.unit)||0,units.length));
+  afterComplete=!!p.complete && stepIndex>=units.length;
+  for(let ui=0;ui<stepIndex;ui++) revealUnitSilently(units[ui],ui);
+
+  if(afterComplete){
+    $('badgeWord').textContent=currentWord;
+    $('badgeWord').classList.remove('hidden');
+    setLetterDisplays(currentWord,true);
+    document.querySelectorAll('.slide-letter').forEach(el=>{
+      el.classList.remove('next','active');el.classList.add('done');
+    });
+    setKid(units.length,true);
+  }else{
+    $('badgeWord').classList.add('hidden');
+    setKid(stepIndex,true);
+    const displayUnit=stepIndex>0?units[stepIndex-1]:units[0];
+    setLetterDisplays(displayUnit?.text||letters[0]||'',false);
+    highlightUpcoming();
+  }
+}
+function syncSettings(){
+  $('musicToggle').textContent=state.music?'On':'Off';
+  $('speechToggle').textContent=state.speech?'On':'Off';
+  $('volumeSlider').value=state.volume; $('volumeVal').textContent=state.volume+'%';
+  if(musicGain) musicGain.gain.value=(state.music? state.volume/100 : 0) * .08;
+}
+
+function unlockAudio(){
+  if(audioUnlocked) return;
+  audioUnlocked=true;
+  try{
+    sfxCtx=new (window.AudioContext||window.webkitAudioContext)();
+    musicCtx=new (window.AudioContext||window.webkitAudioContext)();
+    musicGain=musicCtx.createGain();
+    musicGain.gain.value=0;
+    musicGain.connect(musicCtx.destination);
+    phonicsCtx=new (window.AudioContext||window.webkitAudioContext)();
+    phonicsGain=phonicsCtx.createGain();
+    phonicsGain.gain.value=5.2;
+    phonicsCompressor=phonicsCtx.createDynamicsCompressor();
+    phonicsCompressor.threshold.value=-18;
+    phonicsCompressor.knee.value=18;
+    phonicsCompressor.ratio.value=5;
+    phonicsCompressor.attack.value=0.003;
+    phonicsCompressor.release.value=0.18;
+    phonicsGain.connect(phonicsCompressor).connect(phonicsCtx.destination);
+    startMusicLoop();
+  }catch(e){console.warn(e)}
+  syncSettings();
+}
+function startMusicLoop(){
+  if(!musicCtx || musicTimer) return;
+  const melody=[523.25,659.25,783.99,659.25,587.33,698.46,783.99,698.46];
+  let i=0;
+  const playNote=()=>{
+    if(!musicCtx) return;
+    const t=musicCtx.currentTime;
+    const osc=musicCtx.createOscillator();
+    const gain=musicCtx.createGain();
+    osc.type='triangle';
+    osc.frequency.setValueAtTime(melody[i%melody.length], t);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.18, t+0.04);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t+0.72);
+    osc.connect(gain).connect(musicGain);
+    osc.start(t); osc.stop(t+0.76);
+    // soft harmony
+    const osc2=musicCtx.createOscillator(); const gain2=musicCtx.createGain();
+    osc2.type='sine'; osc2.frequency.setValueAtTime(melody[i%melody.length]/2, t);
+    gain2.gain.setValueAtTime(0.0001, t); gain2.gain.exponentialRampToValueAtTime(0.11, t+0.05); gain2.gain.exponentialRampToValueAtTime(0.0001, t+0.75);
+    osc2.connect(gain2).connect(musicGain); osc2.start(t); osc2.stop(t+0.78);
+    i++;
+  };
+  playNote();
+  musicTimer=setInterval(playNote, 720);
+}
+function sfx(kind='land'){
+  if(!sfxCtx) return; const t=sfxCtx.currentTime;
+  const osc=sfxCtx.createOscillator(); const gain=sfxCtx.createGain();
+  osc.connect(gain).connect(sfxCtx.destination);
+  if(kind==='slide'){
+    osc.type='triangle'; osc.frequency.setValueAtTime(720,t); osc.frequency.exponentialRampToValueAtTime(180,t+.18);
+    gain.gain.setValueAtTime(.0001,t); gain.gain.exponentialRampToValueAtTime(.05,t+.03); gain.gain.exponentialRampToValueAtTime(.0001,t+.22);
+    osc.start(t); osc.stop(t+.24);
+  } else {
+    osc.type='sine'; osc.frequency.setValueAtTime(660,t); osc.frequency.exponentialRampToValueAtTime(940,t+.09);
+    gain.gain.setValueAtTime(.0001,t); gain.gain.exponentialRampToValueAtTime(.035,t+.03); gain.gain.exponentialRampToValueAtTime(.0001,t+.18);
+    osc.start(t); osc.stop(t+.2);
+  }
+}
+function speak(text, rate=.92){
+  if(!state.speech || !('speechSynthesis' in window) || !text) return;
+  try{speechSynthesis.cancel();}catch(e){}
+  const u=new SpeechSynthesisUtterance(text); u.lang='en-US'; u.rate=rate; u.pitch=1.04;
+  try{speechSynthesis.resume?.()}catch{}speechSynthesis.speak(u);
+}
+const PHONICS_AUDIO={"a":"../assets/f4662c253d97722bf481.wav","b":"../assets/f49d514f83e3b869cbd5.wav","c":"../assets/4e116f82f617efb88ab3.wav","d":"../assets/d97acc7e0547d9a62411.wav","e":"../assets/5e397f0effef1e57d8eb.wav","f":"../assets/3e8b5202503bf390973a.wav","g":"../assets/2b2f26ea9c0650ca099a.wav","h":"../assets/c01ca33c57f016ea64e6.wav","i":"../assets/48abd5a8276b967fb8f6.wav","j":"../assets/6433f7eca74246c2b67d.wav","k":"../assets/4e116f82f617efb88ab3.wav","l":"../assets/5f0394d784f7895d1c08.wav","m":"../assets/61bbf9d9ed6ea2b250a5.wav","n":"../assets/b72959e16e88a89e35fc.wav","o":"../assets/84841d7e5f45b6a737a8.wav","p":"../assets/e30e8f14d197bf2492ea.wav","q":"../assets/fdd94a73f8640858ef73.wav","r":"../assets/07fbc6d3f50e84b940ef.wav","s":"../assets/c5a6f1c18e96a137fc9e.wav","t":"../assets/70de08d3843d504d8af1.wav","u":"../assets/8b52fe00a2708ce97daa.wav","v":"../assets/7dd830dc2c9e7804a34b.wav","w":"../assets/8b26a8788b77fd7d2946.wav","x":"../assets/3a4b0cf5057411a2dbd1.wav","y":"../assets/fc5d00caa241f4ca78d6.wav","z":"../assets/d4c12db619557011a944.wav","sh":"../assets/deb5891c25b2ca1e608e.wav","ch":"../assets/4980860eb17b17d6e2b3.wav","th":"../assets/f24a1615ef9b21797485.wav","ng":"../assets/6f5e90d1fb113c867d08.wav","qu":"../assets/fdd94a73f8640858ef73.wav","ee":"../assets/0866e669cb7019887033.wav","oo":"../assets/1c1202ba996ca83203bc.wav","ai":"../assets/78bc537343f7dd96f6d6.wav","oa":"../assets/c8c5a4796729b045f8e8.wav","ar":"../assets/ea3bd04e11c69e1a9c66.wav","or":"../assets/e1bf8393b231410ea701.wav","ck":"../assets/4e116f82f617efb88ab3.wav","ff":"../assets/3e8b5202503bf390973a.wav","ll":"../assets/5f0394d784f7895d1c08.wav","ss":"../assets/c5a6f1c18e96a137fc9e.wav","zz":"../assets/d4c12db619557011a944.wav","ph":"../assets/3e8b5202503bf390973a.wav","wh":"../assets/8b26a8788b77fd7d2946.wav","mm":"../assets/61bbf9d9ed6ea2b250a5.wav","nn":"../assets/b72959e16e88a89e35fc.wav","pp":"../assets/e30e8f14d197bf2492ea.wav","bb":"../assets/f49d514f83e3b869cbd5.wav","dd":"../assets/d97acc7e0547d9a62411.wav","gg":"../assets/2b2f26ea9c0650ca099a.wav","rr":"../assets/07fbc6d3f50e84b940ef.wav","tt":"../assets/70de08d3843d504d8af1.wav","cc":"../assets/4e116f82f617efb88ab3.wav","oi":"../assets/994a0cfcbae1b99d23dc.wav","oy":"../assets/994a0cfcbae1b99d23dc.wav","ou":"../assets/bedc6b935e367d2eb20c.wav","ow":"../assets/bedc6b935e367d2eb20c.wav","ow_long":"../assets/26f2cc6f30ed2f9c8078.wav","ay":"../assets/56eb72bfefd0ce9b4534.wav","au":"../assets/07bb52a3e61516fdb460.wav","aw":"../assets/07bb52a3e61516fdb460.wav","ea":"../assets/6eac4ac6aee0c863fdbe.wav","er":"../assets/938b1e0b2f425342a9f9.wav","ir":"../assets/938b1e0b2f425342a9f9.wav","ur":"../assets/938b1e0b2f425342a9f9.wav","ew":"../assets/9399e37dcb5185db8dc0.wav","ue":"../assets/9399e37dcb5185db8dc0.wav","ie":"../assets/75e9bb7bfe8e053d4d60.wav","igh":"../assets/75e9bb7bfe8e053d4d60.wav","air":"../assets/1a1e20df4d63402e939d.wav","oo_short":"../assets/1c5e9f7039da5a1feffa.wav","y_long_e":"../assets/6eac4ac6aee0c863fdbe.wav","bl":"../assets/cac47f39e4df512f4939.wav","br":"../assets/1a0a1781b3f55790dc48.wav","cl":"../assets/653de77d9e921261504e.wav","cr":"../assets/96271706d7242774a080.wav","dr":"../assets/94dee3a9173e970e86e2.wav","fl":"../assets/9ced74d2a9bf1dcf9bcb.wav","fr":"../assets/14190c16af849806ce1d.wav","gl":"../assets/30b51582ce69a797a49c.wav","gr":"../assets/6806525f87e3fb199b29.wav","pl":"../assets/0a84e891d5b24de10d25.wav","pr":"../assets/582630cb1fe390069309.wav","sc":"../assets/4ae4216da6299e1738da.wav","sk":"../assets/4ae4216da6299e1738da.wav","sl":"../assets/86f0e7c6ead453699c71.wav","sm":"../assets/e3efafa8cf2576b7f977.wav","sn":"../assets/0f64402fb5a2e4b0f574.wav","sp":"../assets/a796fa177e0ff477a6d4.wav","st":"../assets/ed2de061a79a87afec4e.wav","sw":"../assets/7c4e92506eb2d7d008c8.wav","tr":"../assets/5c3992c221f8737679be.wav","tw":"../assets/deb6439e38c574145459.wav","nd":"../assets/f1851e4c3db1183b62a1.wav","nt":"../assets/97b87f9cfcf4b5232f35.wav","mp":"../assets/b2a9a23223245bc98f50.wav","ft":"../assets/2cef6380dc6d26f108cd.wav","ld":"../assets/550cb53ddb0396240b90.wav","lt":"../assets/dc70ff74c5177b3f6f27.wav","lk":"../assets/637fd932ebc71d841ac2.wav","lp":"../assets/8444ac1ce5abed70b688.wav","lf":"../assets/91c96e84111cf4eda1d2.wav","pt":"../assets/444fd02a26a6ecee7b4a.wav","nk":"../assets/a680001f2a32b685e297.wav","str":"../assets/98219ebff0e63010fe87.wav","spr":"../assets/adfde7c3d02dbaadf385.wav","spl":"../assets/0e4641389f3c0ae993d2.wav","scr":"../assets/1b7b067802b2813dbbcd.wav","squ":"../assets/7649405c03574249a06a.wav","thr":"../assets/987db95084de8250d146.wav","shr":"../assets/03c18c2c532aa452fccd.wav","sch":"../assets/52aa55ded68edc01905a.wav"};
+Object.entries(PHONICS_AUDIO).forEach(([k,v])=>{ const a=new Audio(v); a.preload='auto'; PHONICS_CACHE[k]=a; });
+function makeUnit(w,start,len,soundKey){
+  const safeStart=Math.max(0,Math.min(w.length-1,start));
+  const safeLen=Math.max(1,Math.min(len,w.length-safeStart));
+  return {
+    text:w.slice(safeStart,safeStart+safeLen),
+    sound:soundKey || w.slice(safeStart,safeStart+safeLen),
+    indices:Array.from({length:safeLen},(_,k)=>safeStart+k)
+  };
+}
+
+function makeUnitsFromPattern(w, pattern){
+  if(!Array.isArray(pattern) || !pattern.length) return [];
+  const out=[];
+  let pos=0;
+  for(const part of pattern){
+    const text=String(part && part.text || '').toLowerCase();
+    if(!text) return [];
+    if(w.slice(pos,pos+text.length)!==text) return [];
+    out.push(makeUnit(w,pos,text.length,part.sound || text));
+    pos += text.length;
+  }
+  return pos===w.length ? out : [];
+}
+
+function specialPhonicsPattern(w){
+  const explicit={
+    // silent-t / final -stle family
+    'castle':[
+      {text:'c', sound:'c'},
+      {text:'a', sound:'a'},
+      {text:'stle', sound:'tts:suhl'}
+    ],
+    'whistle':[
+      {text:'wh', sound:'w'},
+      {text:'i', sound:'i'},
+      {text:'stle', sound:'tts:suhl'}
+    ],
+    'thistle':[
+      {text:'th', sound:'th'},
+      {text:'i', sound:'i'},
+      {text:'stle', sound:'tts:suhl'}
+    ],
+    'hustle':[
+      {text:'h', sound:'h'},
+      {text:'u', sound:'u'},
+      {text:'stle', sound:'tts:suhl'}
+    ],
+    'bustle':[
+      {text:'b', sound:'b'},
+      {text:'u', sound:'u'},
+      {text:'stle', sound:'tts:suhl'}
+    ],
+    'rustle':[
+      {text:'r', sound:'r'},
+      {text:'u', sound:'u'},
+      {text:'stle', sound:'tts:suhl'}
+    ]
+  };
+
+  if(explicit[w]) return makeUnitsFromPattern(w, explicit[w]);
+
+  // General safety rule for similar silent-t / final -stle words.
+  if(w.length>4 && w.endsWith('stle')){
+    const prefix=w.slice(0,-4);
+    const prefixUnits=phonicsUnitsForWord(prefix);
+    if(prefixUnits && prefixUnits.length){
+      return [...prefixUnits, makeUnit(w, prefix.length, 4, 'tts:suhl')];
+    }
+  }
+
+  return [];
+}
+
+function fallbackLetterUnits(w){
+  return [...w].map((ch,i)=>{
+    let sound=ch;
+    if(ch==='c' && i+1<w.length && /[eiy]/.test(w[i+1])) sound='s';
+    if(ch==='g' && i+1<w.length && /[eiy]/.test(w[i+1]) && !['get','give','girl'].includes(w)) sound='j';
+    if(ch==='y' && i===w.length-1 && w.length>3 && PHONICS_AUDIO.y_long_e) sound='y_long_e';
+    return makeUnit(w,i,1,sound);
+  });
+}
+
+function mergeFinalSilentIntoPrevious(result,w,index){
+  if(!Array.isArray(result) || !result.length || index<0 || index>=w.length) return false;
+  const prev=result[result.length-1];
+  if(!prev || !Array.isArray(prev.indices) || !prev.indices.length) return false;
+  const last=prev.indices[prev.indices.length-1];
+  if(last+1!==index) return false;
+  prev.text += w[index];
+  prev.indices.push(index);
+  return true;
+}
+
+function unitsAreValid(list,w){
+  if(!Array.isArray(list) || !list.length) return false;
+  const flat=[];
+  for(const u of list){
+    if(!u || !Array.isArray(u.indices) || !u.indices.length || !u.text) return false;
+    for(const i of u.indices){
+      if(!Number.isInteger(i) || i<0 || i>=w.length) return false;
+      flat.push(i);
+    }
+  }
+  if(flat.length!==w.length) return false;
+  for(let i=0;i<w.length;i++) if(flat[i]!==i) return false;
+  return true;
+}
+
+function phonicsUnitsForWord(word){
+  // The same analyzer is used for built-in lists AND teacher-entered custom words.
+  const w=String(word||'').toLowerCase().replace(/[^a-z]/g,'').slice(0,8);
+  if(!w) return [];
+
+  const specialUnits=specialPhonicsPattern(w);
+  if(specialUnits.length) return specialUnits;
+
+  // Ordered from longest/most specific to shortest.
+  const initial3=new Set(['scr','shr','spl','spr','squ','str','thr','sch']);
+  const initial2=new Set([
+    'bl','br','cl','cr','dr','fl','fr','gl','gr','pl','pr',
+    'sc','sk','sl','sm','sn','sp','st','sw','tr','tw'
+  ]);
+
+  const trigraphSound={
+    'igh':'igh','tch':'ch','dge':'j','air':'air','ear':'ear',
+    'ure':'ure','eau':'oa'
+  };
+
+  const digraphSound={
+    // consonant digraphs
+    'sh':'sh','ch':'ch','th':'th','ph':'f','wh':'w','ck':'k',
+    'ng':'ng','nk':'nk','qu':'qu',
+    // vowel teams / diphthongs
+    'ai':'ai','ay':'ay','ee':'ee','ea':'ea','oa':'oa','oe':'oa',
+    'oo':'oo','ou':'ou','ow':'ow','oi':'oi','oy':'oy',
+    'au':'au','aw':'aw','ew':'ew','ue':'ue','ui':'ue',
+    'ie':'ie','ei':'ee','ey':'ee',
+    // r-controlled
+    'ar':'ar','er':'er','ir':'ir','or':'or','ur':'ur'
+  };
+
+  const doubles={
+    'bb':'b','cc':'k','dd':'d','ff':'f','gg':'g','ll':'l',
+    'mm':'m','nn':'n','pp':'p','rr':'r','ss':'s','tt':'t','zz':'z'
+  };
+
+  const final2=new Set([
+    'nd','nt','mp','ft','ld','lt','lk','lp','lf','pt',
+    'sk','sp','st','nk'
+  ]);
+  // Common word-final spellings where one written letter is silent.
+  // They are treated as ONE last chunk so the child never stops on a silent letter alone.
+  const silentFinal2={
+    'mb':'m', // lamb, comb, climb, thumb
+    'gn':'n', // sign, design, align
+    'mn':'m'  // autumn, column, hymn, damn
+  };
+
+  // Advanced but common primary-school endings.
+  const suffix4Sound={
+    'tion':'shun',
+    'sion':'zhun'
+  };
+  const suffix3Sound={
+    'ture':'cher'
+  };
+
+  // High-frequency context overrides.
+  const longOwWords=new Set([
+    'yellow','window','rainbow','snow','show','grow','slow','low','row','blow','flow'
+  ]);
+  const shortOoWords=new Set([
+    'book','look','good','foot','wood','cook','hook','took','wool','stood'
+  ]);
+  const longEaWords=new Set([
+    'sea','tea','read','beach','teacher','clean','dream','team','leaf','meal','peach'
+  ]);
+
+  const result=[];
+  let i=0;
+
+  while(i<w.length){
+    const remain=w.length-i;
+    const t4=w.slice(i,i+4);
+    const t3=w.slice(i,i+3);
+    const t2=w.slice(i,i+2);
+    const ch=w[i];
+
+    // ----- familiar word-specific irregularities in the built-in lists -----
+    if(w==='friend' && i===2 && t2==='ie'){
+      result.push(makeUnit(w,i,2,'e')); i+=2; continue;
+    }
+    if(w==='people' && i===1 && w.slice(i,i+2)==='eo'){
+      result.push(makeUnit(w,i,2,'ee')); i+=2; continue;
+    }
+    if(w==='earth' && i===0 && t3==='ear'){
+      result.push(makeUnit(w,i,3,'ur')); i+=3; continue;
+    }
+    if(w==='orange' && i===4 && t2==='ge'){
+      result.push(makeUnit(w,i,2,'j')); i+=2; continue;
+    }
+
+    // ----- advanced endings, only when they occur at the end -----
+    if(remain===4 && suffix4Sound[t4]){
+      result.push(makeUnit(w,i,4,suffix4Sound[t4])); i+=4; continue;
+    }
+    if(remain===4 && t4==='ture'){
+      // Keep the final unit visually together even if its audio falls back.
+      result.push(makeUnit(w,i,4,PHONICS_AUDIO.cher?'cher':'ch')); i+=4; continue;
+    }
+
+    // ----- beginning clusters -----
+    if(i===0 && initial3.has(t3)){
+      result.push(makeUnit(w,i,3,t3)); i+=3; continue;
+    }
+    if(i===0 && initial2.has(t2)){
+      result.push(makeUnit(w,i,2,t2)); i+=2; continue;
+    }
+
+    // ----- trigraphs -----
+    if(trigraphSound[t3]){
+      result.push(makeUnit(w,i,3,trigraphSound[t3])); i+=3; continue;
+    }
+
+    // ----- digraphs / vowel teams / r-controlled patterns -----
+    if(digraphSound[t2]){
+      let sound=digraphSound[t2];
+
+      if(t2==='ow' && longOwWords.has(w) && PHONICS_AUDIO.ow_long) sound='ow_long';
+      if(t2==='oo' && shortOoWords.has(w) && PHONICS_AUDIO.oo_short) sound='oo_short';
+      if(t2==='ea' && longEaWords.has(w) && PHONICS_AUDIO.ee) sound='ee';
+
+      result.push(makeUnit(w,i,2,sound)); i+=2; continue;
+    }
+
+    // ----- double consonants -----
+    if(doubles[t2]){
+      result.push(makeUnit(w,i,2,doubles[t2])); i+=2; continue;
+    }
+
+    // ----- word-final silent-letter pairs -----
+    if(i+2===w.length && silentFinal2[t2]){
+      result.push(makeUnit(w,i,2,silentFinal2[t2])); i+=2; continue;
+    }
+
+    // ----- final consonant clusters -----
+    if(i+2===w.length && final2.has(t2)){
+      result.push(makeUnit(w,i,2,t2)); i+=2; continue;
+    }
+
+    // ----- final -ge / -ce -----
+    if(i+2===w.length && t2==='ge'){
+      result.push(makeUnit(w,i,2,'j')); i+=2; continue;
+    }
+    if(i+2===w.length && t2==='ce'){
+      result.push(makeUnit(w,i,2,'s')); i+=2; continue;
+    }
+
+    // ----- silent-e / long-vowel context -----
+    // Keep the physical movement monotonic: pronounce the vowel long here,
+    // then the final e becomes a quiet visual unit rather than jumping backward.
+    if(i+2<w.length && w[i+2]==='e' && /[aeiou]/.test(ch) && /[bcdfghjklmnpqrstvwxyz]/.test(w[i+1])){
+      let longSound=ch;
+      if(ch==='a' && PHONICS_AUDIO.ai) longSound='ai';
+      else if(ch==='i' && PHONICS_AUDIO.igh) longSound='igh';
+      else if(ch==='o' && PHONICS_AUDIO.oa) longSound='oa';
+      else if(ch==='u' && PHONICS_AUDIO.ue) longSound='ue';
+      else if(ch==='e' && PHONICS_AUDIO.ee) longSound='ee';
+      result.push(makeUnit(w,i,1,longSound));
+      i++;
+      continue;
+    }
+
+    // ----- single-letter context -----
+    let sound=ch;
+
+    // soft c / soft g
+    if(ch==='c' && i+1<w.length && /[eiy]/.test(w[i+1])) sound='s';
+    if(ch==='g' && i+1<w.length && /[eiy]/.test(w[i+1]) && !['get','give','girl'].includes(w)) sound='j';
+
+    // final y commonly says long e in multisyllabic words
+    if(ch==='y' && i===w.length-1 && w.length>3 && PHONICS_AUDIO.y_long_e) sound='y_long_e';
+
+    // Final silent e belongs to the PREVIOUS chunk. It is never given its own slide.
+    // Examples: cake -> c | a | ke, little -> l | i | tt | le.
+    if(ch==='e' && i===w.length-1 && i>=2 && /[bcdfghjklmnpqrstvwxyz]/.test(w[i-1])){
+      if(!mergeFinalSilentIntoPrevious(result,w,i)){
+        result.push(makeUnit(w,i,1,'__silent__'));
+      }
+      i++;
+      continue;
+    }
+
+    result.push(makeUnit(w,i,1,sound));
+    i++;
+  }
+
+  // If the last merged chunk is -le, teach it as a syllabic /əl/ chunk rather than /l/ + silent e.
+  if(result.length){
+    const last=result[result.length-1];
+    if(last.text==='le') last.sound='tts:uhl';
+  }
+
+  // Absolute safety: every displayed letter must belong to exactly one
+  // contiguous unit. Otherwise use simple single-letter stepping.
+  return unitsAreValid(result,w) ? result : fallbackLetterUnits(w);
+}
+function unitPoint(unitIndex){
+  if(!units.length) return letterPoint(0,Math.max(1,letters.length));
+  const safeIndex=Math.max(0,Math.min(units.length-1,unitIndex));
+  const u=units[safeIndex];
+  const pts=u.indices.map(i=>letterPoint(Math.max(0,Math.min(letters.length-1,i)),letters.length)).filter(p=>p && Number.isFinite(p.x) && Number.isFinite(p.y));
+  if(!pts.length) return letterPoint(0,Math.max(1,letters.length));
+  const x=pts.reduce((s,p)=>s+p.x,0)/pts.length;
+  const y=pts.reduce((s,p)=>s+p.y,0)/pts.length;
+  const r=pts.reduce((s,p)=>s+p.r,0)/pts.length;
+  return {x,y,r};
+}
+
+
+function playPhonicsToken(token){
+  const key=(PHONICS_AUDIO[token] ? token : String(token||'')[0]);
+  const src=PHONICS_AUDIO[key];
+  if(!src || !state.speech) return;
+
+  try{
+    if(currentPhonicsAudio){
+      currentPhonicsAudio.pause();
+      currentPhonicsAudio.currentTime=0;
+    }
+  }catch(e){}
+
+  let a;
+  try{
+    if(PHONICS_CACHE[key]){
+      a=PHONICS_CACHE[key].cloneNode();
+    }else{
+      a=new Audio(src);
+      a.preload='auto';
+      PHONICS_CACHE[key]=a.cloneNode();
+    }
+    currentPhonicsAudio=a;
+    a.volume=1;
+
+    const normalMusic=(state.music ? state.volume/100 : 0) * .08;
+    if(musicGain && musicCtx){
+      const now=musicCtx.currentTime;
+      musicGain.gain.cancelScheduledValues(now);
+      musicGain.gain.setTargetAtTime(normalMusic*.10,now,.025);
+    }
+
+    const restoreMusic=()=>{
+      if(musicGain && musicCtx){
+        try{
+          const now=musicCtx.currentTime;
+          musicGain.gain.cancelScheduledValues(now);
+          musicGain.gain.setTargetAtTime(normalMusic,now,.08);
+        }catch(e){}
+      }
+    };
+
+    a.addEventListener('ended',restoreMusic,{once:true});
+    a.addEventListener('error',restoreMusic,{once:true});
+
+    // Keep playback failure isolated from the slide controls.
+    a.play().catch(()=>{ restoreMusic(); });
+  }catch(e){
+    console.warn('Phonics playback error:',e);
+  }
+}
+
+function playPhonicsSequence(tokens,gap=95){
+  const clean=(tokens||[]).filter(Boolean);
+  if(!clean.length) return;
+  let pos=0;
+  const next=()=>{
+    if(pos>=clean.length) return;
+    const token=clean[pos++];
+    try{ playPhonicsToken(token); }catch(e){}
+    if(pos<clean.length) setTimeout(next,gap);
+  };
+  next();
+}
+function playPhonicsUnit(unit){
+  if(!unit || !state.speech) return;
+  if(unit.sound==='__silent__') return;
+
+  const rawSound=String(unit.sound||unit.text||'');
+  const sound=rawSound.toLowerCase();
+
+  if(sound.startsWith('tts:')){
+    speak(rawSound.slice(4), .86);
+    return;
+  }
+
+  // Dedicated recording first.
+  if(PHONICS_AUDIO[sound]){
+    playPhonicsToken(sound);
+    return;
+  }
+  if(PHONICS_AUDIO[unit.text]){
+    playPhonicsToken(unit.text);
+    return;
+  }
+
+  // For a consonant cluster that has no dedicated recording, blend the
+  // constituent pure sounds quickly instead of speaking letter names.
+  const chars=[...String(unit.text||'').toLowerCase()];
+  const tokens=chars.map(ch=>PHONICS_AUDIO[ch]?ch:null).filter(Boolean);
+  if(tokens.length){
+    playPhonicsSequence(tokens,80);
+    return;
+  }
+
+  // Last-resort safe fallback.
+  if(chars[0] && PHONICS_AUDIO[chars[0]]) playPhonicsToken(chars[0]);
+}
+
+function modeLabel(m){ return m==='easy'?'Easy':m==='medium'?'Medium':m==='hard'?'Difficult':'Custom List'; }
+function getCustomWords(){ return (state.custom||[]).map(w=>String(w).trim().replace(/[^A-Za-z]/g,'')).filter(Boolean).filter(w=>w.length<=8); }
+function openSettings(){ $('settingsOverlay').classList.add('open'); }
+function closeSettings(){ $('settingsOverlay').classList.remove('open'); }
+function openCustom(){ $('customInput').value=(state.custom||[]).join(', '); $('customOverlay').classList.add('open'); }
+function closeCustom(){ $('customOverlay').classList.remove('open'); }
+async function toggleFull(){
+  try{await window.tfTogglePortableFullscreen?.();}catch(e){console.warn('Fullscreen error',e);}
+  refreshStageLayout();
+}
+function lerp(a,b,t){ return a+(b-a)*t; }
+function pathPoint(t){
+  const segs=SLIDE_PATH.length-1; const scaled=Math.max(0,Math.min(0.999999,t))*segs; const idx=Math.min(segs-1,Math.floor(scaled));
+  const local=scaled-idx; const p0=SLIDE_PATH[idx], p1=SLIDE_PATH[idx+1];
+  const x=lerp(p0.x,p1.x,local), y=lerp(p0.y,p1.y,local); const r=Math.atan2(p1.y-p0.y,p1.x-p0.x)*180/Math.PI;
+  return {x,y,r};
+}
+function letterPoint(i,n){
+  const layouts={
+    1:[.42],
+    2:[.28,.58],
+    3:[.20,.42,.62],
+    4:[.16,.32,.48,.64],
+    5:[.13,.26,.39,.52,.65],
+    6:[.12,.22,.32,.42,.52,.62],
+    7:[.11,.195,.28,.365,.45,.535,.62],
+    8:[.10,.175,.25,.325,.40,.475,.55,.625]
+  };
+  const list=layouts[Math.max(1,Math.min(8,n))] || layouts[8];
+  return pathPoint(list[Math.min(i,list.length-1)]);
+}
+function trayPoint(i,n){
+  const count=Math.max(1,n), start=TRAY.x1, end=TRAY.x2, span=end-start;
+  const step=count===1?0:span/(count-1); return {x:start + step*i, y:847};
+}
+function setKid(index,instant=false){
+  const el=$('kid'); let p;
+  if(index<=0) p=KID_TOP;
+  else {
+    const up=unitPoint(Math.max(0,Math.min(units.length-1,index-1)));
+    const nearEnd=index>=Math.max(units.length-1,1);
+    p={
+      x:up.x + (letters.length<=4?118:(nearEnd?92:104)),
+      y:Math.min(up.y + (nearEnd?84:76), 792),
+      r:Math.max(7, Math.min(22, up.r-6))
+    };
+  }
+  if(instant) el.style.transition='none';
+  else el.style.transition='left .38s cubic-bezier(.22,.82,.25,1), top .38s cubic-bezier(.22,.82,.25,1), transform .38s cubic-bezier(.22,.82,.25,1)';
+  el.style.left=p.x+'px'; el.style.top=p.y+'px'; el.style.transform=`translate(-50%,-50%) rotate(${p.r}deg)`;
+  if(instant) requestAnimationFrame(()=>el.style.transition='left .38s cubic-bezier(.22,.82,.25,1), top .38s cubic-bezier(.22,.82,.25,1), transform .38s cubic-bezier(.22,.82,.25,1)');
+}
+
+function fontSizeForLetters(n){ if(n<=2) return 134; if(n===3) return 124; if(n===4) return 112; if(n===5) return 100; if(n===6) return 88; if(n===7) return 78; return 68; }
+function trayFontSize(n){ if(n<=3) return 92; if(n===4) return 84; if(n===5) return 78; if(n===6) return 72; if(n===7) return 66; return 60; }
+function buildWord(){
+  const slide=$('slideLayer'), tray=$('trayLayer'); slide.innerHTML=''; tray.innerHTML='';
+  const fs=fontSizeForLetters(letters.length), tfs=trayFontSize(letters.length);
+  letters.forEach((ch,i)=>{
+    const p=letterPoint(i,letters.length); const s=document.createElement('div');
+    s.className='slide-letter'; s.id='slideLetter'+i; s.textContent=ch.toLowerCase();
+    s.style.left=p.x+'px'; s.style.top=p.y+'px'; s.style.fontSize=fs+'px'; slide.appendChild(s);
+    const tp=trayPoint(i,letters.length); const t=document.createElement('div');
+    t.className='tray-letter'; t.id='tray'+i; t.style.left=tp.x+'px'; t.style.top=tp.y+'px'; t.style.fontSize=tfs+'px'; tray.appendChild(t);
+  });
+}
+
+
+function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
+function resetCamera(instant=false){
+  const scene=document.querySelector('.play-inner');
+  if(!scene) return;
+  if(instant){ const old=scene.style.transition; scene.style.transition='none'; scene.style.transform='translate3d(0,0,0) scale(1)'; void scene.offsetWidth; scene.style.transition=old || 'transform .62s cubic-bezier(.22,.78,.18,1)'; }
+  else scene.style.transform='translate3d(0,0,0) scale(1)';
+}
+function cameraToLetter(idx){
+  const scene=document.querySelector('.play-inner');
+  if(!scene) return;
+  const safeIdx=Math.max(0,Math.min(units.length-1,idx));
+  const p=unitPoint(safeIdx);
+  const scale=letters.length<=3 ? 1.62 : letters.length<=5 ? 1.56 : 1.48;
+  const progress=units.length<=1?0:(safeIdx/(units.length-1));
+  const focusX=760 + progress*100;
+  const focusY=470 + progress*135;
+  let tx=focusX-scale*p.x;
+  let ty=focusY-scale*p.y;
+  const minX=1672-scale*1672;
+  const minY=941-scale*941;
+  tx=clamp(tx,minX,0);
+  ty=clamp(ty,minY-25,-20);
+  scene.style.transform=`translate3d(${tx}px,${ty}px,0) scale(${scale})`;
+}
+
+function resetProgress(){ for(let i=0;i<6;i++) $('prog'+i)?.classList.remove('on'); document.querySelectorAll('.tray-letter').forEach(t=>{t.textContent=''; t.classList.remove('show');}); }
+function highlightUpcoming(){
+  if(!units.length) return;
+  const activeUnit=stepIndex<=0 ? 0 : Math.min(stepIndex-1,units.length-1);
+  const unitForLetter=new Map();
+  units.forEach((u,ui)=>(u.indices||[]).forEach(li=>unitForLetter.set(li,ui)));
+  document.querySelectorAll('.slide-letter').forEach((el,i)=>{
+    const ui=unitForLetter.has(i) ? unitForLetter.get(i) : units.length;
+    el.classList.remove('next','active','done');
+    if(ui===activeUnit) el.classList.add('active');
+    else if(ui>activeUnit) el.classList.add('next');
+    else el.classList.add('done');
+  });
+}
+function fitDisplayFont(el,text,wholeWord=false){
+  const len=[...String(text||'')].length;
+  if(!wholeWord){
+    el.style.fontSize='';
+    return;
+  }
+  // Hard caps chosen to keep 1–8 letter words inside the illustrated frames.
+  let size;
+  if(el.id==='activeLetter'){
+    size = len<=3 ? 112 : len===4 ? 92 : len===5 ? 76 : len===6 ? 64 : len===7 ? 55 : 48;
+  }else{
+    size = len<=3 ? 104 : len===4 ? 88 : len===5 ? 74 : len===6 ? 63 : len===7 ? 54 : 47;
+  }
+  el.style.fontSize=size+'px';
+}
+function setLetterDisplays(text, wholeWord=false){
+  const a=$('activeLetter'), c=$('currentLetter');
+  a.textContent=text || '';
+  c.textContent=text || '';
+  [a,c].forEach(el=>{
+    el.classList.remove('multiUnit','triUnit','wordDone');
+    const len=[...String(text||'')].length;
+    if(wholeWord){
+      el.classList.add('wordDone');
+    }else if(len===2){
+      el.classList.add('multiUnit');
+    }else if(len>=3){
+      el.classList.add('triUnit');
+    }
+    fitDisplayFont(el,text,wholeWord);
+  });
+}
+function updateInfo(){ $('wordInfo').textContent=`${modeLabel(currentMode)} • Word ${currentIndex+1} of ${currentWords.length}`; }
+function prepareWord(resumeSaved=false){
+  closeSettings();closeCustom();
+  currentWord=String(currentWords[currentIndex]||'').trim().toLowerCase().replace(/[^a-z]/g,'').slice(0,8);
+  letters=[...currentWord];units=phonicsUnitsForWord(currentWord);
+  stepIndex=0;afterComplete=false;busy=false;
+  resetCamera(true);buildWord();resetProgress();setKid(0,true);$('badgeWord').classList.add('hidden');
+  if(resumeSaved) restoreSavedVisualProgress();
+  else{setLetterDisplays(units[0]?.text||letters[0]||'',false);highlightUpcoming();}
+  updateInfo();
+}
+function startMode(mode){
+  closeSettings();closeCustom();unlockAudio();currentMode=mode;
+  currentWords=getWordsForMode(mode);
+  if(mode==='custom' && !currentWords.length){openCustom();return;}
+
+  const p=savedProgressFor(mode);
+  currentIndex=currentWords.length?Math.max(0,Math.min(p.word,currentWords.length-1)):0;
+  state.lastMode=mode;saveState();
+  showScreen('playScreen');prepareWord(true);
+}
+
+function rebuildProgressVisuals(targetStep){
+  targetStep=Math.max(0,Math.min(Number(targetStep)||0,units.length));
+  stepIndex=targetStep;
+  afterComplete=false;
+  busy=false;
+
+  resetProgress();
+  $('badgeWord').classList.add('hidden');
+
+  for(let ui=0;ui<stepIndex;ui++) revealUnitSilently(units[ui],ui);
+
+  if(stepIndex<=0){
+    setKid(0,false);
+    setLetterDisplays(units[0]?.text||letters[0]||'',false);
+    highlightUpcoming();
+    resetCamera(false);
+  }else{
+    const ui=stepIndex-1;
+    setKid(stepIndex,false);
+    setLetterDisplays(units[ui]?.text||'',false);
+    highlightUpcoming();
+    cameraToLetter(ui);
+  }
+
+  rememberProgress();
+}
+
+function previousWordAtTop(){
+  if(!currentWords.length) return;
+
+  currentIndex=(currentIndex-1+currentWords.length)%currentWords.length;
+  normalizeProgress();
+  state.progress[currentMode]={word:currentIndex,unit:0,complete:false};
+  state.lastMode=currentMode;
+  saveState();
+
+  // Previous page always starts with the child back at the top.
+  prepareWord(false);
+  stepIndex=0;
+  afterComplete=false;
+  setKid(0,false);
+  resetCamera(false);
+  setLetterDisplays(units[0]?.text||letters[0]||'',false);
+  highlightUpcoming();
+  rememberProgress();
+}
+
+function stepBackward(){
+  if(!$('playScreen').classList.contains('active') || busy) return;
+  unlockAudio();
+
+  // If the whole-word popup is showing, first go back to the final phonics unit.
+  if(afterComplete){
+    $('badgeWord').classList.add('hidden');
+    afterComplete=false;
+    rebuildProgressVisuals(units.length);
+    if(units.length){
+      try{playPhonicsUnit(units[units.length-1]);}catch(e){}
+    }
+    return;
+  }
+
+  // Move backward through phonics units one step at a time.
+  if(stepIndex>1){
+    rebuildProgressVisuals(stepIndex-1);
+    try{playPhonicsUnit(units[stepIndex-1]);}catch(e){}
+    return;
+  }
+
+  // IMPORTANT: from the first landed unit, the child returns to the
+  // top/start position FIRST. The page does not change yet.
+  if(stepIndex===1){
+    rebuildProgressVisuals(0);
+    setKid(0,false);
+    resetCamera(false);
+    setLetterDisplays(units[0]?.text||letters[0]||'',false);
+    highlightUpcoming();
+    rememberProgress();
+    return;
+  }
+
+  // Only when the child is already at the top does another Left press
+  // move to the previous word/page. The previous page also opens at the top.
+  if(stepIndex===0){
+    previousWordAtTop();
+  }
+}
+
+function stepForward(){
+  doStep();
+}
+
+async function resetAllProgress(){
+  const ok = await tfConfirm('Reset saved progress for Easy, Medium, Difficult, and Custom?',{title:'Reset Letter Slide Progress?',icon:'↻',tone:'danger',confirmText:'Reset Progress'});
+  if(!ok) return;
+
+  state.progress=freshProgress();
+  state.lastMode='easy';
+  saveState();
+
+  // If currently in the slide, reset the current difficulty immediately.
+  if($('playScreen').classList.contains('active')){
+    currentIndex=0;
+    state.progress[currentMode]={word:0,unit:0,complete:false};
+    saveState();
+    prepareWord(false);
+  }
+
+  const btn=$('resetProgressBtn');
+  if(btn){
+    const old=btn.textContent;
+    btn.textContent='Progress Reset!';
+    setTimeout(()=>{btn.textContent=old;},1100);
+  }
+}
+
+function completeWord(){
+  afterComplete=true;
+  busy=false;
+
+  const badge=$('badgeWord');
+  badge.textContent=currentWord;
+  const len=[...currentWord].length;
+
+  const popupSize =
+    len<=3 ? 156 :
+    len===4 ? 150 :
+    len===5 ? 142 :
+    len===6 ? 130 :
+    len===7 ? 116 : 104;
+
+  const popupWidth =
+    len<=4 ? 1080 :
+    len<=6 ? 1190 :
+    1300;
+
+  badge.style.fontSize=popupSize+'px';
+  badge.style.minWidth=popupWidth+'px';
+  badge.classList.remove('hidden');
+
+  setLetterDisplays(currentWord,true);
+  document.querySelectorAll('.slide-letter').forEach(el=>el.classList.add('done'));
+
+  speak(currentWord,.78);
+  rememberProgress();
+}
+function doStep(){
+  if(!$('playScreen').classList.contains('active') || busy) return;
+  unlockAudio();
+  if(afterComplete){ nextWord(); return; }
+  if(!units.length){ units=fallbackLetterUnits(currentWord); }
+  if(stepIndex>=units.length){ completeWord(); return; }
+
+  const idx=stepIndex;
+  const unit=units[idx];
+  if(!unit || !unit.indices || !unit.indices.length){
+    units=fallbackLetterUnits(currentWord); stepIndex=0; highlightUpcoming(); return;
+  }
+
+  busy=true;
+  sfx('slide');
+  cameraToLetter(idx);
+  setKid(idx+1,false);
+
+  setTimeout(()=>{
+    unit.indices.forEach(li=>{
+      const td=$('tray'+li);
+      if(td){ td.textContent=letters[li]||''; td.classList.add('show'); }
+    });
+
+    // The fixed background has six progress circles. Fill one per unit when
+    // possible; for longer custom sequences, the sixth represents the end.
+    const dotIndex=Math.min(5,idx);
+    const dot=$('prog'+dotIndex); if(dot) dot.classList.add('on');
+
+    stepIndex++;
+    rememberProgress();
+    setLetterDisplays(unit.text, false);
+    highlightUpcoming();
+    sfx('land');
+
+    // Release the movement lock BEFORE audio playback so an audio failure
+    // can never freeze the arrow-key controls.
+    busy=false;
+    try{
+      playPhonicsUnit(unit);
+    }catch(e){
+      console.warn('Reading-unit audio error:',e);
+    }
+
+    // After the final sound/chunk, keep the last landed unit visible and wait
+    // for the learner's next action before revealing the whole word. This gives
+    // children time to blend the last word/chunk first across mouse, touch,
+    // trackpad, swipe, tap, and keyboard input.
+    if(stepIndex>=units.length){
+      busy=false;
+    }
+  }, 360);
+}
+function nextWord(){
+  unlockAudio();
+  if(!currentWords.length) return;
+  currentIndex=(currentIndex+1)%currentWords.length;
+  normalizeProgress();
+  state.progress[currentMode]={word:currentIndex,unit:0,complete:false};
+  state.lastMode=currentMode;saveState();
+  prepareWord(false);
+}
+function sayAgain(){
+  unlockAudio();
+  if(afterComplete) speak(currentWord,.78);
+  else if(stepIndex>0) playPhonicsUnit(units[stepIndex-1]);
+  else if(units[0]) playPhonicsUnit(units[0]);
+}
+function saveCustom(){
+  state.custom=($('customInput').value||'').split(',').map(w=>w.trim().replace(/[^A-Za-z]/g,'')).filter(Boolean).filter(w=>w.length<=8);
+  normalizeProgress();state.progress.custom={word:0,unit:0,complete:false};saveState();closeCustom();
+  if(currentMode==='custom' && state.custom.length){currentWords=getCustomWords();currentIndex=0;prepareWord(false);}
+}
+
+let wordManagerMode='easy';
+
+function closeWordManager(){
+  $('wordManagerOverlay').classList.remove('open');
+}
+
+function wordsForManager(mode){
+  return getWordsForMode(mode);
+}
+
+function selectedWordIndexFor(mode,words){
+  const p=savedProgressFor(mode);
+  if(!words.length) return 0;
+  return Math.max(0,Math.min(Number(p.word)||0,words.length-1));
+}
+
+function renderWordManager(){
+  const mode=wordManagerMode;
+  const words=wordsForManager(mode);
+  const selected=selectedWordIndexFor(mode,words);
+
+  document.querySelectorAll('.word-tab').forEach(btn=>{
+    btn.classList.toggle('active',btn.dataset.wordMode===mode);
+  });
+
+  $('wordManagerModeLabel').textContent=modeLabel(mode);
+  $('wordManagerCount').textContent=`${words.length} word${words.length===1?'':'s'}`;
+  $('wordManagerSelected').textContent=words.length ? `Continue: ${words[selected]}` : 'Continue: —';
+  $('levelWordsInput').value=words.join(', ');
+  $('restoreLevelDefaults').style.display=mode==='custom'?'none':'inline-block';
+
+  const grid=$('wordChipGrid');
+  grid.innerHTML='';
+  words.forEach((word,i)=>{
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='word-chip'+(i===selected?' selected':'');
+    b.innerHTML=`<span class="num">#${i+1}</span>${word}`;
+    b.onclick=()=>{
+      normalizeProgress();
+      state.progress[mode]={word:i,unit:0,complete:false};
+      state.lastMode=mode;
+      saveState();
+      renderWordManager();
+    };
+    grid.appendChild(b);
+  });
+}
+
+function openWordManager(mode){
+  wordManagerMode=['easy','medium','hard','custom'].includes(mode)?mode:(state.lastMode||'easy');
+  closeSettings();
+  closeCustom();
+  $('wordManagerOverlay').classList.add('open');
+  renderWordManager();
+}
+
+function saveManagedWordList(){
+  const mode=wordManagerMode;
+  const words=sanitizeWordArray($('levelWordsInput').value);
+
+  if(mode==='custom'){
+    state.custom=words;
+  }else{
+    normalizeLevelWords();
+    state.levelWords[mode]=words.length?words:null;
+  }
+
+  normalizeProgress();
+  const finalWords=getWordsForMode(mode);
+  const oldIndex=selectedWordIndexFor(mode,finalWords);
+  state.progress[mode]={word:Math.max(0,Math.min(oldIndex,Math.max(0,finalWords.length-1))),unit:0,complete:false};
+  saveState();
+
+  if(currentMode===mode){
+    currentWords=getWordsForMode(mode);
+    currentIndex=state.progress[mode].word;
+  }
+  renderWordManager();
+}
+
+function restoreManagedDefaults(){
+  const mode=wordManagerMode;
+  if(mode==='custom') return;
+  normalizeLevelWords();
+  state.levelWords[mode]=null;
+  normalizeProgress();
+  state.progress[mode]={word:0,unit:0,complete:false};
+  saveState();
+  if(currentMode===mode){
+    currentWords=getWordsForMode(mode);
+    currentIndex=0;
+  }
+  renderWordManager();
+}
+
+function continueFromSelectedWord(){
+  const mode=wordManagerMode;
+  closeWordManager();
+  startMode(mode);
+}
+
+function installButtonFeedback(){
+  document.querySelectorAll('.invis-btn').forEach(btn=>{
+    const release=()=>btn.classList.remove('is-pressed');
+    btn.addEventListener('pointerdown',()=>btn.classList.add('is-pressed'));
+    btn.addEventListener('pointerup',release);
+    btn.addEventListener('pointercancel',release);
+    btn.addEventListener('pointerleave',release);
+    btn.addEventListener('click',()=>{
+      release();
+      btn.classList.remove('click-flash');
+      void btn.offsetWidth;
+      btn.classList.add('click-flash');
+      setTimeout(()=>btn.classList.remove('click-flash'),360);
+    });
+  });
+}
+
+// button hookups
+$('homeEasy').onclick=()=>startMode('easy'); $('homeMedium').onclick=()=>startMode('medium'); $('homeHard').onclick=()=>startMode('hard'); $('homeCustom').onclick=()=>startMode('custom'); $('homeEditCustom').onclick=openCustom; $('homeSettings').onclick=openSettings; $('homeFull').onclick=toggleFull; $('homeHome').onclick=()=>showScreen('homeScreen');
+$('playEasy').onclick=()=>startMode('easy'); $('playMedium').onclick=()=>startMode('medium'); $('playHard').onclick=()=>startMode('hard'); $('playSettings').onclick=openSettings; $('playHome').onclick=()=>{ resetCamera(false); showScreen('homeScreen'); try{speechSynthesis.cancel();}catch(e){} }; $('playFull').onclick=toggleFull;
+$('stepBtn').onclick=doStep; $('repeatBtn').onclick=sayAgain; $('nextBtn').onclick=nextWord;
+$('wordManagerBtn').onclick=()=>openWordManager(state.lastMode||currentMode); $('resetProgressBtn').onclick=resetAllProgress; $('doneSettings').onclick=closeSettings; $('musicToggle').onclick=()=>{ state.music=!state.music; saveState(); syncSettings(); unlockAudio(); }; $('speechToggle').onclick=()=>{ state.speech=!state.speech; state.speechUserSet=true; saveState(); syncSettings(); }; $('volumeSlider').oninput=e=>{ state.volume=Number(e.target.value); saveState(); syncSettings(); };
+$('saveCustom').onclick=saveCustom; $('closeCustom').onclick=closeCustom;
+$('saveLevelWords').onclick=saveManagedWordList;
+$('restoreLevelDefaults').onclick=restoreManagedDefaults;
+$('continueSelectedWord').onclick=continueFromSelectedWord;
+$('closeWordManager').onclick=closeWordManager;
+document.querySelectorAll('.word-tab').forEach(btn=>btn.onclick=()=>{wordManagerMode=btn.dataset.wordMode;renderWordManager();});
+
+const heldArrowTimers=new Map();
+
+function arrowAction(key){
+  if(key==='ArrowLeft') stepBackward();
+  else if(key==='ArrowRight' || key==='ArrowDown') stepForward();
+}
+
+function stopHeldArrow(key){
+  const timers=heldArrowTimers.get(key);
+  if(!timers) return;
+  if(timers.delay) clearTimeout(timers.delay);
+  if(timers.repeat) clearInterval(timers.repeat);
+  heldArrowTimers.delete(key);
+}
+
+function startHeldArrow(key){
+  if(heldArrowTimers.has(key)) return;
+
+  // Immediate first action.
+  arrowAction(key);
+
+  // Then keep moving while the key is physically held.
+  const timers={delay:null,repeat:null};
+  timers.delay=setTimeout(()=>{
+    timers.repeat=setInterval(()=>{
+      if(!$('settingsOverlay').classList.contains('open') &&
+         !$('customOverlay').classList.contains('open') &&
+         !$('wordManagerOverlay').classList.contains('open')){
+        arrowAction(key);
+      }
+    },430);
+  },520);
+
+  heldArrowTimers.set(key,timers);
+}
+
+window.addEventListener('keydown', e=>{
+  if($('settingsOverlay').classList.contains('open') || $('customOverlay').classList.contains('open') || $('wordManagerOverlay').classList.contains('open')) return;
+
+  if(e.key==='ArrowLeft' || e.key==='ArrowRight' || e.key==='ArrowDown'){
+    e.preventDefault();
+    // Ignore the browser's native key-repeat events because the app
+    // uses its own steady hold timer.
+    if(!e.repeat) startHeldArrow(e.key);
+  }else if(e.key==='n' || e.key==='N'){
+    e.preventDefault();
+    if(!e.repeat) nextWord();
+  }else if(e.key==='Escape'){
+    closeSettings();
+    closeCustom();
+    closeWordManager();
+    resetCamera(false);
+  }
+});
+
+window.addEventListener('keyup', e=>{
+  if(e.key==='ArrowLeft' || e.key==='ArrowRight' || e.key==='ArrowDown'){
+    e.preventDefault();
+    stopHeldArrow(e.key);
+  }
+});
+
+// Safety: stop held actions if the browser loses focus.
+window.addEventListener('blur', ()=>[...heldArrowTimers.keys()].forEach(stopHeldArrow));
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden) [...heldArrowTimers.keys()].forEach(stopHeldArrow);
+});
+
+window.addEventListener('pointerdown', unlockAudio, {once:true});
+window.addEventListener('touchstart', unlockAudio, {once:true});
+
+
+
+window.addEventListener('message', event=>{
+  if(event.data?.type==='teacher-francis-activate-audio'){
+    try{ unlockAudio(); syncSettings(); }catch(e){}
+  }
+});
+
+function installTouchSlideControls(){
+  const screen=$('playScreen');
+  if(!screen) return;
+
+  let gesture=null;
+  const queue=[];
+  let queueTimer=0;
+  const overlaysOpen=()=> $('settingsOverlay').classList.contains('open') || $('customOverlay').classList.contains('open') || $('wordManagerOverlay').classList.contains('open');
+  const isInteractive=target=> !!target?.closest('button,input,textarea,select,label,[role="button"],a,.tf-dialog-layer,.tf-dialog-card,.overlay,.modal,.toggle,#teacher-francis-suite-home');
+
+  const processQueue=()=>{
+    if(queueTimer || !queue.length) return;
+    const run=()=>{
+      if(!queue.length){ queueTimer=0; return; }
+      if(overlaysOpen()){ queue.length=0; queueTimer=0; return; }
+      if(busy){ queueTimer=setTimeout(run,90); return; }
+      const dir=queue.shift();
+      if(dir>0) stepForward(); else stepBackward();
+      queueTimer=setTimeout(()=>{ queueTimer=0; processQueue(); },260);
+    };
+    queueTimer=setTimeout(run,0);
+  };
+
+  const queueStep=dir=>{
+    queue.push(dir>0?1:-1);
+    if(queue.length>10) queue.splice(0,queue.length-10);
+    processQueue();
+  };
+
+  screen.addEventListener('pointerdown',e=>{
+    if(e.pointerType==='mouse') return;
+    if(!$('playScreen').classList.contains('active') || overlaysOpen() || isInteractive(e.target)) return;
+    gesture={startX:e.clientX,startY:e.clientY,lastX:e.clientX,lastY:e.clientY,t:Date.now(),steps:0};
+    try{ screen.setPointerCapture?.(e.pointerId); }catch{}
+  },{passive:true});
+
+  screen.addEventListener('pointermove',e=>{
+    if(e.pointerType==='mouse' || !gesture || overlaysOpen()) return;
+    const dx=e.clientX-gesture.lastX;
+    const dy=e.clientY-gesture.lastY;
+    if(Math.abs(dx)>=64 && Math.abs(dx)>Math.abs(dy)*1.05){
+      const dir=dx>0?1:-1; // right = down/forward, left = up/back
+      const count=Math.min(4,Math.floor(Math.abs(dx)/64));
+      for(let i=0;i<count;i++) queueStep(dir);
+      gesture.lastX += dir*64*count;
+      gesture.lastY=e.clientY;
+      gesture.steps+=count;
+    }
+  },{passive:true});
+
+  screen.addEventListener('pointerup',e=>{
+    if(e.pointerType==='mouse' || !gesture) return;
+    const dx=e.clientX-gesture.startX, dy=e.clientY-gesture.startY;
+    const adx=Math.abs(dx), ady=Math.abs(dy), dt=Date.now()-gesture.t;
+    const hadSteps=gesture.steps>0;
+    gesture=null;
+    if(overlaysOpen() || isInteractive(e.target)) return;
+    if(!hadSteps && adx>44 && adx>ady*1.12){
+      queueStep(dx>0?1:-1);
+      return;
+    }
+    if(!hadSteps && adx<18 && ady<18 && dt<360){
+      const rect=screen.getBoundingClientRect();
+      queueStep((e.clientX-rect.left)<rect.width/2?-1:1);
+    }
+  },{passive:true});
+
+  screen.addEventListener('pointercancel',()=>{ gesture=null; },{passive:true});
+}
+
+document.addEventListener('DOMContentLoaded' , ()=>{ positionStaticElements(); installButtonFeedback(); installTouchSlideControls(); loadState(); refreshStageLayout(); updateInfo(); });
+</script>
+
+<style id="teacher-francis-suite-bridge-style">
+  #teacher-francis-suite-home {
+    all: initial !important;
+    position: fixed !important;
+    top: max(9px, env(safe-area-inset-top)) !important;
+    left: max(9px, env(safe-area-inset-left)) !important;
+    z-index: 2147483647 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    box-sizing: border-box !important;
+    min-width: 124px !important;
+    height: 42px !important;
+    padding: 0 14px 0 11px !important;
+    border: 2px solid rgba(255,255,255,.92) !important;
+    border-radius: 999px !important;
+    background: linear-gradient(145deg,#087c87,#075866) !important;
+    box-shadow: 0 5px 14px rgba(0,25,35,.32), inset 0 1px 0 rgba(255,255,255,.32) !important;
+    color: #fff !important;
+    font: 900 13px/1 system-ui,-apple-system,"Segoe UI",sans-serif !important;
+    letter-spacing: .035em !important;
+    cursor: grab !important;
+    user-select: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: none !important;
+    -webkit-user-drag: none !important;
+    opacity: .94 !important;
+    overflow: hidden !important;
+    transition: transform .16s ease, opacity .16s ease, box-shadow .16s ease !important;
+  }
+  #teacher-francis-suite-home::before {
+    content:"" !important;
+    position:absolute !important;
+    top:-30% !important; bottom:-30% !important; left:-65% !important; width:42% !important;
+    background:linear-gradient(112deg,transparent,rgba(255,255,255,.62),transparent) !important;
+    transform:skewX(-20deg) !important;
+    opacity:0 !important;
+    pointer-events:none !important;
+  }
+  #teacher-francis-suite-home:hover,
+  #teacher-francis-suite-home:focus-visible {
+    transform: translateY(-1px) !important;
+    opacity: 1 !important;
+    outline: 3px solid #ffe66a !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 7px 18px rgba(0,25,35,.4), inset 0 1px 0 rgba(255,255,255,.36) !important;
+  }
+  #teacher-francis-suite-home:hover::before,
+  #teacher-francis-suite-home:focus-visible::before {
+    opacity:1 !important;
+    animation:tfSuiteSheen .72s ease-out !important;
+  }
+  #teacher-francis-suite-home:active { transform: translateY(1px) !important; }
+  #teacher-francis-suite-home svg {
+    all: initial !important;
+    display: block !important;
+    width: 19px !important;
+    height: 19px !important;
+    stroke: currentColor !important;
+    fill: none !important;
+    stroke-width: 2.25 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+  }
+  #teacher-francis-suite-home span {
+    all: initial !important;
+    color: inherit !important;
+    font: inherit !important;
+    letter-spacing: inherit !important;
+  }
+
+  #teacher-francis-suite-home[data-tf-dragging="true"] {
+    cursor: grabbing !important;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    box-shadow: 0 8px 22px rgba(0,25,35,.42), inset 0 1px 0 rgba(255,255,255,.36) !important;
+  }
+  @keyframes tfSuiteSheen { from{left:-65%} to{left:130%} }
+  @media (max-width: 760px), (max-height: 560px) {
+    #teacher-francis-suite-home { min-width:42px !important; width:42px !important; padding:0 !important; }
+    #teacher-francis-suite-home span { display:none !important; }
+  }
+</style>
+<button id="teacher-francis-suite-home" type="button" aria-label="Return to all WonderQuest reading adventures" title="All Apps (Shift + Escape)">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg>
+  <span>ALL APPS</span>
+</button>
+<script id="teacher-francis-suite-bridge-script">
+(() => {
+  const homeBtn = document.getElementById("teacher-francis-suite-home");
+  if (!homeBtn) return;
+
+  const POSITION_KEY = "teacher-francis-suite-home-position-v1";
+  const EDGE_GAP = 6;
+  const DRAG_THRESHOLD = 6;
+  let activePointer = null;
+  let startX = 0, startY = 0, startLeft = 0, startTop = 0;
+  let dragging = false;
+  let suppressClickUntil = 0;
+
+  const goHome = () => {
+    try { speechSynthesis?.cancel?.(); } catch {}
+    try {
+      if (window.parent && window.parent !== window) {
+        try { if (typeof window.parent.showHome === "function") { window.parent.showHome(); return; } } catch {}
+        parent.postMessage({ type: "teacher-francis-suite-home" }, "*");
+      } else {
+        location.href = "../index.html";
+      }
+    } catch {
+      location.href = "../index.html";
+    }
+  };
+
+  const viewportBox = () => {
+    const vv = window.visualViewport;
+    const width = Math.max(1, vv?.width || document.documentElement.clientWidth || innerWidth || 1);
+    const height = Math.max(1, vv?.height || document.documentElement.clientHeight || innerHeight || 1);
+    const left = vv?.offsetLeft || 0;
+    const top = vv?.offsetTop || 0;
+    return { width, height, left, top };
+  };
+
+  const clamp = (value, min, max) => Math.min(Math.max(value, min), Math.max(min, max));
+
+  const placeAt = (left, top) => {
+    const vp = viewportBox();
+    const rect = homeBtn.getBoundingClientRect();
+    const minLeft = vp.left + EDGE_GAP;
+    const minTop = vp.top + EDGE_GAP;
+    const maxLeft = vp.left + vp.width - rect.width - EDGE_GAP;
+    const maxTop = vp.top + vp.height - rect.height - EDGE_GAP;
+    const x = clamp(left, minLeft, maxLeft);
+    const y = clamp(top, minTop, maxTop);
+    homeBtn.style.setProperty("left", `${x}px`, "important");
+    homeBtn.style.setProperty("top", `${y}px`, "important");
+    homeBtn.style.setProperty("right", "auto", "important");
+    homeBtn.style.setProperty("bottom", "auto", "important");
+    return { x, y, vp, rect: homeBtn.getBoundingClientRect() };
+  };
+
+  const savePosition = () => {
+    try {
+      const vp = viewportBox();
+      const rect = homeBtn.getBoundingClientRect();
+      const usableW = Math.max(1, vp.width - rect.width - EDGE_GAP * 2);
+      const usableH = Math.max(1, vp.height - rect.height - EDGE_GAP * 2);
+      const x = clamp((rect.left - vp.left - EDGE_GAP) / usableW, 0, 1);
+      const y = clamp((rect.top - vp.top - EDGE_GAP) / usableH, 0, 1);
+      localStorage.setItem(POSITION_KEY, JSON.stringify({ x, y }));
+    } catch {}
+  };
+
+  const restorePosition = () => {
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(POSITION_KEY) || "null"); } catch {}
+    if (!saved || !Number.isFinite(saved.x) || !Number.isFinite(saved.y)) return;
+    requestAnimationFrame(() => {
+      const vp = viewportBox();
+      const rect = homeBtn.getBoundingClientRect();
+      const usableW = Math.max(0, vp.width - rect.width - EDGE_GAP * 2);
+      const usableH = Math.max(0, vp.height - rect.height - EDGE_GAP * 2);
+      placeAt(
+        vp.left + EDGE_GAP + clamp(saved.x, 0, 1) * usableW,
+        vp.top + EDGE_GAP + clamp(saved.y, 0, 1) * usableH
+      );
+    });
+  };
+
+  const endDrag = (event, cancelled = false) => {
+    if (activePointer === null || event.pointerId !== activePointer) return;
+    const wasDragging = dragging;
+    if (wasDragging) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      savePosition();
+      suppressClickUntil = performance.now() + 700;
+    }
+    try { homeBtn.releasePointerCapture(activePointer); } catch {}
+    activePointer = null;
+    dragging = false;
+    homeBtn.removeAttribute("data-tf-dragging");
+    homeBtn.setAttribute("aria-grabbed", "false");
+    if (!wasDragging && !cancelled) goHome();
+  };
+
+  homeBtn.setAttribute("aria-grabbed", "false");
+  homeBtn.setAttribute("title", "All Apps • Drag to move • Shift + Escape");
+
+  homeBtn.addEventListener("pointerdown", event => {
+    if (activePointer !== null) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    const rect = homeBtn.getBoundingClientRect();
+    activePointer = event.pointerId;
+    startX = event.clientX;
+    startY = event.clientY;
+    startLeft = rect.left;
+    startTop = rect.top;
+    dragging = false;
+    try { homeBtn.setPointerCapture(event.pointerId); } catch {}
+  });
+
+  homeBtn.addEventListener("pointermove", event => {
+    if (event.pointerId !== activePointer) return;
+    const dx = event.clientX - startX;
+    const dy = event.clientY - startY;
+    if (!dragging && Math.hypot(dx, dy) >= DRAG_THRESHOLD) {
+      dragging = true;
+      homeBtn.setAttribute("data-tf-dragging", "true");
+      homeBtn.setAttribute("aria-grabbed", "true");
+    }
+    if (!dragging) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    placeAt(startLeft + dx, startTop + dy);
+  });
+
+  homeBtn.addEventListener("pointerup", event => endDrag(event, false));
+  homeBtn.addEventListener("pointercancel", event => endDrag(event, true));
+  homeBtn.addEventListener("lostpointercapture", event => {
+    if (activePointer !== null && event.pointerId === activePointer && dragging) {
+      savePosition();
+      activePointer = null;
+      dragging = false;
+      homeBtn.removeAttribute("data-tf-dragging");
+      homeBtn.setAttribute("aria-grabbed", "false");
+    }
+  });
+
+  // Keyboard-generated clicks should still work, while the synthetic click
+  // after a drag is suppressed so moving the button never exits the module.
+  homeBtn.addEventListener("click", event => {
+    if (performance.now() < suppressClickUntil) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return;
+    }
+    if (event.detail === 0) goHome();
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.shiftKey && event.key === "Escape") {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      goHome();
+    }
+  }, true);
+
+  const refit = () => restorePosition();
+  window.addEventListener("resize", refit, { passive: true });
+  window.visualViewport?.addEventListener("resize", refit, { passive: true });
+  window.visualViewport?.addEventListener("scroll", refit, { passive: true });
+  window.addEventListener("orientationchange", () => setTimeout(refit, 80), { passive: true });
+  restorePosition();
+})();
+</script>
+
+
+<script id="tf-unified-dialog-script">
+(function(){
+  let activeResolve=null,activeType=null,lastFocus=null;
+  function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+  function ensure(){
+    let layer=document.getElementById('tfDialogLayer');
+    if(layer)return layer;
+    layer=document.createElement('div');layer.id='tfDialogLayer';layer.className='tf-dialog-layer';layer.setAttribute('role','dialog');layer.setAttribute('aria-modal','true');
+    layer.innerHTML='<div class="tf-dialog-card"><div class="tf-dialog-sparkles"><i></i><i></i><i></i><i></i><i></i></div><div class="tf-dialog-top"><div class="tf-dialog-icon">✦</div><h2 class="tf-dialog-title">Please Confirm</h2></div><div class="tf-dialog-message"></div><input class="tf-dialog-input" type="text" hidden><div class="tf-dialog-actions"><button class="tf-dialog-btn tf-dialog-cancel" type="button">Cancel</button><button class="tf-dialog-btn tf-dialog-confirm" type="button">OK</button></div></div>';
+    document.body.appendChild(layer);
+    const finish=(value)=>{if(!layer.classList.contains('open'))return;layer.classList.remove('open');const r=activeResolve;activeResolve=null;activeType=null;setTimeout(()=>{try{lastFocus?.focus?.({preventScroll:true})}catch{};lastFocus=null},0);if(r)r(value)};
+    layer.querySelector('.tf-dialog-cancel').addEventListener('click',()=>finish(activeType==='prompt'?null:false));
+    layer.querySelector('.tf-dialog-confirm').addEventListener('click',()=>{const input=layer.querySelector('.tf-dialog-input');finish(activeType==='prompt'?input.value:true)});
+    layer.addEventListener('pointerdown',e=>{if(e.target===layer)finish(activeType==='prompt'?null:false)});
+    document.addEventListener('keydown',e=>{
+      if(!layer.classList.contains('open'))return;
+      if(e.key==='Escape'){e.preventDefault();e.stopPropagation();finish(activeType==='prompt'?null:false);return}
+      if(e.key==='Enter'&&activeType!=='prompt'){e.preventDefault();e.stopPropagation();layer.querySelector('.tf-dialog-confirm').click()}
+    },true);
+    return layer;
+  }
+  function open(type,message,opts={}){
+    const layer=ensure(),card=layer.querySelector('.tf-dialog-card'),title=layer.querySelector('.tf-dialog-title'),icon=layer.querySelector('.tf-dialog-icon'),msg=layer.querySelector('.tf-dialog-message'),input=layer.querySelector('.tf-dialog-input'),cancel=layer.querySelector('.tf-dialog-cancel'),confirm=layer.querySelector('.tf-dialog-confirm');
+    if(activeResolve){const r=activeResolve;activeResolve=null;try{r(activeType==='prompt'?null:false)}catch{}}
+    lastFocus=document.activeElement;activeType=type;
+    card.classList.toggle('danger',opts.tone==='danger');
+    title.textContent=opts.title||(type==='alert'?'Notice':type==='prompt'?'Your Answer':'Please Confirm');
+    icon.textContent=opts.icon||(opts.tone==='danger'?'!':'✦');
+    msg.textContent=String(message??'');
+    confirm.textContent=opts.confirmText||(type==='alert'?'OK':'Confirm');
+    cancel.textContent=opts.cancelText||'Cancel';
+    cancel.style.display=type==='alert'?'none':'';
+    input.hidden=type!=='prompt';input.value=type==='prompt'?String(opts.defaultValue??''):'';input.placeholder=opts.placeholder||'';
+    layer.classList.add('open');
+    return new Promise(resolve=>{activeResolve=resolve;requestAnimationFrame(()=>{if(type==='prompt'){input.focus();input.select()}else confirm.focus()})});
+  }
+  window.tfConfirm=(message,opts)=>open('confirm',message,opts);
+  window.tfAlert=(message,opts)=>open('alert',message,opts);
+  window.tfPrompt=(message,defaultValue='',opts={})=>open('prompt',message,{...opts,defaultValue});
+})();
+</script>
+
+
+<script id="tf-portable-browser-bootstrap">
+(()=>{
+  if(!('speechSynthesis' in window))return;
+  const wake=()=>{try{speechSynthesis.resume?.();speechSynthesis.getVoices?.()}catch{}};
+  addEventListener('pointerdown',wake,{once:true,capture:true});
+  addEventListener('keydown',wake,{once:true,capture:true});
+  setTimeout(wake,120);setTimeout(wake,700);
+})();
+</script>
+
+<style id="tf-suite-home-bottom-left-override">
+#teacher-francis-suite-home {
+  top: auto !important;
+  right: auto !important;
+  bottom: max(10px, env(safe-area-inset-bottom)) !important;
+  left: max(10px, env(safe-area-inset-left)) !important;
+}
+</style>
+</body>
+</html>
