@@ -1220,6 +1220,9 @@ if("ResizeObserver" in window){
 document.addEventListener("pointerdown",unlockAudio,{capture:true});
 document.addEventListener("touchstart",unlockAudio,{capture:true,passive:true});
 window.addEventListener("keydown",()=>unlockAudio(),{once:true});
+window.addEventListener("message",event=>{
+  if(event.data?.type==="teacher-francis-activate-audio")unlockAudio();
+});
 
 function initApp(){
   try{ selectLevel(state.level); }catch(e){ console.warn("AWAD level init:",e); }
