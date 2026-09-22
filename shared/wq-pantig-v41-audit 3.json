@@ -1,0 +1,229 @@
+{
+  "release": "v41",
+  "mapping": [
+    {
+      "pantig": "BE",
+      "letter": "B",
+      "syllable_index": 1,
+      "asset": "assets/wq-pantig-v41-be-berde.webp",
+      "source": "/mnt/data/cheerful_green_garden_friends.png"
+    },
+    {
+      "pantig": "DE",
+      "letter": "D",
+      "syllable_index": 1,
+      "asset": "assets/wq-pantig-v41-de-delata.webp",
+      "source": "/mnt/data/cheerful_sardines_in_tomato_sauce_tin.png"
+    },
+    {
+      "pantig": "GE",
+      "letter": "G",
+      "syllable_index": 1,
+      "asset": "assets/wq-pantig-v41-ge-gelatina.webp",
+      "source": "/mnt/data/rainbow_gelatin_mold_on_a_plate.png"
+    },
+    {
+      "pantig": "HO",
+      "letter": "H",
+      "syllable_index": 3,
+      "asset": "assets/wq-pantig-v41-ho-hopia.webp",
+      "source": "/mnt/data/flaky_ube_hopia_on_banana_leaf.png"
+    },
+    {
+      "pantig": "HU",
+      "letter": "H",
+      "syllable_index": 4,
+      "asset": "assets/wq-pantig-v41-hu-huni.webp",
+      "source": "/mnt/data/cheerful_bluebird_serenade.png"
+    },
+    {
+      "pantig": "KE",
+      "letter": "K",
+      "syllable_index": 1,
+      "asset": "assets/wq-pantig-v41-ke-keso.webp",
+      "source": "/mnt/data/cheerful_swiss_cheese_wedge.png"
+    },
+    {
+      "pantig": "KI",
+      "letter": "K",
+      "syllable_index": 2,
+      "asset": "assets/wq-pantig-v41-ki-kilay.webp",
+      "source": "/mnt/data/cheerful_boy_pointing_to_eyebrow.png"
+    },
+    {
+      "pantig": "KO",
+      "letter": "K",
+      "syllable_index": 3,
+      "asset": "assets/wq-pantig-v41-ko-kotse.webp",
+      "source": "/mnt/data/cheerful_red_car_in_a_sunny_neighborhood.png"
+    },
+    {
+      "pantig": "LU",
+      "letter": "L",
+      "syllable_index": 4,
+      "asset": "assets/wq-pantig-v41-lu-lupa.webp",
+      "source": "/mnt/data/nurturing_a_little_seedling.png"
+    },
+    {
+      "pantig": "MI",
+      "letter": "M",
+      "syllable_index": 2,
+      "asset": "assets/wq-pantig-v41-mi-mikropono.webp",
+      "source": "/mnt/data/spotlit_handheld_microphone.png"
+    },
+    {
+      "pantig": "MO",
+      "letter": "M",
+      "syllable_index": 3,
+      "asset": "assets/wq-pantig-v41-mo-motor.webp",
+      "source": "/mnt/data/sunny_red_motorcycle_ride.png"
+    },
+    {
+      "pantig": "NE",
+      "letter": "N",
+      "syllable_index": 1,
+      "asset": "assets/wq-pantig-v41-ne-negosyo.webp",
+      "source": "/mnt/data/colorful_neighborhood_sari_sari_store.png"
+    },
+    {
+      "pantig": "ÑA",
+      "letter": "Ñ",
+      "syllable_index": 0,
+      "asset": "assets/wq-pantig-v41-nya-special.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_50_25 PM.png"
+    },
+    {
+      "pantig": "ÑE",
+      "letter": "Ñ",
+      "syllable_index": 1,
+      "asset": "assets/wq-pantig-v41-nye-special.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_50_27 PM.png"
+    },
+    {
+      "pantig": "ÑI",
+      "letter": "Ñ",
+      "syllable_index": 2,
+      "asset": "assets/wq-pantig-v41-nyi-special.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_50_29 PM.png"
+    },
+    {
+      "pantig": "ÑO",
+      "letter": "Ñ",
+      "syllable_index": 3,
+      "asset": "assets/wq-pantig-v41-nyo-special.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_50_31 PM.png"
+    },
+    {
+      "pantig": "ÑU",
+      "letter": "Ñ",
+      "syllable_index": 4,
+      "asset": "assets/wq-pantig-v41-nyu-special.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_50_34 PM.png"
+    },
+    {
+      "pantig": "NGE",
+      "letter": "NG",
+      "syllable_index": 1,
+      "asset": "assets/wq-pantig-v41-nge-puzzled.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_50_37 PM.png"
+    },
+    {
+      "pantig": "NGO",
+      "letter": "NG",
+      "syllable_index": 3,
+      "asset": "assets/wq-pantig-v41-ngo-special.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_50_40 PM.png"
+    },
+    {
+      "pantig": "PE",
+      "letter": "P",
+      "syllable_index": 1,
+      "asset": "assets/wq-pantig-v41-pe-pera.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_50_43 PM.png"
+    },
+    {
+      "pantig": "PO",
+      "letter": "P",
+      "syllable_index": 3,
+      "asset": "assets/wq-pantig-v41-po-polvoron.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_50_58 PM.png"
+    },
+    {
+      "pantig": "SE",
+      "letter": "S",
+      "syllable_index": 1,
+      "asset": "assets/wq-pantig-v41-se-selyo.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_51_00 PM.png"
+    },
+    {
+      "pantig": "TO",
+      "letter": "T",
+      "syllable_index": 3,
+      "asset": "assets/wq-pantig-v41-to-tomate.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_51_03 PM.png"
+    },
+    {
+      "pantig": "VU",
+      "letter": "V",
+      "syllable_index": 4,
+      "asset": "assets/wq-pantig-v41-vu-special.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_51_04 PM.png"
+    },
+    {
+      "pantig": "WE",
+      "letter": "W",
+      "syllable_index": 1,
+      "asset": "assets/wq-pantig-v41-we-special.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_51_07 PM.png"
+    },
+    {
+      "pantig": "WO",
+      "letter": "W",
+      "syllable_index": 3,
+      "asset": "assets/wq-pantig-v41-wo-wok.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_51_09 PM.png"
+    },
+    {
+      "pantig": "WU",
+      "letter": "W",
+      "syllable_index": 4,
+      "asset": "assets/wq-pantig-v41-wu-wushu.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_51_11 PM.png"
+    },
+    {
+      "pantig": "XI",
+      "letter": "X",
+      "syllable_index": 2,
+      "asset": "assets/wq-pantig-v41-xi-special.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_51_14 PM.png"
+    },
+    {
+      "pantig": "XO",
+      "letter": "X",
+      "syllable_index": 3,
+      "asset": "assets/wq-pantig-v41-xo-special.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_51_16 PM.png"
+    },
+    {
+      "pantig": "XU",
+      "letter": "X",
+      "syllable_index": 4,
+      "asset": "assets/wq-pantig-v41-xu-special.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_51_19 PM.png"
+    },
+    {
+      "pantig": "YI",
+      "letter": "Y",
+      "syllable_index": 2,
+      "asset": "assets/wq-pantig-v41-yi-special.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_51_24 PM.png"
+    },
+    {
+      "pantig": "ZU",
+      "letter": "Z",
+      "syllable_index": 4,
+      "asset": "assets/wq-pantig-v41-zu-special.webp",
+      "source": "/mnt/data/ChatGPT Image Aug 19, 2026 at 02_51_31 PM.png"
+    }
+  ]
+}
