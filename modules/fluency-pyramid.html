@@ -1349,12 +1349,25 @@ button,input,select,textarea,option{color-scheme:light!important}
   const levelStage=n=>Math.min(9,Math.floor((n-1)/10));
   const passageFor=n=>PASSAGES[levelStage(n)][(n-1)%10];
   function pyramidSteps(text){
-    const words=text.trim().split(/\s+/),out=[];let last=0;
-    for(let i=1;i<=8;i++){let end=Math.max(last+1,Math.round(words.length*i/8));end=Math.min(words.length,end);out.push(words.slice(0,end).join(' '));last=end}
+    const words=String(text||'').trim().split(/\s+/).filter(Boolean),out=[];
+    if(!words.length)return [''];
+    const total=Math.min(8,words.length);
+    if(words.length<=8){
+      for(let i=1;i<=words.length;i++)out.push(words.slice(0,i).join(' '));
+      return out;
+    }
+    let last=0;
+    for(let i=1;i<=total;i++){
+      let end=i===total?words.length:Math.max(last+1,Math.round(words.length*i/total));
+      end=Math.min(words.length,end);
+      out.push(words.slice(0,end).join(' '));
+      last=end;
+    }
     return out;
   }
-  const getLevelSteps=n=>n<=20?BEGINNER_STEPS[n-1]:pyramidSteps(passageFor(n));
-  const getActiveSteps=()=>customMode?customSteps:getLevelSteps(activeLevel);
+  const getLevelSteps=n=>{const beginner=(BEGINNER_STEPS[n-1]||[]).filter(Boolean);return pyramidSteps(n<=20?beginner[beginner.length-1]:passageFor(n))};
+  const getActiveSteps=()=>{const steps=customMode?customSteps:getLevelSteps(activeLevel);return (steps||[]).map(s=>String(s||'').trim()).filter(Boolean)}
+  const activeStepCount=()=>Math.max(1,getActiveSteps().length);
   function load(){
     let saved=null;try{saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');if(saved)state={...state,...saved,custom:{...state.custom,...(saved.custom||{})}}}catch(e){}
     state.musicVolume=Math.max(0,Math.min(1,Number.isFinite(Number(state.musicVolume))?Number(state.musicVolume):.7));
@@ -1407,13 +1420,14 @@ button,input,select,textarea,option{color-scheme:light!important}
     setAvatar($('gamePhoto'),l);setRunner(l);renderLearnerSelectors();$('gameMeta').innerHTML=`Level ${n}<br><small>${STAGES[levelStage(n)][0]}</small>`;
     $('nextLevelBtn').style.display='';$('speed').value=state.speed;$('speedValue').textContent=`${Number(state.speed).toFixed(2)}×`;buildGuardianMarks();updateRelicDisplay(n);showScreen('gameScreen');updateRun();if(state.music)startMusic();
   }
-  function startCustom(){const l=selectedLearner();if(!l){$('customOverlay').classList.remove('open');openLearners();toast('Add or select a learner first.');return}const steps=[...document.querySelectorAll('[data-custom-step]')].map(x=>x.value.trim());if(steps.some(x=>!x)){toast('Please complete all eight custom steps.');return}customMode=true;customSteps=steps;customTitle=$('customTitle').value.trim()||"Teacher's Challenge";state.custom={title:customTitle,passage:$('customPassage').value.trim(),steps:[...steps]};save();position=0;heartStates=[true,true,true];levelCompleting=false;setAvatar($('gamePhoto'),l);setRunner(l);renderLearnerSelectors();$('gameMeta').innerHTML=`Custom<br><small>${escapeHtml(customTitle)}</small>`;$('nextLevelBtn').style.display='none';$('customOverlay').classList.remove('open');buildGuardianMarks();updateRelicDisplay(1);$('levelRelicLabel').textContent='Custom Quest Relic';showScreen('gameScreen');updateRun();if(state.music)startMusic()}
-  function buildGuardianMarks(){$('guardianMarks').innerHTML='';MARK_POS.forEach((p,i)=>{const m=document.createElement('div');m.className='guardian-mark';m.style.left=p[0]+'px';m.style.top=p[1]+'px';m.textContent='✓';m.dataset.step=i;$('guardianMarks').appendChild(m)})}
+  function startCustom(){const l=selectedLearner();if(!l){$('customOverlay').classList.remove('open');openLearners();toast('Add or select a learner first.');return}const steps=[...document.querySelectorAll('[data-custom-step]')].map(x=>x.value.trim()).filter(Boolean);if(!steps.length){toast('Add at least one reading step.');return}customMode=true;customSteps=steps.slice(0,8);customTitle=$('customTitle').value.trim()||"Teacher's Challenge";state.custom={title:customTitle,passage:$('customPassage').value.trim(),steps:[...customSteps]};save();position=0;heartStates=[true,true,true];levelCompleting=false;setAvatar($('gamePhoto'),l);setRunner(l);renderLearnerSelectors();$('gameMeta').innerHTML=`Custom<br><small>${escapeHtml(customTitle)}</small>`;$('nextLevelBtn').style.display='none';$('customOverlay').classList.remove('open');buildGuardianMarks();updateRelicDisplay(1);$('levelRelicLabel').textContent='Custom Quest Relic';showScreen('gameScreen');updateRun();if(state.music)startMusic()}
+  function buildGuardianMarks(){$('guardianMarks').innerHTML='';MARK_POS.slice(0,activeStepCount()).forEach((p,i)=>{const m=document.createElement('div');m.className='guardian-mark';m.style.left=p[0]+'px';m.style.top=p[1]+'px';m.textContent='✓';m.dataset.step=i;$('guardianMarks').appendChild(m)})}
   function updateRun(){
-    const steps=getActiveSteps(),idx=Math.min(position,7),pos=RUN_POS[position];
+    const steps=getActiveSteps(),maxIndex=Math.max(0,steps.length-1),idx=Math.min(position,maxIndex),pos=RUN_POS[idx];
+    position=idx;
     $('avatarRunner').style.left=pos[0]+'px';$('avatarRunner').style.top=pos[1]+'px';$('avatarRunner').dataset.step=String(position);
-    $('stepLabel').textContent=`Step ${idx+1} of 8`;$('stageLabel').textContent=customMode?customTitle:STAGES[levelStage(activeLevel)][0];renderReader(steps[idx]);updateLives();
-    document.querySelectorAll('.guardian-mark').forEach((m,i)=>{m.classList.toggle('cleared',i<position);m.classList.toggle('current',i===position&&position<8)});
+    $('stepLabel').textContent=`Step ${idx+1} of ${steps.length}`;$('stageLabel').textContent=customMode?customTitle:STAGES[levelStage(activeLevel)][0];renderReader(steps[idx]);updateLives();
+    document.querySelectorAll('.guardian-mark').forEach((m,i)=>{m.classList.toggle('cleared',i<position);m.classList.toggle('current',i===position&&i<steps.length)});
   }
   function renderReader(text){
     const box=$('readerText');
@@ -1476,7 +1490,7 @@ button,input,select,textarea,option{color-scheme:light!important}
     updateReaderScrollUI();
   }
   function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
-  function moveDown(){if(levelCompleting)return;if(position>=8)return completeLevel();position++;animateRunner();if(position>=8){updateRun();setTimeout(completeLevel,520)}else updateRun()}
+  function moveDown(){if(levelCompleting)return;const maxIndex=activeStepCount()-1;if(position>=maxIndex)return completeLevel();position++;animateRunner();updateRun()}
   function moveUp(){if(position<=0){toast('You are already at the top.');return}position--;animateRunner();updateRun()}
   function animateRunner(){$('avatarRunner').classList.add('moving');setTimeout(()=>$('avatarRunner').classList.remove('moving'),360)}
   function updateLives(){document.querySelectorAll('.heart-hit').forEach((h,i)=>{h.classList.toggle('lost',!heartStates[i]);h.setAttribute('aria-pressed',String(!heartStates[i]))})}
@@ -1680,7 +1694,7 @@ button,input,select,textarea,option{color-scheme:light!important}
   function fillCustomSteps(steps){document.querySelectorAll('[data-custom-step]').forEach((x,i)=>x.value=steps[i]||'')}
   function openSettings(){$('settingsOverlay').classList.add('open');setTimeout(()=>$('soundBtn').focus(),80)}
   function openCustom(){const c=state.custom||{};$('customTitle').value=c.title||"Teacher's Challenge";$('customPassage').value=c.passage||'';fillCustomSteps(c.steps||[]);$('customOverlay').classList.add('open');setTimeout(()=>$('customPassage').focus(),80)}
-  function autoBuildCustom(){const text=$('customPassage').value.trim();if(!text){toast('Type a sentence or passage first.');return}fillCustomSteps(pyramidSteps(text));toast('Eight cumulative steps are ready to edit.')}
+  function autoBuildCustom(){const text=$('customPassage').value.trim();if(!text){toast('Type a sentence or passage first.');return}const steps=pyramidSteps(text);fillCustomSteps(steps);toast(`${steps.length} cumulative step${steps.length===1?'':'s'} ready to edit.`)}
   function saveCustomDraft(){state.custom={title:$('customTitle').value.trim()||"Teacher's Challenge",passage:$('customPassage').value.trim(),steps:[...document.querySelectorAll('[data-custom-step]')].map(x=>x.value.trim())};save();toast('Custom pyramid draft saved.')}
   function toast(msg){clearTimeout(toastTimer);$('toast').textContent=msg;$('toast').classList.add('show');toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2400)}
   function home(){speechSynthesis.cancel();$('levelRelicFrame').classList.remove('awarded');document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('open'));showScreen('homeScreen');renderHome()}
