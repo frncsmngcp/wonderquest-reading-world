@@ -574,15 +574,29 @@
       align-items: center;
       gap: .62cqw;
       padding: .6cqw .82cqw;
-      border: max(2px,.2cqw) solid #f4c552;
+      border: max(2px,.2cqw) solid #ffd45c;
       border-radius: 1.25cqw;
-      background: linear-gradient(180deg,rgba(19,89,83,.97),rgba(8,52,55,.98));
-      box-shadow: inset 0 .14cqw 0 rgba(255,255,255,.24),0 .34cqw .7cqw rgba(16,10,29,.34);
-      color: #fff7d9;
+      background: linear-gradient(135deg,rgba(17,166,172,.98),rgba(25,119,188,.98) 58%,rgba(25,83,151,.99));
+      box-shadow: inset 0 .14cqw 0 rgba(255,255,255,.4),0 .34cqw .7cqw rgba(13,45,74,.34);
+      color: #fffdf3;
       text-align: left;
       text-shadow: 0 1px 2px rgba(0,0,0,.55);
-      pointer-events: none;
+      appearance: none;
+      cursor: pointer;
+      transition: width .65s cubic-bezier(.2,.8,.2,1), min-width .65s, min-height .65s, aspect-ratio .65s, padding .65s, border-radius .65s, transform .3s, box-shadow .3s;
+      animation: readingStreakArrival .7s cubic-bezier(.2,.8,.2,1) both;
     }
+    #reading-streak:hover { transform: translateY(-2px); }
+    #reading-streak:focus-visible { outline: 3px solid #fff5bb; outline-offset: 3px; }
+    #reading-streak.is-compact {
+      width: clamp(54px,5.4cqw,88px); min-width: 0; min-height: 0; aspect-ratio: 1;
+      grid-template-columns: 1fr; grid-template-rows: 1fr; justify-items: center;
+      padding: .28cqw; border-radius: 50%;
+    }
+    #reading-streak.is-compact .reading-streak-icon { width: 100%; height: 100%; min-width: 0; min-height: 0; border: 0; background: transparent; box-shadow: none; font-size: clamp(24px,3cqw,46px); }
+    #reading-streak.is-compact .reading-streak-copy { position: absolute; inset: auto 0 9%; display: flex; justify-content: center; }
+    #reading-streak.is-compact .reading-streak-label { display: none; }
+    #reading-streak.is-compact #reading-streak-count { padding: .12em .42em; border: 1px solid #ffe083; border-radius: 999px; background: #15548e; font-size: clamp(10px,1cqw,15px); line-height: 1; }
     .reading-streak-icon {
       display: grid;
       place-items: center;
@@ -601,6 +615,28 @@
     .reading-streak-copy { display: grid; gap: .06cqw; min-width: 0; }
     #reading-streak-count { font-size: clamp(16px,1.75cqw,29px); font-weight: 950; line-height: 1; }
     .reading-streak-label { font-size: clamp(8px,.82cqw,13px); font-weight: 850; line-height: 1.05; white-space: nowrap; }
+    @keyframes readingStreakArrival { from { opacity: 0; transform: translateY(-10px) scale(.86); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    #streak-celebration {
+      position: absolute; inset: 0; z-index: 30; display: grid; place-items: center;
+      background: rgba(7,35,44,.42); opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s;
+    }
+    #streak-celebration.is-visible { opacity: 1; visibility: visible; }
+    .streak-confetti-layer { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
+    .streak-celebration-card {
+      position: relative; z-index: 2; width: min(72%,440px); padding: 28px 30px 24px;
+      border: 3px solid #f2b63d; border-radius: 22px; background: linear-gradient(145deg,#fff4c9 0%,#ffe09a 58%,#ffd078 100%);
+      box-shadow: 0 14px 45px rgba(9,54,83,.38), inset 0 2px 0 rgba(255,255,255,.88);
+      color: #5b351e; text-align: center; animation: streakCelebratePop .55s cubic-bezier(.2,1.35,.4,1) both;
+    }
+    .streak-celebration-icon { display: block; font-size: 52px; line-height: 1; animation: streakFlame .8s ease-in-out infinite alternate; }
+    .streak-celebration-title { margin: 10px 0 4px; font-size: clamp(22px,3cqw,36px); font-weight: 900; }
+    .streak-celebration-message { margin: 0 0 18px; font-size: clamp(14px,1.5cqw,19px); }
+    #streak-celebration-close { border: 2px solid #f5c34e; border-radius: 999px; padding: 9px 24px; background: linear-gradient(180deg,#20b6aa,#138e9d); color: white; font: inherit; font-weight: 800; cursor: pointer; box-shadow: 0 3px 0 #176b83; }
+    .streak-confetti { position: absolute; top: -8%; left: var(--x); width: var(--size); height: calc(var(--size) * 1.6); border-radius: 2px; background: var(--color); opacity: 0; pointer-events: none; animation: streakConfettiFall var(--duration) ease-in var(--delay) both; }
+    @keyframes streakCelebratePop { from { transform: translateY(20px) scale(.65); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+    @keyframes streakFlame { to { transform: translateY(-5px) rotate(7deg) scale(1.08); } }
+    @keyframes streakConfettiFall { 0% { opacity: 0; transform: translate3d(0,-5%,0) rotate(0); } 10% { opacity: 1; } 100% { opacity: 0; transform: translate3d(var(--drift),110vh,0) rotate(760deg); } }
+    @media (prefers-reduced-motion: reduce) { #reading-streak, .streak-celebration-card, .streak-celebration-icon, .streak-confetti { animation: none !important; transition: none !important; } }
     @media (max-width:760px) {
       #reading-streak { left: 1.5%; top: 2.2%; width: 15%; min-width: 94px; padding: 4px 6px; border-radius: 10px; }
       .reading-streak-icon { width: 27px; height: 27px; min-width: 27px; min-height: 27px; font-size: 17px; }
@@ -1266,10 +1302,19 @@ button,input,select,textarea,option{color-scheme:light!important}
         <span id="home-music-state" class="home-music-state">ON · Wizard Saga</span>
       </button>
       <!-- TF_HOME_FOREST_MUSIC_CONTROL_END -->
-      <div id="reading-streak" role="status" aria-label="Your reading streak: 0 days" title="Your reading streak updates when you open a reading activity.">
+      <button id="reading-streak" type="button" aria-label="Your reading streak: 0 days" aria-expanded="true" title="Your reading streak updates when you open a reading activity.">
         <span class="reading-streak-icon" aria-hidden="true">🔥</span>
         <span class="reading-streak-copy"><strong id="reading-streak-count">0</strong><span class="reading-streak-label">DAY STREAK</span></span>
-      </div>
+      </button>
+      <section id="streak-celebration" aria-hidden="true" aria-labelledby="streak-celebration-title">
+        <div class="streak-celebration-card" role="dialog" aria-modal="true" aria-describedby="streak-celebration-message">
+          <span class="streak-celebration-icon" aria-hidden="true">🔥</span>
+          <h2 class="streak-celebration-title" id="streak-celebration-title">Reading streak!</h2>
+          <p class="streak-celebration-message" id="streak-celebration-message"></p>
+          <button id="streak-celebration-close" type="button">Keep it going</button>
+        </div>
+        <div class="streak-confetti-layer" aria-hidden="true"></div>
+      </section>
       <section id="offline-status-panel" data-open="false" data-summary-state="pending" aria-label="WonderQuest offline status">
         <button id="offline-status-toggle" type="button" aria-expanded="false" aria-label="Open offline status">
           <span class="offline-status-indicator" aria-hidden="true"></span>
@@ -1373,6 +1418,8 @@ button,input,select,textarea,option{color-scheme:light!important}
     const status = document.getElementById("suite-status");
     const errorPanel = document.getElementById("error-panel");
     const READING_STREAK_KEY = "wonderquest-reading-streak-v1";
+    let streakCompactTimer;
+    let pendingStreakCelebration = 0;
     let launchToken = 0;
     let currentApp = null;
 
@@ -1397,6 +1444,39 @@ button,input,select,textarea,option{color-scheme:light!important}
       if (count) count.textContent = String(saved.count);
       if (badge) badge.setAttribute("aria-label", `Your reading streak: ${saved.count} ${saved.count === 1 ? "day" : "days"}`);
     }
+    function setStreakCompact(compact) {
+      const badge = document.getElementById("reading-streak");
+      if (!badge) return;
+      badge.classList.toggle("is-compact", compact);
+      badge.setAttribute("aria-expanded", String(!compact));
+    }
+    function showStreakCelebration(count) {
+      const panel = document.getElementById("streak-celebration");
+      const message = document.getElementById("streak-celebration-message");
+      const layer = panel?.querySelector(".streak-confetti-layer");
+      if (!panel || !message || !layer) return;
+      const title = count === 1 ? "Your first day!" : count === 5 ? "5-day streak!" : `${count}-day streak!`;
+      document.getElementById("streak-celebration-title").textContent = title;
+      message.textContent = count === 1 ? "You started your reading streak. Come back tomorrow to keep it alive!" : count === 5 ? "Five days of reading in a row. You're building a wonderful habit!" : `A full week${count > 7 ? "s" : ""} of reading, one day at a time. Keep going!`;
+      layer.replaceChildren();
+      const colors = ["#ff6674", "#ffd34f", "#43c873", "#35c5bd", "#48a9f5", "#9b68d8"];
+      for (let i = 0; i < 72; i += 1) {
+        const piece = document.createElement("i");
+        piece.className = "streak-confetti";
+        piece.style.cssText = `--x:${Math.random() * 100}%;--size:${6 + Math.random() * 9}px;--color:${colors[i % colors.length]};--duration:${2.2 + Math.random() * 2.2}s;--delay:${Math.random() * .8}s;--drift:${-120 + Math.random() * 240}px`;
+        layer.append(piece);
+      }
+      panel.classList.add("is-visible");
+      panel.setAttribute("aria-hidden", "false");
+      document.getElementById("streak-celebration-close")?.focus();
+    }
+    function closeStreakCelebration() {
+      const panel = document.getElementById("streak-celebration");
+      if (!panel || !panel.classList.contains("is-visible")) return;
+      panel.classList.remove("is-visible");
+      panel.setAttribute("aria-hidden", "true");
+      document.getElementById("reading-streak")?.focus();
+    }
     function recordReadingDay() {
       const saved = readReadingStreak();
       const today = localDayKey();
@@ -1407,8 +1487,21 @@ button,input,select,textarea,option{color-scheme:light!important}
       saved.lastDay = today;
       try { localStorage.setItem(READING_STREAK_KEY, JSON.stringify(saved)); } catch (_) {}
       renderReadingStreak();
+      if (saved.count === 1 || saved.count === 5 || (saved.count >= 7 && saved.count % 7 === 0)) pendingStreakCelebration = saved.count;
     }
     renderReadingStreak();
+    streakCompactTimer = window.setTimeout(() => setStreakCompact(true), 10000);
+    document.getElementById("reading-streak")?.addEventListener("click", () => {
+      const compact = document.getElementById("reading-streak")?.classList.contains("is-compact");
+      setStreakCompact(!compact);
+      window.clearTimeout(streakCompactTimer);
+      if (compact) streakCompactTimer = window.setTimeout(() => setStreakCompact(true), 10000);
+    });
+    document.getElementById("streak-celebration-close")?.addEventListener("click", closeStreakCelebration);
+    document.getElementById("streak-celebration")?.addEventListener("click", event => {
+      if (event.target.id === "streak-celebration") closeStreakCelebration();
+    });
+    document.addEventListener("keydown", event => { if (event.key === "Escape") closeStreakCelebration(); });
 
     function updatePlayerOverlays() {
       if (!fullscreenButton) return;
@@ -1429,6 +1522,11 @@ button,input,select,textarea,option{color-scheme:light!important}
       playerScreen.classList.toggle("active", screen === "player");
       homeScreen.setAttribute("aria-hidden", String(screen !== "home"));
       playerScreen.setAttribute("aria-hidden", String(screen !== "player"));
+      if (screen === "home" && pendingStreakCelebration) {
+        const count = pendingStreakCelebration;
+        pendingStreakCelebration = 0;
+        showStreakCelebration(count);
+      }
     }
 
     async function openApp(id, { updateHistory = true } = {}) {
