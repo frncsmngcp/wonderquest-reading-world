@@ -560,6 +560,55 @@
   </style>
   <!-- TF_HOME_FOREST_MUSIC_STYLE_END -->
 
+  <style id="wq-reading-streak-style">
+    #reading-streak {
+      position: absolute;
+      z-index: 6;
+      top: 3.4%;
+      left: 2.4%;
+      width: 13.5%;
+      min-width: 118px;
+      min-height: 8.7%;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: .62cqw;
+      padding: .6cqw .82cqw;
+      border: max(2px,.2cqw) solid #f4c552;
+      border-radius: 1.25cqw;
+      background: linear-gradient(180deg,rgba(19,89,83,.97),rgba(8,52,55,.98));
+      box-shadow: inset 0 .14cqw 0 rgba(255,255,255,.24),0 .34cqw .7cqw rgba(16,10,29,.34);
+      color: #fff7d9;
+      text-align: left;
+      text-shadow: 0 1px 2px rgba(0,0,0,.55);
+      pointer-events: none;
+    }
+    .reading-streak-icon {
+      display: grid;
+      place-items: center;
+      width: 2.7cqw;
+      height: 2.7cqw;
+      min-width: 30px;
+      min-height: 30px;
+      border: max(2px,.14cqw) solid rgba(255,239,174,.86);
+      border-radius: 50%;
+      background: linear-gradient(180deg,#ffdf78,#e88735);
+      color: #713d18;
+      font-size: clamp(18px,2cqw,32px);
+      line-height: 1;
+      box-shadow: inset 0 1px 3px rgba(255,255,255,.5),0 2px 5px rgba(0,0,0,.26);
+    }
+    .reading-streak-copy { display: grid; gap: .06cqw; min-width: 0; }
+    #reading-streak-count { font-size: clamp(16px,1.75cqw,29px); font-weight: 950; line-height: 1; }
+    .reading-streak-label { font-size: clamp(8px,.82cqw,13px); font-weight: 850; line-height: 1.05; white-space: nowrap; }
+    @media (max-width:760px) {
+      #reading-streak { left: 1.5%; top: 2.2%; width: 15%; min-width: 94px; padding: 4px 6px; border-radius: 10px; }
+      .reading-streak-icon { width: 27px; height: 27px; min-width: 27px; min-height: 27px; font-size: 17px; }
+      #reading-streak-count { font-size: clamp(14px,1.8cqw,22px); }
+      .reading-streak-label { font-size: clamp(7px,.85cqw,10px); }
+    }
+  </style>
+
   <style id="wq-offline-status-style">
     #offline-status-panel {
       position: absolute;
@@ -1217,6 +1266,10 @@ button,input,select,textarea,option{color-scheme:light!important}
         <span id="home-music-state" class="home-music-state">ON · Wizard Saga</span>
       </button>
       <!-- TF_HOME_FOREST_MUSIC_CONTROL_END -->
+      <div id="reading-streak" role="status" aria-label="Your reading streak: 0 days" title="Your reading streak updates when you open a reading activity.">
+        <span class="reading-streak-icon" aria-hidden="true">🔥</span>
+        <span class="reading-streak-copy"><strong id="reading-streak-count">0</strong><span class="reading-streak-label">DAY STREAK</span></span>
+      </div>
       <section id="offline-status-panel" data-open="false" data-summary-state="pending" aria-label="WonderQuest offline status">
         <button id="offline-status-toggle" type="button" aria-expanded="false" aria-label="Open offline status">
           <span class="offline-status-indicator" aria-hidden="true"></span>
@@ -1301,6 +1354,7 @@ button,input,select,textarea,option{color-scheme:light!important}
 
     const GLOBAL_RESET_KEYS = [
       "awad_teacher_francis_v2", "awad_teacher_francis_v1",
+      "wonderquest-reading-streak-v1",
       "basaBataBasaGeneralV3", "basaBataBasaGeneralV2",
       "basaTayoFilipinoPixiV11", "basaTayoFilipinoV6", "basaTayoFilipinoV5",
       "fluencyPyramidTeacherFrancisV1",
@@ -1318,8 +1372,43 @@ button,input,select,textarea,option{color-scheme:light!important}
     const loadingTitle = document.getElementById("loading-title");
     const status = document.getElementById("suite-status");
     const errorPanel = document.getElementById("error-panel");
+    const READING_STREAK_KEY = "wonderquest-reading-streak-v1";
     let launchToken = 0;
     let currentApp = null;
+
+    function localDayKey(date = new Date()) {
+      const pad = value => String(value).padStart(2, "0");
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+    }
+    function dayOrdinal(key) {
+      const [year, month, day] = String(key || "").split("-").map(Number);
+      return year && month && day ? Math.floor(Date.UTC(year, month - 1, day) / 86400000) : NaN;
+    }
+    function readReadingStreak() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(READING_STREAK_KEY) || "null");
+        return saved && Number.isInteger(saved.count) && saved.count >= 0 ? saved : { count: 0, longest: 0, lastDay: "" };
+      } catch (_) { return { count: 0, longest: 0, lastDay: "" }; }
+    }
+    function renderReadingStreak() {
+      const saved = readReadingStreak();
+      const count = document.getElementById("reading-streak-count");
+      const badge = document.getElementById("reading-streak");
+      if (count) count.textContent = String(saved.count);
+      if (badge) badge.setAttribute("aria-label", `Your reading streak: ${saved.count} ${saved.count === 1 ? "day" : "days"}`);
+    }
+    function recordReadingDay() {
+      const saved = readReadingStreak();
+      const today = localDayKey();
+      if (saved.lastDay === today) { renderReadingStreak(); return; }
+      const gap = dayOrdinal(today) - dayOrdinal(saved.lastDay);
+      saved.count = gap === 1 ? saved.count + 1 : 1;
+      saved.longest = Math.max(saved.longest || 0, saved.count);
+      saved.lastDay = today;
+      try { localStorage.setItem(READING_STREAK_KEY, JSON.stringify(saved)); } catch (_) {}
+      renderReadingStreak();
+    }
+    renderReadingStreak();
 
     function updatePlayerOverlays() {
       if (!fullscreenButton) return;
@@ -1348,6 +1437,7 @@ button,input,select,textarea,option{color-scheme:light!important}
       if (!meta || !url) return;
       const token = ++launchToken;
       currentApp = id;
+      recordReadingDay();
       updatePlayerOverlays();
       errorPanel.classList.remove("show");
       loadingTitle.textContent = "Opening " + meta.title;
@@ -1503,7 +1593,7 @@ button,input,select,textarea,option{color-scheme:light!important}
           const prefixes = [
             "awad_teacher_francis_", "basaBataBasaGeneralV", "basaTayoFilipino",
             "fluencyPyramidTeacherFrancis", "kuwentoTayo", "letter_slide_teacher_francis_",
-            "tfReadingWorld"
+            "tfReadingWorld", "wonderquest-reading-streak-"
           ];
           for (let i = localStorage.length - 1; i >= 0; i--) {
             const key = localStorage.key(i);
