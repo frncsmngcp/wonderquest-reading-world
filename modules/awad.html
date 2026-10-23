@@ -426,10 +426,13 @@ html,body,#app,#stage,#viewport{ -webkit-font-smoothing:antialiased; text-render
   text-rendering:geometricPrecision!important;
 }
 .play-meaning,.play-example{
-  line-height:1.20!important;
-  overflow:visible!important;
+  line-height:1.08!important;
+  overflow:hidden!important;
   box-sizing:border-box!important;
-  padding-bottom:18px!important;
+  padding:2px 18px 6px!important;
+  white-space:normal!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
   -webkit-font-smoothing:antialiased!important;
   text-rendering:geometricPrecision!important;
 }
@@ -839,46 +842,9 @@ function measureOneLine(el,text,fontSize=72){
 
 function formatUniformTwoLine(el,text){
   if(!el)return;
-  const clean=String(text||"").trim();
-  el.style.fontSize="72px";
-  el.style.lineHeight="1.13";
-  el.textContent=clean;
-
-  const cs=getComputedStyle(el);
-  const padX=(parseFloat(cs.paddingLeft)||0)+(parseFloat(cs.paddingRight)||0);
-  const safeWidth=Math.max(1,el.clientWidth-padX-16);
-
-  // Keep short entries on one line at the exact same 72px size.
-  if(measureOneLine(el,clean,72)<=safeWidth)return;
-
-  // For longer entries, choose the cleanest TWO-line break at a word boundary.
-  const spaces=[];
-  for(let i=0;i<clean.length;i++)if(clean[i]===" ")spaces.push(i);
-
-  let best=null;
-  for(const pos of spaces){
-    const a=clean.slice(0,pos).trim();
-    const b=clean.slice(pos+1).trim();
-    if(!a||!b)continue;
-    const wa=measureOneLine(el,a,72);
-    const wb=measureOneLine(el,b,72);
-    const fits=wa<=safeWidth && wb<=safeWidth;
-    const score=Math.max(wa,wb)+Math.abs(wa-wb)*0.28;
-    if(fits && (!best || score<best.score))best={a,b,score};
-  }
-
-  if(best){
-    el.textContent=best.a+"\n"+best.b;
-    return;
-  }
-
-  // Fallback: still force exactly two balanced lines. This preserves
-  // uniform font size instead of shrinking one entry and making a visual mess.
-  if(spaces.length){
-    const half=clean.length/2;
-    const pos=spaces.reduce((a,b)=>Math.abs(b-half)<Math.abs(a-half)?b:a,spaces[0]);
-    el.textContent=clean.slice(0,pos).trim()+"\n"+clean.slice(pos+1).trim();
-  }
+  el.textContent=String(text||"").trim();
+  el.style.whiteSpace="normal";
+  el.style.lineHeight="1.08";
 }
 
 function fitSingleLine(el,max,min){
@@ -912,10 +878,15 @@ function fitAll(){
   // Vocabulary: balanced large size, with long words automatically reduced.
   fitSingleLine($("wordText"),214,92);
 
-  // Meaning + example always use the SAME 72px font size.
+  // Fit both copy blocks to their own fixed parchment areas at one shared size.
   if(current){
     formatUniformTwoLine($("meaningText"),current.meaning||"");
     formatUniformTwoLine($("exampleText"),current.example||"");
+    const blocks=[$("meaningText"),$("exampleText")].filter(Boolean);
+    for(let size=72;size>=26;size-=1){
+      blocks.forEach(el=>{el.style.fontSize=size+"px"});
+      if(blocks.every(el=>el.scrollHeight<=el.clientHeight+1&&el.scrollWidth<=el.clientWidth+1))break;
+    }
   }
 }
 
