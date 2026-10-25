@@ -615,6 +615,28 @@
     .reading-streak-copy { display: grid; gap: .06cqw; min-width: 0; }
     #reading-streak-count { font-size: clamp(16px,1.75cqw,29px); font-weight: 950; line-height: 1; }
     .reading-streak-label { font-size: clamp(8px,.82cqw,13px); font-weight: 850; line-height: 1.05; white-space: nowrap; }
+    #reading-streak-week {
+      position: absolute; z-index: 9; left: 2.4%; top: 13.4%; width: min(31%,420px);
+      padding: 14px; border: 2px solid #ffd45c; border-radius: 16px;
+      color: #fffdf3; background: linear-gradient(145deg,rgba(17,130,166,.98),rgba(25,75,139,.98));
+      box-shadow: 0 10px 26px rgba(10,34,59,.38),inset 0 1px 0 rgba(255,255,255,.35);
+    }
+    #reading-streak-week[hidden] { display: none; }
+    .streak-week-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .streak-week-title { display: grid; gap: 2px; }
+    .streak-week-title strong { font-size: clamp(14px,1.3cqw,20px); }
+    #streak-week-range { font-size: clamp(10px,.9cqw,13px); opacity: .9; }
+    .streak-week-nav { display: flex; gap: 5px; }
+    .streak-week-nav button { width: 32px; height: 32px; border: 1px solid rgba(255,231,151,.8); border-radius: 9px; background: rgba(255,255,255,.14); color: white; font: inherit; font-size: 19px; line-height: 1; cursor: pointer; }
+    .streak-week-nav button:disabled { opacity: .38; cursor: default; }
+    #streak-week-days { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); gap: 5px; margin-top: 12px; }
+    .streak-day { display: grid; justify-items: center; align-content: start; gap: 5px; min-width: 0; padding: 7px 2px 6px; border: 1px solid rgba(255,255,255,.2); border-radius: 10px; background: rgba(4,36,79,.24); }
+    .streak-day-label { font-size: clamp(9px,.75cqw,12px); font-weight: 800; }
+    .streak-day-date { font-size: clamp(12px,1cqw,16px); font-weight: 900; }
+    .streak-day-mark { display: grid; place-items: center; width: 17px; height: 17px; border: 1px solid rgba(255,255,255,.48); border-radius: 50%; color: transparent; font-size: 11px; font-weight: 900; }
+    .streak-day.is-opened .streak-day-mark { border-color: #ffe080; background: #56bd60; color: white; box-shadow: 0 0 8px rgba(255,224,128,.52); }
+    .streak-day.is-today { border-color: #ffe080; box-shadow: inset 0 0 0 1px rgba(255,224,128,.32); }
+    .streak-week-summary { margin: 10px 1px 0; font-size: clamp(10px,.9cqw,13px); font-weight: 800; }
     @keyframes readingStreakArrival { from { opacity: 0; transform: translateY(-10px) scale(.86); } to { opacity: 1; transform: translateY(0) scale(1); } }
     #streak-celebration {
       position: absolute; inset: 0; z-index: 30; display: grid; place-items: center;
@@ -639,6 +661,7 @@
     @media (prefers-reduced-motion: reduce) { #reading-streak, .streak-celebration-card, .streak-celebration-icon, .streak-confetti { animation: none !important; transition: none !important; } }
     @media (max-width:760px) {
       #reading-streak { left: 1.5%; top: 2.2%; width: 15%; min-width: 94px; padding: 4px 6px; border-radius: 10px; }
+      #reading-streak-week { left: 1.5%; top: 12%; width: min(66%,360px); padding: 10px; border-radius: 12px; }
       .reading-streak-icon { width: 27px; height: 27px; min-width: 27px; min-height: 27px; font-size: 17px; }
       #reading-streak-count { font-size: clamp(14px,1.8cqw,22px); }
       .reading-streak-label { font-size: clamp(7px,.85cqw,10px); }
@@ -1302,10 +1325,18 @@ button,input,select,textarea,option{color-scheme:light!important}
         <span id="home-music-state" class="home-music-state">ON · Wizard Saga</span>
       </button>
       <!-- TF_HOME_FOREST_MUSIC_CONTROL_END -->
-      <button id="reading-streak" type="button" aria-label="Your reading streak: 0 days" aria-expanded="true" title="Your reading streak updates when you open a reading activity.">
+      <button id="reading-streak" type="button" aria-label="Your reading streak: 0 days. Show weekly activity" aria-expanded="false" aria-controls="reading-streak-week" title="Show your weekly reading activity.">
         <span class="reading-streak-icon" aria-hidden="true">🔥</span>
         <span class="reading-streak-copy"><strong id="reading-streak-count">0</strong><span class="reading-streak-label">DAY STREAK</span></span>
       </button>
+      <section id="reading-streak-week" aria-label="Weekly reading activity" hidden>
+        <div class="streak-week-head">
+          <div class="streak-week-title"><strong id="streak-week-heading">This week</strong><span id="streak-week-range"></span></div>
+          <div class="streak-week-nav"><button id="streak-week-previous" type="button" aria-label="Previous week">‹</button><button id="streak-week-next" type="button" aria-label="Next week" disabled>›</button></div>
+        </div>
+        <div id="streak-week-days" role="list" aria-label="Days this week"></div>
+        <p id="streak-week-summary" class="streak-week-summary" aria-live="polite">Opened 0 of 7 days</p>
+      </section>
       <section id="streak-celebration" aria-hidden="true" aria-labelledby="streak-celebration-title">
         <div class="streak-celebration-card" role="dialog" aria-modal="true" aria-describedby="streak-celebration-message">
           <span class="streak-celebration-icon" aria-hidden="true">🔥</span>
@@ -1419,6 +1450,7 @@ button,input,select,textarea,option{color-scheme:light!important}
     const errorPanel = document.getElementById("error-panel");
     const READING_STREAK_KEY = "wonderquest-reading-streak-v1";
     let streakCompactTimer;
+    let streakWeekOffset = 0;
     let pendingStreakCelebration = 0;
     let launchToken = 0;
     let currentApp = null;
@@ -1434,8 +1466,59 @@ button,input,select,textarea,option{color-scheme:light!important}
     function readReadingStreak() {
       try {
         const saved = JSON.parse(localStorage.getItem(READING_STREAK_KEY) || "null");
-        return saved && Number.isInteger(saved.count) && saved.count >= 0 ? saved : { count: 0, longest: 0, lastDay: "" };
+        if (!saved || !Number.isInteger(saved.count) || saved.count < 0) return { count: 0, longest: 0, lastDay: "", openedDays: [] };
+        if (!Array.isArray(saved.openedDays)) {
+          saved.openedDays = [];
+          const [year, month, day] = String(saved.lastDay || "").split("-").map(Number);
+          if (year && month && day) {
+            for (let offset = Math.min(saved.count, 365) - 1; offset >= 0; offset -= 1) {
+              saved.openedDays.push(localDayKey(new Date(year, month - 1, day - offset)));
+            }
+          }
+        }
+        return saved;
       } catch (_) { return { count: 0, longest: 0, lastDay: "" }; }
+    }
+    function renderReadingWeek() {
+      const saved = readReadingStreak();
+      const days = document.getElementById("streak-week-days");
+      const heading = document.getElementById("streak-week-heading");
+      const range = document.getElementById("streak-week-range");
+      const summary = document.getElementById("streak-week-summary");
+      if (!days || !heading || !range || !summary) return;
+      const today = new Date();
+      const mondayOffset = (today.getDay() + 6) % 7;
+      const monday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - mondayOffset + streakWeekOffset * 7);
+      const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6);
+      const fmt = date => new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(date);
+      heading.textContent = streakWeekOffset === 0 ? "This week" : streakWeekOffset === -1 ? "Last week" : `Week of ${fmt(monday)}`;
+      range.textContent = `${fmt(monday)} – ${fmt(sunday)}`;
+      const opened = new Set(saved.openedDays || []);
+      let total = 0;
+      days.replaceChildren();
+      for (let i = 0; i < 7; i += 1) {
+        const date = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i);
+        const key = localDayKey(date);
+        const active = opened.has(key);
+        if (active) total += 1;
+        const cell = document.createElement("div");
+        cell.className = `streak-day${active ? " is-opened" : ""}${key === localDayKey(today) ? " is-today" : ""}`;
+        cell.setAttribute("role", "listitem");
+        cell.setAttribute("aria-label", `${new Intl.DateTimeFormat(undefined, { weekday: "long", month: "long", day: "numeric" }).format(date)}: ${active ? "reading activity opened" : "no reading activity"}`);
+        cell.innerHTML = `<span class="streak-day-label">${new Intl.DateTimeFormat(undefined, { weekday: "short" }).format(date)}</span><span class="streak-day-date">${date.getDate()}</span><span class="streak-day-mark" aria-hidden="true">✓</span>`;
+        days.append(cell);
+      }
+      summary.textContent = `Opened ${total} of 7 days${streakWeekOffset === 0 ? " this week" : ""}`;
+      document.getElementById("streak-week-next").disabled = streakWeekOffset >= 0;
+      document.getElementById("streak-week-previous").disabled = streakWeekOffset <= -51;
+    }
+    function setReadingWeekOpen(open) {
+      const panel = document.getElementById("reading-streak-week");
+      const button = document.getElementById("reading-streak");
+      if (!panel || !button) return;
+      panel.hidden = !open;
+      button.setAttribute("aria-expanded", String(open));
+      if (open) renderReadingWeek();
     }
     function renderReadingStreak() {
       const saved = readReadingStreak();
@@ -1443,12 +1526,12 @@ button,input,select,textarea,option{color-scheme:light!important}
       const badge = document.getElementById("reading-streak");
       if (count) count.textContent = String(saved.count);
       if (badge) badge.setAttribute("aria-label", `Your reading streak: ${saved.count} ${saved.count === 1 ? "day" : "days"}`);
+      renderReadingWeek();
     }
     function setStreakCompact(compact) {
       const badge = document.getElementById("reading-streak");
       if (!badge) return;
       badge.classList.toggle("is-compact", compact);
-      badge.setAttribute("aria-expanded", String(!compact));
     }
     function showStreakCelebration(count) {
       const panel = document.getElementById("streak-celebration");
@@ -1480,7 +1563,14 @@ button,input,select,textarea,option{color-scheme:light!important}
     function recordReadingDay() {
       const saved = readReadingStreak();
       const today = localDayKey();
-      if (saved.lastDay === today) { renderReadingStreak(); return; }
+      saved.openedDays = Array.isArray(saved.openedDays) ? saved.openedDays : [];
+      if (!saved.openedDays.includes(today)) saved.openedDays.push(today);
+      saved.openedDays = saved.openedDays.filter(day => dayOrdinal(today) - dayOrdinal(day) < 366).slice(-365);
+      if (saved.lastDay === today) {
+        try { localStorage.setItem(READING_STREAK_KEY, JSON.stringify(saved)); } catch (_) {}
+        renderReadingStreak();
+        return;
+      }
       const gap = dayOrdinal(today) - dayOrdinal(saved.lastDay);
       saved.count = gap === 1 ? saved.count + 1 : 1;
       saved.longest = Math.max(saved.longest || 0, saved.count);
@@ -1490,18 +1580,26 @@ button,input,select,textarea,option{color-scheme:light!important}
       if (saved.count === 1 || saved.count === 5 || (saved.count >= 7 && saved.count % 7 === 0)) pendingStreakCelebration = saved.count;
     }
     renderReadingStreak();
-    streakCompactTimer = window.setTimeout(() => setStreakCompact(true), 10000);
+    streakCompactTimer = window.setTimeout(() => setStreakCompact(true), 5000);
     document.getElementById("reading-streak")?.addEventListener("click", () => {
-      const compact = document.getElementById("reading-streak")?.classList.contains("is-compact");
-      setStreakCompact(!compact);
-      window.clearTimeout(streakCompactTimer);
-      if (compact) streakCompactTimer = window.setTimeout(() => setStreakCompact(true), 10000);
+      const panel = document.getElementById("reading-streak-week");
+      setReadingWeekOpen(Boolean(panel?.hidden));
+    });
+    document.getElementById("streak-week-previous")?.addEventListener("click", () => { streakWeekOffset = Math.max(-51, streakWeekOffset - 1); renderReadingWeek(); });
+    document.getElementById("streak-week-next")?.addEventListener("click", () => { streakWeekOffset = Math.min(0, streakWeekOffset + 1); renderReadingWeek(); });
+    document.addEventListener("pointerdown", event => {
+      if (!event.target.closest("#reading-streak, #reading-streak-week")) setReadingWeekOpen(false);
     });
     document.getElementById("streak-celebration-close")?.addEventListener("click", closeStreakCelebration);
     document.getElementById("streak-celebration")?.addEventListener("click", event => {
       if (event.target.id === "streak-celebration") closeStreakCelebration();
     });
-    document.addEventListener("keydown", event => { if (event.key === "Escape") closeStreakCelebration(); });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        setReadingWeekOpen(false);
+        closeStreakCelebration();
+      }
+    });
 
     function updatePlayerOverlays() {
       if (!fullscreenButton) return;
